@@ -15,7 +15,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="#" class="navbar-brand">MyDropBox</a>
+                    {{ link_to("index", "MyDropbox", "class": "navbar-brand") }}
                 </div>
         
                 <!-- Collection of nav links and other content for toggling -->

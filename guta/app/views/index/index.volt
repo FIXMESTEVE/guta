@@ -3,21 +3,21 @@
             <h1 class="text-center">Gotta upload them all</h1>
             <br><br>
   
-            <form class="col-lg-12" style="width:340px;margin:0 auto;">
+            {{ form('user/create', 'method': 'post', "class": "col-lg-12", "style": "width:340px;margin:0 auto;") }}
                 <div class="form-group ">
-                    <label> Adresse mail </label>
-                    <input type="email" class="form-control input-lg" id="inputEmail" placeholder="Adresse mail">
+                    <label for="mail">Adresse mail</label>
+                    {{ email_field("email","class": "form-control input-lg",  "id": "inputEmail", "placeholder": "Adresse mail") }}
                 </div>
-                <div class="form-group">
+                <div class="form-group ">
                     <label> Nom d'utilisateur </label>
-                    <input type="text" class="form-control input-lg" id="inputUsername" placeholder="Nom d'utilisateur">
+                    {{ text_field("login", 'class': 'form-control input-lg', "id": "inputUsername","placeholder":"Nom d'utilisateur") }}
                 </div>
-                <div class="form-group">
+                <div class="form-group ">
                     <label> Mot de passe </label>
-                    <input type="password" class="form-control input-lg" id="inputPassword" placeholder="Mot de passe">
+                    {{ password_field("password", 'class': 'form-control input-lg', "id": "inputPassword","placeholder":"Mot de passe") }}
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
-            </form>
+                {{ submit_button('Inscription', "class":"btn btn-primary btn-lg") }}
+            {{ end_form() }}
         </div>
     </div> <!-- /row -->
 

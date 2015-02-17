@@ -109,9 +109,8 @@ class UserController extends ControllerBase
 
         $User->login = $this->request->getPost("login");
         $User->email = $this->request->getPost("email", "email");
-        $User->password = $this->request->getPost("password");
-        $User->avatar = $this->request->getPost("avatar");
-        
+        $password = $this->request->getPost("password");
+        $User->password = $this->security->hash($password);
 
         if (!$User->save()) {
             foreach ($User->getMessages() as $message) {
@@ -124,12 +123,12 @@ class UserController extends ControllerBase
             ));
         }
 
-        $this->flash->success("User was created successfully");
+        $this->flash->success("L'inscription s'est déroulée correctement.");
 
-        return $this->dispatcher->forward(array(
+        /*return $this->dispatcher->forward(array(
             "controller" => "User",
             "action" => "index"
-        ));
+        ));*/
 
     }
 
