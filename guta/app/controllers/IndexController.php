@@ -17,7 +17,6 @@ class IndexController extends ControllerBase
     	$this->assets
     		->addJs("js/jquery-1.11.2.min.js")
     		->addJS("js/bootstrap.min.js");
-
     }
 
 }
