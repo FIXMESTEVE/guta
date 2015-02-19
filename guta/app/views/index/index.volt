@@ -1,8 +1,7 @@
     <div class="row"> 
         <div class="col-lg-12  v-center">
-            <h1 class="text-center">Stocker, partager et accéder à tous vos fichiers en toute simplicité</h1>
+            <h1 class="text-center">Gotta upload them all</h1>
             <br><br>
-<<<<<<< HEAD
   
             {{ form('user/create', 'method': 'post', "class": "col-lg-12", "style": "width:340px;margin:0 auto;") }}
                 <div class="form-group ">
@@ -19,22 +18,9 @@
                 </div>
                 {{ submit_button('Inscription', "class":"btn btn-primary btn-lg") }}
             {{ end_form() }}
-=======
-            {{ form('session/start', 'role': 'form', 'class': "col-lg-12", 'style': "width:340px;margin:0 auto;") }}
-            <div class="form-group ">
-                <label for="login">Login</label>
-                {{ text_field('login', 'class': "form-control input-lg") }}
-            </div>
-            <div class="form-group ">
-                <label for="password">Password</label>
-                {{ password_field('password', 'class': "form-control input-lg") }}
-            </div>
-            {{ submit_button('Login', 'class': "btn btn-primary btn-lg") }}
-        </form>
->>>>>>> dee10db68518b348ab8f5894778821903246243f
         </div>
-    </div>
- 
+    </div> <!-- /row -->
+
     <div class="row"> 
         <div class="col-lg-12 text-center v-center" style="font-size:39pt;">
             <a href="#"><i class="icon-google-plus"></i></a>

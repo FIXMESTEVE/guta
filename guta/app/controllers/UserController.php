@@ -12,38 +12,6 @@ class UserController extends ControllerBase
     public function indexAction()
     {
         $this->persistent->parameters = null;
-
-        $numberPage = 1;
-        if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, "User", $_POST);
-            $this->persistent->parameters = $query->getParams();
-        } else {
-            $numberPage = $this->request->getQuery("page", "int");
-        }
-
-        $parameters = $this->persistent->parameters;
-        if (!is_array($parameters)) {
-            $parameters = array();
-        }
-        $parameters["order"] = "idUser";
-
-        $User = User::find($parameters);
-        if (count($User) == 0) {
-            $this->flash->notice("The search did not find any User");
-
-            return $this->dispatcher->forward(array(
-                "controller" => "User",
-                "action" => "index"
-            ));
-        }
-
-        $paginator = new Paginator(array(
-            "data" => $User,
-            "limit"=> 10,
-            "page" => $numberPage
-        ));
-
-        $this->view->page = $paginator->getPaginate();
     }
 
     /**
@@ -51,6 +19,7 @@ class UserController extends ControllerBase
      */
     public function searchAction()
     {
+
         $numberPage = 1;
         if ($this->request->isPost()) {
             $query = Criteria::fromInput($this->di, "User", $_POST);
@@ -140,14 +109,8 @@ class UserController extends ControllerBase
 
         $User->login = $this->request->getPost("login");
         $User->email = $this->request->getPost("email", "email");
-<<<<<<< HEAD
         $password = $this->request->getPost("password");
         $User->password = $this->security->hash($password);
-=======
-        $User->password = $this->request->getPost("password");
-        $User->avatar = $this->request->getPost("avatar");
-        
->>>>>>> dee10db68518b348ab8f5894778821903246243f
 
         if (!$User->save()) {
             foreach ($User->getMessages() as $message) {
@@ -175,6 +138,7 @@ class UserController extends ControllerBase
      */
     public function saveAction()
     {
+
         if (!$this->request->isPost()) {
             return $this->dispatcher->forward(array(
                 "controller" => "User",
@@ -258,16 +222,6 @@ class UserController extends ControllerBase
             "controller" => "User",
             "action" => "index"
         ));
-    }
-
-    public function welcomeAction()
-    {
-        //Check if the variable is defined
-        if ($this->session->has("login")) {
-
-            //Retrieve its value
-            $name = $this->session->get("login");
-        }
     }
 
 }
