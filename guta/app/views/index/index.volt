@@ -1,26 +1,21 @@
     <div class="row"> 
         <div class="col-lg-12  v-center">
-            <h1 class="text-center">Gotta upload them all</h1>
+            <h1 class="text-center">Stocker, partager et accéder à tous vos fichiers en toute simplicité</h1>
             <br><br>
-  
-            <form class="col-lg-12" style="width:340px;margin:0 auto;">
-                <div class="form-group ">
-                    <label> Adresse mail </label>
-                    <input type="email" class="form-control input-lg" id="inputEmail" placeholder="Adresse mail">
-                </div>
-                <div class="form-group">
-                    <label> Nom d'utilisateur </label>
-                    <input type="text" class="form-control input-lg" id="inputUsername" placeholder="Nom d'utilisateur">
-                </div>
-                <div class="form-group">
-                    <label> Mot de passe </label>
-                    <input type="password" class="form-control input-lg" id="inputPassword" placeholder="Mot de passe">
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
-            </form>
+            {{ form('session/start', 'role': 'form', 'class': "col-lg-12", 'style': "width:340px;margin:0 auto;") }}
+            <div class="form-group ">
+                <label for="login">Login</label>
+                {{ text_field('login', 'class': "form-control input-lg") }}
+            </div>
+            <div class="form-group ">
+                <label for="password">Password</label>
+                {{ password_field('password', 'class': "form-control input-lg") }}
+            </div>
+            {{ submit_button('Login', 'class': "btn btn-primary btn-lg") }}
+        </form>
         </div>
-    </div> <!-- /row -->
-
+    </div>
+ 
     <div class="row"> 
         <div class="col-lg-12 text-center v-center" style="font-size:39pt;">
             <a href="#"><i class="icon-google-plus"></i></a>
