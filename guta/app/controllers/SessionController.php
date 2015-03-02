@@ -33,10 +33,46 @@ class SessionController extends ControllerBase
         if ($this->request->isPost()) {
 
             //Receiving the variables sent by POST
+            $login = $this->request->getPost("login");
+            $password = $this->request->getPost("password");
+
+            $user = User::findFirstByLogin($login);
+
+            if (!$user) {
+
+                $this->flash->error("Cet utilisateur n'existe pas.");
+                return $this->dispatcher->forward(array(
+                    'controller' => 'index',
+                    'action' => 'index'
+                ));
+
+            } elseif (!$this->security->checkHash($password, $user->password)) {
+
+                $this->flash->error("Mot de passe incorrect.");
+                return $this->dispatcher->forward(array(
+                    'controller' => 'index',
+                    'action' => 'index'
+                ));
+            } else {
+
+                $this->registerSession($user);
+
+                $this->flash->success('Bienvenue ' . $user->login);
+
+                //REDIRECTION APRES SUCCES DE CONNEXION VERS LA PAGE DES FICHIERS: ACTUELLEMENT VERS LA PAGE D'INSCRIPTION
+                return $this->dispatcher->forward(array(
+                    'controller' => 'User',
+                    'action' => 'index'
+                ));
+            }
+        }
+        /*if ($this->request->isPost()) {
+
+            //Receiving the variables sent by POST
             $login = $this->request->getPost('login');
             $password = $this->request->getPost('password');
 
-            $password = $password; //bcrypt
+            $password =  $this->security->hash($password); //bcrypt
 
             //Find for the user in the database
             $user = User::findFirst(array(
@@ -63,7 +99,7 @@ class SessionController extends ControllerBase
         return $this->dispatcher->forward(array(
             'controller' => 'index',
             'action' => 'index'
-        ));
+        ));*/
     }
 
     public function endAction(){

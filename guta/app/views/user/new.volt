@@ -1,7 +1,7 @@
 {{ content() }}
 
 <h1 class="text-center">Inscription</h1>
-
+<div align="left">
 {{ form('user/create', 'method': 'post', "class": "col-lg-12", "style": "width:340px;margin:0 auto;") }}
     <div class="form-group ">
         <label for="mail">Adresse mail</label>
@@ -20,3 +20,4 @@
 
     {{ submit_button('Inscription', "class":"btn btn-primary btn-lg") }}
 {{ end_form() }}
+</div>

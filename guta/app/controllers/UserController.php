@@ -122,13 +122,14 @@ class UserController extends ControllerBase
                 "action" => "new"
             ));
         }
+        
 
         $this->flash->success("L'inscription s'est déroulée correctement.");
 
-        /*return $this->dispatcher->forward(array(
-            "controller" => "User",
+        return $this->dispatcher->forward(array(
+            "controller" => "index",
             "action" => "index"
-        ));*/
+        ));
 
     }
 
