@@ -22,7 +22,7 @@ class SessionController extends ControllerBase
         ));
     }
     /**
-     * Searches for User
+     *  Searches for User
      */
     public function startAction()
     {
