@@ -59,8 +59,8 @@ class Elements extends Component
     public function getMenu()
     {
         $auth = $this->session->get('auth');
-        if ($auth) {
-            $this->_headerMenu['navbar-right']['User'] = array(
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            $this->_headerMenu['navbar-right']['user'] = array(
                 'caption' => $auth['login'],
                 'action' => 'edit',
                 'params' => $auth['idUser']
@@ -71,25 +71,25 @@ class Elements extends Component
             );
             $controllerName = $this->view->getControllerName();
             foreach ($this->_headerMenu as $position => $menu) {
-            echo '<div class="nav-collapse">';
-            echo '<ul class="nav navbar-nav ', $position, '">';
-            foreach ($menu as $controller => $option) {
-                if ($controllerName == $controller) {
-                    echo '<li class="active">';
-                } else {
-                    echo '<li>';
+                echo '<div class="nav-collapse">';
+                echo '<ul class="nav navbar-nav ', $position, '">';
+                foreach ($menu as $controller => $option) {
+                    if ($controllerName == $controller) {
+                        echo '<li class="active">';
+                    } else {
+                        echo '<li>';
+                    }
+                    if(isset($option['params']))
+                        echo $this->tag->linkTo($controller . '/' . $option['action'] . '/' . $option['params'], $option['caption']);
+                    else
+                        echo $this->tag->linkTo($controller . '/' . $option['action'], $option['caption']);
+                    echo '</li>';
                 }
-                if(isset($option['params']))
-                    echo $this->tag->linkTo($controller . '/' . $option['action'] . '/' . $option['params'], $option['caption']);
-                else
-                    echo $this->tag->linkTo($controller . '/' . $option['action'], $option['caption']);
-                echo '</li>';
+                echo '</ul>';
+                echo '</div>';
             }
-            echo '</ul>';
-            echo '</div>';
-        }
         } else {
-            
+
         }
     }
     /**
