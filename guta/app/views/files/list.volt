@@ -10,10 +10,10 @@
 	<tbody>
 		
 			{% for dir in directories %}
-				<tr><td>{{ dir }}</td></tr>
+				<tr><td>{{ link_to("files/list" ~ currentDir ~ "/" ~ dir, dir) }}</td></tr>
 			{% endfor %}
 			{% for file in files %}
-				<tr><td>{{ file }}</td></tr>
+				<tr><td>{{ link_to("files/view" ~ currentDir  ~ "/" ~ file, file) }}</a></td></tr>
 			{% endfor %}
 
 		

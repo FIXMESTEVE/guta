@@ -68,7 +68,7 @@ class SessionController extends ControllerBase
                 return $this->dispatcher->forward(array(
                     'controller' => 'files',
                     'action' => 'list',
-                    'params' => array($userPath)
+                    'params' => array("")
                 ));
             }
         }

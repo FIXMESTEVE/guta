@@ -6,12 +6,7 @@ class FilesController extends Controller
 {
     public function initialize()
     {
-        \Phalcon\Tag::setTitle('MyDropbox');
-    }
-
-    public function indexAction()
-    {
-       $this->assets
+        $this->assets
             ->addCss("css/bootstrap.min.css")
             ->addCss("css/styles.css")
             ->addCss("css/dropzone.css");
@@ -21,6 +16,19 @@ class FilesController extends Controller
             ->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
             ->addJs("js/contextMenu.js");
+
+        \Phalcon\Tag::setTitle('MyDropbox');
+
+        $ds = DIRECTORY_SEPARATOR;  // '/'
+        $storeFolder = 'uploadedFiles';   // the folder where we store all the files
+        $user = $this->session->get('auth')['idUser'];
+        $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+
+        $this->persistent->userPath = $userPath;
+    }
+
+    public function indexAction()
+    {
     }
 
     public function uploadAction()
@@ -68,17 +76,30 @@ class FilesController extends Controller
         }
     }
 
-        public function listAction($directory)
+    public function listAction($directory = null)
     {
+        var_dump($directory);
+
+        var_dump($_SERVER['REQUEST_URI']);
+
+        if(strlen($directory) == 0)
+            $directory = substr($_SERVER['REQUEST_URI'], 24);
+        else
+            $directory = substr($_SERVER['REQUEST_URI'], 21);
+
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
 
-        $files = scandir($directory);
+        $pathDirectory = $this->persistent->userPath . $directory;
 
+        var_dump($pathDirectory);
+
+        $files = scandir($pathDirectory);
+        
         foreach ($files as $file) {            
             if($file != '.'){
-                if (is_dir($directory . "/" . $file)) {
+                if (is_dir($pathDirectory . "/" . $file)) {
                     array_push($dirArray, $file);
                 } else {
                     array_push($fileArray, $file);
@@ -90,8 +111,8 @@ class FilesController extends Controller
         sort($dirArray);
         sort($fileArray);
 
-         $this->view->directories = $dirArray;
-         $this->view->files = $fileArray;
-
+        $this->view->currentDir = $directory;
+        $this->view->directories = $dirArray;
+        $this->view->files = $fileArray;
     }
 }

@@ -129,6 +129,7 @@ class UserController extends ControllerBase
             $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
             mkdir($targetPath);
 
+            var_dump($user);
             $this->flash->success("L'inscription s'est déroulée correctement.");
 
             return $this->dispatcher->forward(array(
