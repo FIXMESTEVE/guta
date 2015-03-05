@@ -19,6 +19,7 @@ class SessionController extends ControllerBase
      */
     public function registerSession($user)
     {
+        $this->session->start();
         $this->session->set('auth', array(
             'idUser' => $user->idUser,
             'login' => $user->login
@@ -65,11 +66,8 @@ class SessionController extends ControllerBase
                 $user = $user->idUser;
                 $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
                 
-                return $this->dispatcher->forward(array(
-                    'controller' => 'files',
-                    'action' => 'list',
-                    'params' => array("")
-                ));
+                $this->response->redirect("files/list/");
+                return;
             }
         }
         /*if ($this->request->isPost()) {
@@ -111,9 +109,11 @@ class SessionController extends ControllerBase
     public function endAction(){
         $this->session->destroy();
 
-        return $this->dispatcher->forward(array(
+        $this->response->redirect("index");
+        /*$this->dispatcher->forward(array(
             'controller' => 'index',
             'action' => 'index'
-        ));
+        ));*/
+        return;
     }
 }
