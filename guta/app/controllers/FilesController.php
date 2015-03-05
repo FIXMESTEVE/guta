@@ -80,12 +80,9 @@ class FilesController extends Controller
     {
         var_dump($directory);
 
-        var_dump($_SERVER['REQUEST_URI']);
+        $directory = substr($_SERVER['REQUEST_URI'], 22);
 
-        if(strlen($directory) == 0)
-            $directory = substr($_SERVER['REQUEST_URI'], 24);
-        else
-            $directory = substr($_SERVER['REQUEST_URI'], 21);
+        var_dump($directory);
 
         $directoryArray = array();
         $dirArray = array();
@@ -108,9 +105,13 @@ class FilesController extends Controller
             }
         }
 
+        $directory = rtrim(ltrim($directory, '/'), '/');
+
         sort($dirArray);
         sort($fileArray);
 
+        if($directory != null)
+            $directory = "/" . $directory;
         $this->view->currentDir = $directory;
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
