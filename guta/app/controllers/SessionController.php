@@ -60,9 +60,15 @@ class SessionController extends ControllerBase
                 $this->flash->success('Bienvenue ' . $user->login);
 
                 //REDIRECTION APRES SUCCES DE CONNEXION VERS LA PAGE DES FICHIERS: ACTUELLEMENT VERS LA PAGE D'INSCRIPTION
+                $ds = DIRECTORY_SEPARATOR;  // '/'
+                $storeFolder = 'uploadedFiles';   // the folder where we store all the files
+                $user = $user->idUser;
+                $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+                
                 return $this->dispatcher->forward(array(
-                    'controller' => 'User',
-                    'action' => 'index'
+                    'controller' => 'files',
+                    'action' => 'list',
+                    'params' => array($userPath)
                 ));
             }
         }

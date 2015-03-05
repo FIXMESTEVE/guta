@@ -67,4 +67,31 @@ class FilesController extends Controller
             echo "File not found";
         }
     }
+
+        public function listAction($directory)
+    {
+        $directoryArray = array();
+        $dirArray = array();
+        $fileArray = array();
+
+        $files = scandir($directory);
+
+        foreach ($files as $file) {            
+            if($file != '.'){
+                if (is_dir($directory . "/" . $file)) {
+                    array_push($dirArray, $file);
+                } else {
+                    array_push($fileArray, $file);
+                    //var_dump($fileArray);
+                }
+            }
+        }
+
+        sort($dirArray);
+        sort($fileArray);
+
+         $this->view->directories = $dirArray;
+         $this->view->files = $fileArray;
+
+    }
 }
