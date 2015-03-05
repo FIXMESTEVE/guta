@@ -15,8 +15,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <?php if(session_status() == PHP_SESSION_ACTIVE) { ?>
-                    {{ link_to("files", "MyDropbox", "class": "navbar-brand") }}
+                    <?php if($this->session->get('auth')) { ?>
+                    {{ link_to("files/list/", "MyDropbox", "class": "navbar-brand") }}
                     <?php } else { ?>
                     {{ link_to("index", "MyDropbox", "class": "navbar-brand") }}
                     <?php } ?>

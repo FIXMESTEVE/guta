@@ -19,7 +19,6 @@ class SessionController extends ControllerBase
      */
     public function registerSession($user)
     {
-        $this->session->start();
         $this->session->set('auth', array(
             'idUser' => $user->idUser,
             'login' => $user->login

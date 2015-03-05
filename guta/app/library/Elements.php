@@ -59,7 +59,7 @@ class Elements extends Component
     public function getMenu()
     {
         $auth = $this->session->get('auth');
-        if (session_status() == PHP_SESSION_ACTIVE) {
+        if ($auth) {
             $this->_headerMenu['navbar-right']['user'] = array(
                 'caption' => $auth['login'],
                 'action' => 'edit',
