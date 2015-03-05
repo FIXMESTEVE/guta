@@ -15,7 +15,7 @@
 <table class="table">
 {% for item in result %}
 	<tr>
-		<td>{{ item }}</td>
+		<td><a href="/guta/list/view/{{ item }}">{{ item }}</a></td>
 	</tr>
 {% endfor %}
 </table>
