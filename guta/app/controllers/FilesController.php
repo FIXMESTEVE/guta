@@ -76,13 +76,29 @@ class FilesController extends Controller
         }
     }
 
+    public function getDirSize($path)
+    {
+        $size = 0;
+
+        $files = scandir($path);
+
+        foreach ($files as $file) {
+            if(is_dir($path . "/" . $file)) {
+                $newPath = $path . "/" . $file;
+                if($file != ".." && $file != ".")
+                    $size += $this->getDirSize($newPath);
+            } else {
+                $size += filesize($path . "/" . $file);
+            }
+        }
+
+        return $size;
+    }
+
     public function listAction($directory = null)
     {
-        var_dump($directory);
 
         $directory = substr($_SERVER['REQUEST_URI'], 22);
-
-        var_dump($directory);
 
         $directoryArray = array();
         $dirArray = array();
@@ -90,22 +106,27 @@ class FilesController extends Controller
 
         $pathDirectory = $this->persistent->userPath . $directory;
 
-        var_dump($pathDirectory);
-
         $files = scandir($pathDirectory);
-        
+
+        $directory = rtrim(ltrim($directory, '/'), '/');
+
         foreach ($files as $file) {            
             if($file != '.'){
                 if (is_dir($pathDirectory . "/" . $file)) {
-                    array_push($dirArray, $file);
+                    if(!(strlen($directory) == 0 && $file == "..")) {
+                        if($file != ".." && $file != ".")
+                            $size = $this->getDirSize($pathDirectory . "/" . $file);
+                        else
+                            $size = null;
+                        array_push($dirArray, array('name' => $file, 'size' => $size));
+                    }
                 } else {
-                    array_push($fileArray, $file);
-                    //var_dump($fileArray);
+                    $size = filesize($pathDirectory . "/" . $file);
+                    $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
+                    array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
                 }
             }
         }
-
-        $directory = rtrim(ltrim($directory, '/'), '/');
 
         sort($dirArray);
         sort($fileArray);
@@ -115,5 +136,9 @@ class FilesController extends Controller
         $this->view->currentDir = $directory;
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
+    }
+
+    public function viewAction($directory = null) {
+        
     }
 }
