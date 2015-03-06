@@ -128,8 +128,8 @@ class UserController extends ControllerBase
             $user = $User->idUser;
             $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
             mkdir($targetPath);
+            exec("git init " . $targetPath);
 
-            var_dump($user);
             $this->flash->success("L'inscription s'est déroulée correctement.");
 
             return $this->dispatcher->forward(array(

@@ -1,5 +1,6 @@
 {{ content() }}
 
+<h1 class="text-center">Mes fichiers</h1>
 
 <table class="table table-hover" style="width:80%" data-sortable>
 	<thead>
@@ -25,7 +26,6 @@
 					<td>{{ file['modifyDate'] }}</td>
 				</tr>
 			{% endfor %}
-
 		
 	</tbody>
 </table>
