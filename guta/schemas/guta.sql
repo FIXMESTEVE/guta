@@ -31,9 +31,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `guta`.`Shared_File`
+-- Table `guta`.`Sharedfile`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `guta`.`Shared_File` (
+CREATE TABLE IF NOT EXISTS `guta`.`Sharedfile` (
   `idShared_File` INT NOT NULL AUTO_INCREMENT,
   `id_user` INT NULL,
   `id_owner` INT NULL,
@@ -82,9 +82,9 @@ CREATE TABLE IF NOT EXISTS `guta`.`Notification` (
   `unread` TINYINT(1) NULL,
   PRIMARY KEY (`idNotification`),
   INDEX `Shared_File_idx` (`id_SharedFile` ASC),
-  CONSTRAINT `Shared_File`
+  CONSTRAINT `Sharedfile`
     FOREIGN KEY (`id_SharedFile`)
-    REFERENCES `guta`.`Shared_File` (`idShared_File`)
+    REFERENCES `guta`.`Sharedfile` (`idShared_File`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

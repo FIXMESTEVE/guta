@@ -6,12 +6,7 @@ class FilesController extends Controller
 {
     public function initialize()
     {
-        \Phalcon\Tag::setTitle('MyDropbox');
-    }
-
-    public function indexAction()
-    {
-       $this->assets
+        $this->assets
             ->addCss("css/bootstrap.min.css")
             ->addCss("css/styles.css")
             ->addCss("css/dropzone.css");
@@ -21,6 +16,19 @@ class FilesController extends Controller
             ->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
             ->addJs("js/contextMenu.js");
+
+        \Phalcon\Tag::setTitle('MyDropbox');
+
+        $ds = DIRECTORY_SEPARATOR;  // '/'
+        $storeFolder = 'uploadedFiles';   // the folder where we store all the files
+        $user = $this->session->get('auth')['idUser'];
+        $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+
+        $this->persistent->userPath = $userPath;
+    }
+
+    public function indexAction()
+    {
     }
 
     public function uploadAction()
@@ -66,5 +74,71 @@ class FilesController extends Controller
         {
             echo "File not found";
         }
+    }
+
+    public function getDirSize($path)
+    {
+        $size = 0;
+
+        $files = scandir($path);
+
+        foreach ($files as $file) {
+            if(is_dir($path . "/" . $file)) {
+                $newPath = $path . "/" . $file;
+                if($file != ".." && $file != ".")
+                    $size += $this->getDirSize($newPath);
+            } else {
+                $size += filesize($path . "/" . $file);
+            }
+        }
+
+        return $size;
+    }
+
+    public function listAction($directory = null)
+    {
+
+        $directory = substr($_SERVER['REQUEST_URI'], 22);
+
+        $directoryArray = array();
+        $dirArray = array();
+        $fileArray = array();
+
+        $pathDirectory = $this->persistent->userPath . $directory;
+
+        $files = scandir($pathDirectory);
+
+        $directory = rtrim(ltrim($directory, '/'), '/');
+
+        foreach ($files as $file) {            
+            if($file != '.'){
+                if (is_dir($pathDirectory . "/" . $file)) {
+                    if(!(strlen($directory) == 0 && $file == "..")) {
+                        if($file != ".." && $file != ".")
+                            $size = $this->getDirSize($pathDirectory . "/" . $file);
+                        else
+                            $size = null;
+                        array_push($dirArray, array('name' => $file, 'size' => $size));
+                    }
+                } else {
+                    $size = filesize($pathDirectory . "/" . $file);
+                    $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
+                    array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
+                }
+            }
+        }
+
+        sort($dirArray);
+        sort($fileArray);
+
+        if($directory != null)
+            $directory = "/" . $directory;
+        $this->view->currentDir = $directory;
+        $this->view->directories = $dirArray;
+        $this->view->files = $fileArray;
+    }
+
+    public function viewAction($directory = null) {
+        
     }
 }
