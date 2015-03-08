@@ -3,6 +3,18 @@
     <head>
         {{ get_title()}}
         {{ assets.outputCss() }}
+        {{ assets.outputJs() }}
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('[data-toggle="popover"]').popover({ 
+                    html : true, 
+                    content: function() {
+                        return $('#popover_content_wrapper').html();
+                    }
+                });   
+            });
+        </script>
+
     </head>
     <body>
         <div class="container-full">

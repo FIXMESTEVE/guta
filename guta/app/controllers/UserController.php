@@ -122,7 +122,6 @@ class UserController extends ControllerBase
                 "action" => "new"
             ));
         }
-        
 
         $this->flash->success("L'inscription s'est déroulée correctement.");
 

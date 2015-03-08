@@ -23,7 +23,7 @@ try {
      * Handle the request
      */
     $application = new \Phalcon\Mvc\Application($di);
-
+    $app = new \Phalcon\Mvc\Micro();
     echo $application->handle()->getContent();
 
 } catch (\Exception $e) {
