@@ -27,7 +27,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
+                    <?php if($this->session->get('auth')) { ?>
+                    {{ link_to("files/list/", "MyDropbox", "class": "navbar-brand") }}
+                    <?php } else { ?>
                     {{ link_to("index", "MyDropbox", "class": "navbar-brand") }}
+                    <?php } ?>
                 </div>
                 <?php echo $this->elements->getMenu(); ?>
             </nav>

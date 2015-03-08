@@ -121,15 +121,22 @@ class UserController extends ControllerBase
                 "controller" => "User",
                 "action" => "new"
             ));
+        } else {
+
+            $ds          = DIRECTORY_SEPARATOR;  // '/'
+            $storeFolder = 'uploadedFiles';   // the folder where we store all the files
+            $user = $User->idUser;
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+            mkdir($targetPath);
+            exec("git init " . $targetPath);
+
+            $this->flash->success("L'inscription s'est déroulée correctement.");
+
+            return $this->dispatcher->forward(array(
+                "controller" => "index",
+                "action" => "index"
+            ));
         }
-
-        $this->flash->success("L'inscription s'est déroulée correctement.");
-
-        return $this->dispatcher->forward(array(
-            "controller" => "index",
-            "action" => "index"
-        ));
-
     }
 
     /**

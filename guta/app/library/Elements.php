@@ -33,7 +33,7 @@ class Elements extends Component
     {
         $auth = $this->session->get('auth');
         if ($auth) {
-            $this->_headerMenu['navbar-right']['User'] = array(
+            $this->_headerMenu['navbar-right']['user'] = array(
                 'caption' => $auth['login'],
                 'action' => 'edit',
                 'params' => $auth['idUser']
@@ -48,13 +48,13 @@ class Elements extends Component
                 echo '<div class="nav-collapse">';
                 echo '<ul class="nav navbar-nav ', $position, '">';
 
-
-
                 foreach ($menu as $controller => $option) {
-                    if ($controllerName == $controller) 
+                    if ($controllerName == $controller) {
                         echo '<li class="active">';
-                    else 
-                        echo '<li>'; 
+                    } else {
+                        echo '<li>';
+                    }
+
                     if(isset($option['params']))
                         echo $this->tag->linkTo($controller . '/' . $option['action'] . '/' . $option['params'], $option['caption']);
                     else
