@@ -5,7 +5,19 @@ use Phalcon\Paginator\Adapter\Model as Paginator;
 
 class UserController extends ControllerBase
 {
+    public function initialize()
+    {
+        $this->assets
+            ->addCss("css/bootstrap.min.css")
+            ->addCss("css/styles.css");
 
+        $this->assets
+            ->addJs("js/jquery-1.11.2.min.js")
+            ->addJS("js/bootstrap.min.js")
+            ->addJs("js/utils.js");
+    }
+
+    
     /**
      * Index action
      */
@@ -86,8 +98,8 @@ class UserController extends ControllerBase
             $this->tag->setDefault("idUser", $User->idUser);
             $this->tag->setDefault("login", $User->login);
             $this->tag->setDefault("email", $User->email);
-            $this->tag->setDefault("password", $User->password);
-            $this->tag->setDefault("avatar", $User->avatar);
+            //$this->tag->setDefault("password", $User->password);
+            $this->tag->setDefault("avatar", "avatars/default.gif");
             
         }
     }

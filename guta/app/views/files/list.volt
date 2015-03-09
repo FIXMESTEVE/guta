@@ -20,7 +20,7 @@
 				</tr>
 			{% endfor %}
 			{% for file in files %}
-				<tr>
+				<tr class="downloadable">
 					<td><span class="glyphicon glyphicon-file"> {{ link_to("files/view" ~ currentDir  ~ "/" ~ file['name'], file['name']) }}</span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>

@@ -35,3 +35,48 @@ h1 {
 .navbar {
   margin: 40px 30px 0px 30px;
 }
+
+#avatar{
+    display: inline-block;
+    position: relative;
+    width: 84px;
+    height: 84px;
+    border-radius:10px;
+    /*box-shadow: -4px -4px 5px #CCC;*/
+}
+
+#avatarPicture{
+    width: 84px;
+    height: 84px;
+    /*margin-top: -100px;*/
+    border-radius: 10px;
+}
+
+#avatarOverlay{
+    position: absolute;
+    overflow: hidden;
+    bottom: 0px;
+    padding: 2px;
+    right:0;
+}
+
+#overlayButton{
+    display: inline-block;
+    color:white;
+    background:rgb(50,50,50);
+    border-radius:5px;
+    border: white groove 1px;
+    padding : 2px;
+}
+
+#overlayButton input#upload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
