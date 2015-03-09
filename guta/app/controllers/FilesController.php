@@ -34,7 +34,9 @@ class FilesController extends Controller
     public function uploadAction()
     {
         $ds          = DIRECTORY_SEPARATOR;  // '/'
- 
+    
+        $user = $this->session->get('auth')['idUser'];
+
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
          
         $user = 'tomtom'; //the user who signed in (tomtom currently used as a placeholder)
