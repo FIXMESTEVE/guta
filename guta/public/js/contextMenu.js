@@ -7,9 +7,14 @@ $(document).on('click', 'a.menulink', function(event){
 	menu_click($(this));
 });
 
-//Change document to only have the list elements (class)
-$(document).bind("contextmenu", function(event){
+var target;
+
+$("tr.downloadable").bind("contextmenu", function(event){
 	event.preventDefault();
+	//Récup des infos du click
+	$(this).find('a').each(function(){
+		target = $(this).attr('href').substring(22).replace(/\//g, '¤');
+	});
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
 });
 $(document).bind("click", function(event){
@@ -30,8 +35,9 @@ menu = function(){
 menu_click = function(object){
 	switch(object.attr('id')){
 	case 'download':
-		var file = "testFile.txt";
-		$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + file);
+		$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + target);
+		//var file = "testFile.txt";
+		//$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + file);
 		break;
 	default:
 		$(location).attr('href', object.attr('href'));
