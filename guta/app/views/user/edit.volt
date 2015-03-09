@@ -33,7 +33,7 @@
                     {{ password_field('password', 'class': "form-control input-lg") }}
                 </div>
                 <div class="form-group">
-                    <?php echo $this->tag->hiddenField("id") ?>
+                    <?php echo $this->tag->hiddenField("idUser") ?>
                     <?php echo $this->tag->submitButton("Save") ?>
                 </div>
             {{ end_form() }}
