@@ -38,9 +38,7 @@ class FilesController extends Controller
         $user = $this->session->get('auth')['idUser'];
 
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
-         
-        $user = 'tomtom'; //the user who signed in (tomtom currently used as a placeholder)
-
+        
         if (!empty($_FILES)) {
              
             $tempFile = $_FILES['file']['tmp_name'];
