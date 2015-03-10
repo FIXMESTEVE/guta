@@ -95,17 +95,21 @@ class FilesController extends Controller
         return $size;
     }
 
+
     public function listAction($directory = null)
     {
-
-        $directory = substr($_SERVER['REQUEST_URI'], 22);
-
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
 
-        $pathDirectory = $this->persistent->userPath . $directory;
 
+        // Get the folder path  with userPath as the folder root for the user.
+        $pos = strpos($_SERVER['REQUEST_URI'],$directory);
+        if($pos)
+            $directory = substr($_SERVER['REQUEST_URI'], $pos);
+        
+
+        $pathDirectory = $this->persistent->userPath . $directory;
         $files = scandir($pathDirectory);
 
         $directory = rtrim(ltrim($directory, '/'), '/');
@@ -141,4 +145,33 @@ class FilesController extends Controller
     public function viewAction($directory = null) {
         
     }
+
+    /* Creation of a new folder by the user. */
+    public function createFolderAction($folderpath = null) {
+
+        if ($this->request->isPost()) {
+
+            // Get the name of the new folder.
+            $foldername = $this->request->getPost("foldername");
+
+            // Get the path where the new folder will be created.
+            $pos = strpos($_SERVER['REQUEST_URI'],$folderpath);
+            if($pos)
+                $folderpath = substr($_SERVER['REQUEST_URI'], $pos);
+
+            // Check for forbidden characters in the folder name.
+            if (preg_match('/[\/:?*<>"|]/', $foldername)) {
+                $this->flash->error('Les caractères "/", "\", ":", "?", "*", "<", ">", """, "|" sont interdits.');
+            } else {
+                mkdir($this->persistent->userPath . "/" . $folderpath . "/" . $foldername);
+                $this->flash->success("Le dossier ".$foldername." a été correctement créé.");
+            }
+
+            return $this->dispatcher->forward(array(
+                'controller' => 'files',
+                'action' => 'list'
+            ));
+        }
+    }
+
 }

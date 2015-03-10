@@ -18,7 +18,7 @@ class Elements extends Component
                 'action' => 'index'
             ),
             'addDirectory' => array(
-                'caption' => 'New directory',
+                'caption' => 'Nouveau dossier',
                 'action' => 'index'
             )
         ),
