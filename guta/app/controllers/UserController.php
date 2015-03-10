@@ -179,7 +179,8 @@ class UserController extends ControllerBase
 
         $User->login = $this->request->getPost("login");
         $User->email = $this->request->getPost("email", "email");
-        $User->password = $this->request->getPost("password");
+        $password = $this->request->getPost("password");
+        $User->password = $this->security->hash($password);
         $User->avatar = $this->request->getPost("avatar");
         
 

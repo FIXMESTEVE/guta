@@ -64,7 +64,7 @@ class Elements extends Component
                 
                     echo '</ul>';
                     echo '</div>';
-                }
+            }
 
             $phql = "SELECT Notification.* FROM Notification INNER JOIN Sharedfile ON Sharedfile.idShared_File = Notification.id_SharedFile WHERE Sharedfile.id_user = " . $auth['idUser'] . " OR Sharedfile.id_owner = " . $auth['idUser'];
             $notifs = $this->modelsManager->executeQuery($phql);

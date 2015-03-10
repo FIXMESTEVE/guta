@@ -34,11 +34,11 @@ class FilesController extends Controller
     public function uploadAction()
     {
         $ds          = DIRECTORY_SEPARATOR;  // '/'
- 
+
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
          
-        $user = 'tomtom'; //the user who signed in (tomtom currently used as a placeholder)
-
+        $user = $this->session->get('auth')['idUser'];; //the user who signed in
+        
         if (!empty($_FILES)) {
              
             $tempFile = $_FILES['file']['tmp_name'];
@@ -54,9 +54,10 @@ class FilesController extends Controller
 
     public function downloadAction($fileName)
     {
+        $fileName = str_replace('¤', '\\', $fileName);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
-        $user = "tomtom"; 
+        $user = $this->session->get('auth')['idUser'];; 
         //Force the download of a file
         $file=".." . $ds . "app" . $ds . $storeFolder . $ds . $user . $ds . $fileName;
         if(file_exists(realpath($file)))
@@ -69,6 +70,7 @@ class FilesController extends Controller
             header('Pragma: public');
             header('Content-Length: ' . filesize($file));
             readfile($file);
+            exit;
         }
         else
         {
@@ -98,6 +100,7 @@ class FilesController extends Controller
 
     public function listAction($directory = null)
     {
+
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
