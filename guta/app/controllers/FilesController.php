@@ -6,12 +6,7 @@ class FilesController extends Controller
 {
     public function initialize()
     {
-        \Phalcon\Tag::setTitle('MyDropbox');
-    }
-
-    public function indexAction()
-    {
-       $this->assets
+        $this->assets
             ->addCss("css/bootstrap.min.css")
             ->addCss("css/styles.css")
             ->addCss("css/dropzone.css");
@@ -21,16 +16,29 @@ class FilesController extends Controller
             ->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
             ->addJs("js/contextMenu.js");
+
+        \Phalcon\Tag::setTitle('MyDropbox');
+
+        $ds = DIRECTORY_SEPARATOR;  // '/'
+        $storeFolder = 'uploadedFiles';   // the folder where we store all the files
+        $user = $this->session->get('auth')['idUser'];
+        $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+
+        $this->persistent->userPath = $userPath;
+    }
+
+    public function indexAction()
+    {
     }
 
     public function uploadAction()
     {
         $ds          = DIRECTORY_SEPARATOR;  // '/'
- 
+
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
          
-        $user = 'tomtom'; //the user who signed in (tomtom currently used as a placeholder)
-
+        $user = $this->session->get('auth')['idUser'];; //the user who signed in
+        
         if (!empty($_FILES)) {
              
             $tempFile = $_FILES['file']['tmp_name'];
@@ -46,9 +54,10 @@ class FilesController extends Controller
 
     public function downloadAction($fileName)
     {
+        $fileName = str_replace('¤', '\\', $fileName);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
-        $user = "tomtom"; 
+        $user = $this->session->get('auth')['idUser'];; 
         //Force the download of a file
         $file=".." . $ds . "app" . $ds . $storeFolder . $ds . $user . $ds . $fileName;
         if(file_exists(realpath($file)))
@@ -61,10 +70,111 @@ class FilesController extends Controller
             header('Pragma: public');
             header('Content-Length: ' . filesize($file));
             readfile($file);
+            exit;
         }
         else
         {
             echo "File not found";
         }
     }
+
+    public function getDirSize($path)
+    {
+        $size = 0;
+
+        $files = scandir($path);
+
+        foreach ($files as $file) {
+            if(is_dir($path . "/" . $file)) {
+                $newPath = $path . "/" . $file;
+                if($file != ".." && $file != ".")
+                    $size += $this->getDirSize($newPath);
+            } else {
+                $size += filesize($path . "/" . $file);
+            }
+        }
+
+        return $size;
+    }
+
+
+    public function listAction($directory = null)
+    {
+
+        $directoryArray = array();
+        $dirArray = array();
+        $fileArray = array();
+
+
+        // Get the folder path  with userPath as the folder root for the user.
+        $pos = strpos($_SERVER['REQUEST_URI'],$directory);
+        if($pos)
+            $directory = substr($_SERVER['REQUEST_URI'], $pos);
+        
+
+        $pathDirectory = $this->persistent->userPath . $directory;
+        $files = scandir($pathDirectory);
+
+        $directory = rtrim(ltrim($directory, '/'), '/');
+
+        foreach ($files as $file) {            
+            if($file != '.'){
+                if (is_dir($pathDirectory . "/" . $file)) {
+                    if(!(strlen($directory) == 0 && $file == "..")) {
+                        if($file != ".." && $file != ".")
+                            $size = $this->getDirSize($pathDirectory . "/" . $file);
+                        else
+                            $size = null;
+                        array_push($dirArray, array('name' => $file, 'size' => $size));
+                    }
+                } else {
+                    $size = filesize($pathDirectory . "/" . $file);
+                    $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
+                    array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
+                }
+            }
+        }
+
+        sort($dirArray);
+        sort($fileArray);
+
+        if($directory != null)
+            $directory = "/" . $directory;
+        $this->view->currentDir = $directory;
+        $this->view->directories = $dirArray;
+        $this->view->files = $fileArray;
+    }
+
+    public function viewAction($directory = null) {
+        
+    }
+
+    /* Creation of a new folder by the user. */
+    public function createFolderAction($folderpath = null) {
+
+        if ($this->request->isPost()) {
+
+            // Get the name of the new folder.
+            $foldername = $this->request->getPost("foldername");
+
+            // Get the path where the new folder will be created.
+            $pos = strpos($_SERVER['REQUEST_URI'],$folderpath);
+            if($pos)
+                $folderpath = substr($_SERVER['REQUEST_URI'], $pos);
+
+            // Check for forbidden characters in the folder name.
+            if (preg_match('/[\/:?*<>"|]/', $foldername)) {
+                $this->flash->error('Les caractères "/", "\", ":", "?", "*", "<", ">", """, "|" sont interdits.');
+            } else {
+                mkdir($this->persistent->userPath . "/" . $folderpath . "/" . $foldername);
+                $this->flash->success("Le dossier ".$foldername." a été correctement créé.");
+            }
+
+            return $this->dispatcher->forward(array(
+                'controller' => 'files',
+                'action' => 'list'
+            ));
+        }
+    }
+
 }

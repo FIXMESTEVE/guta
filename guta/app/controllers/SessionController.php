@@ -60,10 +60,13 @@ class SessionController extends ControllerBase
                 $this->flash->success('Bienvenue ' . $user->login);
 
                 //REDIRECTION APRES SUCCES DE CONNEXION VERS LA PAGE DES FICHIERS: ACTUELLEMENT VERS LA PAGE D'INSCRIPTION
-                return $this->dispatcher->forward(array(
-                    'controller' => 'User',
-                    'action' => 'index'
-                ));
+                $ds = DIRECTORY_SEPARATOR;  // '/'
+                $storeFolder = 'uploadedFiles';   // the folder where we store all the files
+                $user = $user->idUser;
+                $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+                
+                $this->response->redirect("files/list/");
+                return;
             }
         }
         /*if ($this->request->isPost()) {
@@ -105,9 +108,11 @@ class SessionController extends ControllerBase
     public function endAction(){
         $this->session->destroy();
 
-        return $this->dispatcher->forward(array(
+        $this->response->redirect("index");
+        /*$this->dispatcher->forward(array(
             'controller' => 'index',
             'action' => 'index'
-        ));
+        ));*/
+        return;
     }
 }

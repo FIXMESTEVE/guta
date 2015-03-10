@@ -3,6 +3,18 @@
     <head>
         {{ get_title()}}
         {{ assets.outputCss() }}
+        {{ assets.outputJs() }}
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('[data-toggle="popover"]').popover({ 
+                    html : true, 
+                    content: function() {
+                        return $('#popover_content_wrapper').html();
+                    }
+                });   
+            });
+        </script>
+
     </head>
     <body>
         <div class="container-full">
@@ -15,7 +27,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
+                    <?php if($this->session->get('auth')) { ?>
+                    {{ link_to("files/list/", "MyDropbox", "class": "navbar-brand") }}
+                    <?php } else { ?>
                     {{ link_to("index", "MyDropbox", "class": "navbar-brand") }}
+                    <?php } ?>
                 </div>
                 <?php echo $this->elements->getMenu(); ?>
             </nav>
