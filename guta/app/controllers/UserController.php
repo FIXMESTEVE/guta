@@ -135,13 +135,33 @@ class UserController extends ControllerBase
             ));
         } else {
 
+
             $ds          = DIRECTORY_SEPARATOR;  // '/'
             $storeFolder = 'uploadedFiles';   // the folder where we store all the files
             $user = $User->idUser;
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
-            mkdir($targetPath);
-            exec("git init " . $targetPath);
 
+            $svnrep = dirname( __FILE__ ) . $ds . '..' . $ds . "svnrep";
+            if(!file_exists($svnrep))
+                mkdir($svnrep);
+            if(!file_exists(dirname( __FILE__ ) . $ds . '..' . $ds . "svnrep".$ds.$user)){
+                //create svn repo
+                chdir($svnrep);
+                exec("svnadmin create ".$user);
+                chdir("..");
+            }
+
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+            //mkdir($targetPath);
+            //chdir($targetPath);
+            exec("svn checkout --force file:///".$svnrep.$ds.$user." ".$targetPath);
+
+            
+
+            //exec("git init " . $targetPath, $output, $result);
+            
+            //exec("git config user.name \"someone\"");
+            //exec("git config user.email \"someone@someplace.com\"");
+            //file_put_contents($targetPath.$ds."resultCreate", implode("\r\n", $output), FILE_APPEND);
             $this->flash->success("L'inscription s'est déroulée correctement.");
 
             return $this->dispatcher->forward(array(

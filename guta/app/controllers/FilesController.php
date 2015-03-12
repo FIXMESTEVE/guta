@@ -40,7 +40,7 @@ class FilesController extends Controller
         $user = $this->session->get('auth')['idUser'];; //the user who signed in
         
         if (!empty($_FILES)) {
-             
+        
             $tempFile = $_FILES['file']['tmp_name'];
               
             $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
@@ -48,7 +48,18 @@ class FilesController extends Controller
             $targetFile =  $targetPath. $_FILES['file']['name'];
          
             move_uploaded_file($tempFile,$targetFile);
-             
+
+            chdir($targetPath);
+            exec("svn add ".$targetFile);
+            exec("svn commit -m \"uploaded file\"");
+            exec("svn up --accept mine-full");
+
+            /*echo "cd ".$targetPath." && git -c user.email=tom.solacroup@gmail.com -c user.name=apache add -f \"".$targetFile."\"";
+            exec("cd ".$targetPath." && git -c user.email=tom.solacroup@gmail.com -c user.name=apache add -f \"".$targetFile."\"",$output,$result);
+            file_put_contents($targetPath.$ds."resultAdd", implode("\r\n", $output), FILE_APPEND);
+            exec("cd ".$targetPath." && git -c user.email=tom.solacroup@gmail.com -c user.name=apache commit -m \"uploaded ".$targetFile."\"", $output, $result);
+            file_put_contents($targetPath.$ds."result", implode("\r\n", $output), FILE_APPEND);
+            */
         }
     }
 

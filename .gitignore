@@ -3,3 +3,4 @@
 guta/app/config/config.php
 guta/app/config/config.php
 guta/app/uploadedFiles/*
+guta/app/svnrep/*
