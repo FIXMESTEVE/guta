@@ -31,7 +31,7 @@ class FilesController extends Controller
     {
     }
 
-    public function uploadAction()
+    public function uploadAction($directory = null)
     {
         $ds          = DIRECTORY_SEPARATOR;  // '/'
 
@@ -43,14 +43,14 @@ class FilesController extends Controller
         
             $tempFile = $_FILES['file']['tmp_name'];
               
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . $directory . $ds;
              
             $targetFile =  $targetPath. $_FILES['file']['name'];
          
             move_uploaded_file($tempFile,$targetFile);
 
-            chdir($targetPath);
-            exec("svn add ".$targetFile);
+            chdir($targetPath); 
+            exec("svn add \"".$targetFile."\"");
             exec("svn commit -m \"uploaded file\"");
             exec("svn up --accept mine-full");
 
@@ -180,6 +180,8 @@ class FilesController extends Controller
                 mkdir($this->persistent->userPath . "/" . $folderpath . "/" . $foldername);
                 $this->flash->success("Le dossier ".$foldername." a été correctement créé.");
             }
+
+            exec("svn add \"".$this->persistent->userPath . "/" . $folderpath . "/" . $foldername."\"");
 
             return $this->dispatcher->forward(array(
                 'controller' => 'files',

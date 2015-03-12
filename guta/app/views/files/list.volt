@@ -2,6 +2,7 @@
 
 <h1 class="text-center">Mes fichiers</h1>
 <button href="#myModal" role="button"  data-toggle="modal">Nouveau dossier</button>
+<button href="#myUploadModal" role="button"  data-toggle="modal">Uploader des fichiers</button>
 
 <!-- Modal creation folder -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -23,6 +24,23 @@
                     {{ submit_button('Valider', "class":"btn btn-primary") }}
                 </div>
             {{ end_form() }}
+        </div>
+    </div>
+</div>
+
+<!-- Modal creation folder -->
+<div class="modal fade" id="myUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    	<div class="modal-content">
+       <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myUploadLabel">Upload</h4>
+        </div>
+        
+        	<div class="modal-body">
+				{{ form('files/upload' ~ currentDir, "class": "dropzone") }}
+				{{end_form()}}
+            </div>
         </div>
     </div>
 </div>
