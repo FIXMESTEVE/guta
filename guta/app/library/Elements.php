@@ -7,24 +7,42 @@ use Phalcon\Mvc\User\Component;
  */
 class Elements extends Component
 {
-    private $_headerMenu = array(
-        'navbar-left' => array(
-            'files' => array(
-                'caption' => 'Upload',
-                'action' => 'index'
-            ),
-            'share' => array(
-                'caption' => 'Share',
-                'action' => 'index'
-            ),
-            'addDirectory' => array(
-                'caption' => 'Nouveau dossier',
-                'action' => 'index'
-            )
-        ),
-        
-    );
+    private function isActive($targetedController, $targetedAction, $currentController, $currentAction){
+        if($targetedController == $currentController)
+            if($targetedAction == $currentAction)
+                return true;
+        return false;
+    }
+
+    private function manageActiveLI($targetedController, $targetedAction, $currentController, $currentAction){
+        if($this->isActive($targetedController, $targetedAction, $currentController, $currentAction))
+            echo '<li class="active">';
+        else
+            echo '<li>';
+    }
+
+    private function addNotification($id){
+        $phql = "SELECT Notification.* FROM Notification INNER JOIN Sharedfile ON Sharedfile.idShared_File = Notification.id_SharedFile WHERE Sharedfile.id_user = " . $id . " OR Sharedfile.id_owner = " . $id;
+        $notifs = $this->modelsManager->executeQuery($phql);
     
+        $badge = 0;
+        $content= '<div id="popover_content_wrapper" style="display: none"><div class="list-group">';
+
+        foreach ($notifs as $notif) {
+            if($notif->unread){
+                $badge ++;
+                $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item active'));
+              
+            }else
+             $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item'));
+        }
+        $content.="</div></div>";
+
+        echo $content;
+        echo '<li data-container="body" data-toggle="popover" data-placement="bottom"><a style="cursor:pointer;">
+        <span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications <span class="badge">'.$badge.'</span></a></li>';
+    }
+
      /* Builds header menu with left and right items
      *
      * @return string
@@ -32,66 +50,60 @@ class Elements extends Component
     public function getMenu()
     {
         $auth = $this->session->get('auth');
-        if ($auth) {
-            $this->_headerMenu['navbar-right']['files'] = array(
-                'caption' => 'Recherche',
-                'action' => 'search'
-            );
-            $this->_headerMenu['navbar-right']['user'] = array(
-                'caption' => $auth['login'],
-                'action' => 'edit',
-                'params' => $auth['idUser']
-            );
-            $this->_headerMenu['navbar-right']['session'] = array(
-                'caption' => 'Déconnection',
-                'action' => 'end'
-            );
 
-            $controllerName = $this->view->getControllerName();
-            foreach ($this->_headerMenu as $position => $menu) {
-                echo '<div class="nav-collapse">';
-                echo '<ul class="nav navbar-nav ', $position, '">';
+        if (!$auth) return;
 
-                foreach ($menu as $controller => $option) {
-                    if ($controllerName == $controller) {
-                        echo '<li class="active">';
-                    } else {
-                        echo '<li>';
-                    }
 
-                    if(isset($option['params']))
-                        echo $this->tag->linkTo($controller . '/' . $option['action'] . '/' . $option['params'], $option['caption']);
-                    else
-                        echo $this->tag->linkTo($controller . '/' . $option['action'], $option['caption']);
-                    echo '</li>';
-                }
-                
-                    echo '</ul>';
-                    echo '</div>';
-            }
+        $controllerName = $this->view->getControllerName();
+        $actionName = $this->view->getActionName();
 
-            $phql = "SELECT Notification.* FROM Notification INNER JOIN Sharedfile ON Sharedfile.idShared_File = Notification.id_SharedFile WHERE Sharedfile.id_user = " . $auth['idUser'] . " OR Sharedfile.id_owner = " . $auth['idUser'];
-            $notifs = $this->modelsManager->executeQuery($phql);
-        
-            $badge = 0;
-            $content= '<div id="popover_content_wrapper" style="display: none"><div class="list-group">';
+        //Menu partie gauche
+        echo '<div class="collapse navbar-collapse" id="navbarCollapse">';
+        echo '<ul class="nav navbar-nav">';
 
-            foreach ($notifs as $notif) {
-                if($notif->unread){
-                    $badge ++;
-                    $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item active'));
-                  
-                }else
-                 $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item'));
-            }
-            $content.="</div></div>";
+        //Mes fichiers
+        $this->manageActiveLI('files', 'list', $controllerName, $actionName);
+        echo $this->tag->linkTo('files' . '/' . 'list', 'Mes fichiers');
+        echo '</li>';
+    
+        //Transférer
+        $this->manageActiveLI('files', 'index', $controllerName, $actionName);
+        echo $this->tag->linkTo('files' . '/' . 'index', 'Transférer');
+        echo '</li>';
 
-            echo $content;
-            echo '<button type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="bottom" 
-                ><span class="glyphicon glyphicon-bell" aria-hidden="true"></span> Notifications <span class="badge">'.$badge.'</span></button>';
-        } else {
+        //Partager
+        $this->manageActiveLI('share', 'index', $controllerName, $actionName);
+        echo $this->tag->linkTo('share' . '/' . 'index', 'Partager');
+        echo '</li>';
 
-        }
+        echo '</ul>';
+
+        //Recherche
+        echo $this->tag->form(array("files/search", "method" => "post", "class" =>"navbar-form navbar-left", "role" => "search"));
+        echo '<div class="form-group">';
+        echo $this->tag->textfield(array("pattern", "class" => "form-control", "id" => "inputSearch", "placeholder" =>"Recherche"));
+        echo '</div>';
+        echo $this->tag->submitButton(array("Go!", "class" => "btn btn-default"));
+        echo $this->tag->endForm();
+
+
+        //Menu partie droite
+        echo '<ul class="nav navbar-nav navbar-right">';
+
+        $this->addNotification($auth['idUser']);
+
+        //User
+        $this->manageActiveLI('user', 'edit', $controllerName, $actionName);
+        echo $this->tag->linkTo('user' . '/' . 'edit'. '/' . $auth['idUser'], $auth['login']);
+        echo '</li>';
+
+        //Déconnection
+        echo '<li>';
+        echo $this->tag->linkTo('session' . '/' . 'end', 'Déconnection');
+        echo '</li>';
+
+        echo '</ul>';
+        echo '</div>';
     }
 }
 

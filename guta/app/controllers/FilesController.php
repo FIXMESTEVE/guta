@@ -8,7 +8,7 @@ class FilesController extends Controller
     {
         $this->assets
             ->addCss("css/bootstrap.min.css")
-            ->addCss("css/styles.css")
+            ->addCss("css/design.css")
             ->addCss("css/dropzone.css");
 
         $this->assets
@@ -31,7 +31,7 @@ class FilesController extends Controller
     {
     }
 
-    public function uploadAction()
+    public function uploadAction($directory = null)
     {
         $ds          = DIRECTORY_SEPARATOR;  // '/'
 
@@ -40,17 +40,17 @@ class FilesController extends Controller
         $user = $this->session->get('auth')['idUser'];; //the user who signed in
         
         if (!empty($_FILES)) {
-        
+             
             $tempFile = $_FILES['file']['tmp_name'];
               
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
-             
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . $directory . $ds;
+            
             $targetFile =  $targetPath. $_FILES['file']['name'];
          
             move_uploaded_file($tempFile,$targetFile);
-
-            chdir($targetPath);
-            exec("svn add ".$targetFile);
+            
+            chdir($targetPath); 
+            exec("svn add \"".$targetFile."\"");
             exec("svn commit -m \"uploaded file\"");
             exec("svn up --accept mine-full");
 
@@ -112,17 +112,14 @@ class FilesController extends Controller
     public function listAction($directory = null)
     {
 
-        $this->searchAction();
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
 
-
         // Get the folder path  with userPath as the folder root for the user.
         $pos = strpos($_SERVER['REQUEST_URI'],$directory);
         if($pos)
-            $directory = substr($_SERVER['REQUEST_URI'], $pos);
-        
+            $directory = substr($_SERVER['REQUEST_URI'], $pos);  
 
         $pathDirectory = $this->persistent->userPath . $directory;
         $files = scandir($pathDirectory);
@@ -162,7 +159,12 @@ class FilesController extends Controller
         
     }
 
-    /* Creation of a new folder by the user. */
+
+    /**
+     * Creation of a new folder by the user.
+     *
+     * @param string $folderpath
+     */
     public function createFolderAction($folderpath = null) {
 
         if ($this->request->isPost()) {
@@ -180,8 +182,12 @@ class FilesController extends Controller
                 $this->flash->error('Les caractères "/", "\", ":", "?", "*", "<", ">", """, "|" sont interdits.');
             } else {
                 mkdir($this->persistent->userPath . "/" . $folderpath . "/" . $foldername);
-                $this->flash->success("Le dossier ".$foldername." a été correctement créé.");
+                echo '<div class="alert alert-success" role="alert">';
+                $this->flash->success("Le dossier ".$foldername." a été correctement créé");
+                echo "</div>";
             }
+
+            exec("svn add \"".$this->persistent->userPath . "/" . $folderpath . "/" . $foldername."\"");
 
             return $this->dispatcher->forward(array(
                 'controller' => 'files',
@@ -189,6 +195,7 @@ class FilesController extends Controller
             ));
         }
     }
+
 
     /**
      * Search a file or a folder.
@@ -240,6 +247,5 @@ class FilesController extends Controller
         
         
     }
-
 
 }

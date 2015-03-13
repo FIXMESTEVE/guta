@@ -179,7 +179,8 @@
   background: white;
   padding: 20px 20px; }
   .dropzone.dz-clickable {
-    cursor: pointer; }
+    cursor: pointer; 
+    width: 80%;}
     .dropzone.dz-clickable * {
       cursor: default; }
     .dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * {
@@ -192,7 +193,8 @@
       opacity: 0.5; }
   .dropzone .dz-message {
     text-align: center;
-    margin: 2em 0; }
+    margin: 2em 0; 
+    color: #000000;}
   .dropzone .dz-preview {
     position: relative;
     display: inline-block;
