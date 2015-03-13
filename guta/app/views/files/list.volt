@@ -1,9 +1,11 @@
 {{ content() }}
 
 <h1 class="text-center">Mes fichiers</h1>
-<button href="#myModal" role="button"  data-toggle="modal">Nouveau dossier</button>
+<button href="#myModal" role="button" class="btn btn-primary pull-right" style="margin-right: 10%;" data-toggle="modal">Nouveau dossier</button>
 <button href="#myUploadModal" role="button"  data-toggle="modal">Uploader des fichiers</button>
 
+
+<div style=" clear: both;"></div>
 <!-- Modal creation folder -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -16,12 +18,12 @@
                 <div class="modal-body">
                     <div class="form-group ">
                         <label> Nom du dossier </label>
+                        <br><br>
                         {{ text_field("foldername", 'class': 'form-control input-lg', "id": "inputUsername","placeholder":"Nom de dossier") }}
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                    {{ submit_button('Valider', "class":"btn btn-primary") }}
+                    {{ submit_button('Valider', "class":"btn btn-primary center-block") }}
                 </div>
             {{ end_form() }}
         </div>
@@ -46,30 +48,34 @@
 </div>
 
 
-<table class="table table-hover" style="width:80%" data-sortable>
-	<thead>
-		<tr>
-			<th>Nom</th>
-			<th>Taille</th>
-			<th>Modification</th>
-		</tr>
-	</thead>
-	<tbody>
-		
-			{% for dir in directories %}
-				<tr>
-					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
-					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
-					<td></td>
-				</tr>
-			{% endfor %}
-			{% for file in files %}
-				<tr class="downloadable">
-					<td><span class="glyphicon glyphicon-file"> {{ link_to("files/view" ~ currentDir  ~ "/" ~ file['name'], file['name']) }}</span></td>
-					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
-					<td>{{ file['modifyDate'] }}</td>
-				</tr>
-			{% endfor %}
-		
-	</tbody>
-</table>
+<!--<table class="table table-hover" style="width:80%" data-sortable>-->
+<div class="table-responsive">
+    <table class="table table-striped table-hover" style="width:80%" data-sortable>
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Taille</th>
+				<th>Modification</th>
+			</tr>
+		</thead>
+		<tbody>
+				{% for dir in directories %}
+					<tr>
+						<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
+						<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
+						<td></td>
+					</tr>
+				{% endfor %}
+				{% for file in files %}
+					<tr class="downloadable">
+						<td><span class="glyphicon glyphicon-file"> {{ link_to("files/view" ~ currentDir  ~ "/" ~ file['name'], file['name']) }}</span></td>
+						<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
+						<td>{{ file['modifyDate'] }}</td>
+					</tr>
+				{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+
+   
