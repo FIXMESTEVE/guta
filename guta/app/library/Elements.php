@@ -33,6 +33,10 @@ class Elements extends Component
     {
         $auth = $this->session->get('auth');
         if ($auth) {
+            $this->_headerMenu['navbar-right']['files'] = array(
+                'caption' => 'Recherche',
+                'action' => 'search'
+            );
             $this->_headerMenu['navbar-right']['user'] = array(
                 'caption' => $auth['login'],
                 'action' => 'edit',

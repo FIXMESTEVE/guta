@@ -112,6 +112,7 @@ class FilesController extends Controller
     public function listAction($directory = null)
     {
 
+        $this->searchAction();
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
@@ -151,6 +152,7 @@ class FilesController extends Controller
 
         if($directory != null)
             $directory = "/" . $directory;
+        
         $this->view->currentDir = $directory;
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
@@ -187,5 +189,57 @@ class FilesController extends Controller
             ));
         }
     }
+
+    /**
+     * Search a file or a folder.
+     *
+     * @param string $pattern
+     */
+    public function searchAction($pattern='*') {
+        
+        if ($this->request->isPost())
+            $pattern = $this->request->getPost('pattern');
+
+        // Pattern matching through the folders tree.
+        $path = $this->persistent->userPath;
+        $paths = array( $path );
+        $results = array();
+        while( count( $paths ) > 0 )
+        {
+            $path = array_shift( $paths );
+            $paths = array_merge( $paths, glob( $path.'*', GLOB_MARK | GLOB_ONLYDIR | GLOB_NOSORT ) );
+            $results = array_merge( $results, glob( $path."*$pattern*", GLOB_NOSORT ) );
+        }
+
+        if( count($results) == 0 ) 
+        {
+            $this->flash->error("Aucun résultat trouvé.");
+        }
+
+        // Set the variables for the view.
+        $dirArray = array();
+        $fileArray = array();
+        foreach ( $results as $file )
+        {
+            $name = substr(strrchr($file, '\\'), 1);
+            $localPath = explode($this->persistent->userPath, $file);
+            $localPath = $localPath[1];
+            
+            if( is_dir($file) ){
+                $size = $this->getDirSize($file);
+                array_push($dirArray, array('name' => $name, 'size' => $size, 'path' => $localPath));
+            } else {
+                $size = filesize($file);
+                $modifyDate = date ("d/m/Y H:i:s.", filemtime($file));
+                array_push($fileArray, array('name' => $name, 'size' => $size, 'modifyDate' => $modifyDate, 'path' => $localPath));
+            }
+        }
+
+        $this->view->files = $fileArray;
+        $this->view->directories = $dirArray;
+        
+        
+    }
+
 
 }
