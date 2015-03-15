@@ -53,51 +53,67 @@ class Elements extends Component
 
         if (!$auth) return;
 
-
         $controllerName = $this->view->getControllerName();
         $actionName = $this->view->getActionName();
 
-        //Menu partie gauche
+        // MENU PARTIE GAUCHE
         echo '<div class="collapse navbar-collapse" id="navbarCollapse">';
         echo '<ul class="nav navbar-nav">';
 
-        //Mes fichiers
+        // Mes fichiers
         $this->manageActiveLI('files', 'list', $controllerName, $actionName);
         echo $this->tag->linkTo('files' . '/' . 'list', 'Mes fichiers');
         echo '</li>';
     
-        //Transférer
-        $this->manageActiveLI('files', 'index', $controllerName, $actionName);
-        echo $this->tag->linkTo('files' . '/' . 'index', 'Transférer');
-        echo '</li>';
-
-        //Partager
-        $this->manageActiveLI('share', 'index', $controllerName, $actionName);
+        // Partager
+        /*$this->manageActiveLI('share', 'index', $controllerName, $actionName);
         echo $this->tag->linkTo('share' . '/' . 'index', 'Partager');
-        echo '</li>';
+        echo '</li>';*/
 
-        echo '</ul>';
+        // Transférer
+        /*$this->manageActiveLI('files', 'index', $controllerName, $actionName);
+        echo $this->tag->linkTo('files' . '/' . 'index', 'Transférer');
+        echo '</li>';*/
+        /*echo '<form class="navbar-form navbar-left" role="form">';
+        echo '<button href="#myUploadModal" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-cloud-upload" style="color:blue;" aria-hidden="true"></span></button>';
+        echo '</form>';
 
-        //Recherche
-        echo $this->tag->form(array("files/search", "method" => "post", "class" =>"navbar-form navbar-left", "role" => "search"));
+        // Nouveau dossier
+        echo '<form class="navbar-form navbar-left" role="form">';
+        echo '<button href="#myModal" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-folder-open" style="color:blue;" aria-hidden="true"></span></button>';
+        echo '</form>';*/
+
+         // Recherche
+        /*echo $this->tag->form(array("files/search", "method" => "post", "class" =>"navbar-form navbar-left", "role" => "search"));
         echo '<div class="form-group">';
         echo $this->tag->textfield(array("pattern", "class" => "form-control", "id" => "inputSearch", "placeholder" =>"Recherche"));
         echo '</div>';
         echo $this->tag->submitButton(array("Go!", "class" => "btn btn-default"));
-        echo $this->tag->endForm();
+        echo $this->tag->endForm();*/
+
+        echo '<form class="navbar-form navbar-left" role="form">';
+        echo '<div class="btn-group" role="group" aria-label="...">'.
+             '<button href="#" title="Partager" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-share" style="color:blue;" aria-hidden="true"></span></button>'.
+             '<button href="#myUploadModal" title="Transférer" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-cloud-upload" style="color:blue;" aria-hidden="true"></span></button>'.
+             '<button href="#myModal" title="Nouveau dossier" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-folder-open" style="color:blue;" aria-hidden="true"></span></button>'.
+            '</div>';
+        echo '</form>';
+
+        echo '</ul>';
 
 
-        //Menu partie droite
+        // MENU PARTIE DROITE
         echo '<ul class="nav navbar-nav navbar-right">';
 
+        // Notifications
         $this->addNotification($auth['idUser']);
 
-        //User
+        // User
         $this->manageActiveLI('user', 'edit', $controllerName, $actionName);
         echo $this->tag->linkTo('user' . '/' . 'edit'. '/' . $auth['idUser'], $auth['login']);
         echo '</li>';
 
-        //Déconnection
+        // Déconnection
         echo '<li>';
         echo $this->tag->linkTo('session' . '/' . 'end', 'Déconnection');
         echo '</li>';
