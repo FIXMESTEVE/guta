@@ -9,7 +9,7 @@
 <div class="form-group">
 {{ text_field("pattern", 'class': 'form-control', "id": "inputSearch","placeholder":"Recherche") }}
 </div>
-{{ submit_button('Valider!', "class":"btn btn-default") }}
+{{ submit_button('Valider', "class":"btn btn-default") }}
 {{ end_form() }}
 <br><br>
 
