@@ -43,7 +43,7 @@ class FilesController extends Controller
              
             $tempFile = $_FILES['file']['tmp_name'];
               
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . $directory . $ds;
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . urldecode($directory) . $ds;
             
             $targetFile =  $targetPath. $_FILES['file']['name'];
          
@@ -121,7 +121,7 @@ class FilesController extends Controller
         if($pos)
             $directory = substr($_SERVER['REQUEST_URI'], $pos);  
 
-        $pathDirectory = $this->persistent->userPath . $directory;
+        $pathDirectory = $this->persistent->userPath . urldecode($directory);
         $files = scandir($pathDirectory);
 
         $directory = rtrim(ltrim($directory, '/'), '/');
