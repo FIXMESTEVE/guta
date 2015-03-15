@@ -49,7 +49,7 @@
 	        </div>
         
         	<div class="modal-body">
-				{{ form('files/upload' ~ currentDir, "class": "dropzone") }}
+				{{ form("files/upload" ~ currentDir, 'method': 'post', "class": "dropzone") }}
 				{{end_form()}}
             </div>
         </div>

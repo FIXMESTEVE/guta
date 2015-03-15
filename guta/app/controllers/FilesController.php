@@ -38,7 +38,12 @@ class FilesController extends Controller
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
          
         $user = $this->session->get('auth')['idUser'];; //the user who signed in
-        
+       
+        // Get the folder path  with userPath as the folder root for the user.
+        $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
+        if($pos)
+            $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
+
         if (!empty($_FILES)) {
              
             $tempFile = $_FILES['file']['tmp_name'];
@@ -111,21 +116,19 @@ class FilesController extends Controller
 
     public function listAction($directory = null)
     {
-
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
 
         // Get the folder path  with userPath as the folder root for the user.
-        $pos = strpos($_SERVER['REQUEST_URI'],$directory);
+        $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
         if($pos)
-            $directory = substr($_SERVER['REQUEST_URI'], $pos);  
-
-        $pathDirectory = $this->persistent->userPath . urldecode($directory);
+            $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
+        
+        $pathDirectory = urldecode($this->persistent->userPath . $directory);
         $files = scandir($pathDirectory);
 
         $directory = rtrim(ltrim($directory, '/'), '/');
-
         foreach ($files as $file) {            
             if($file != '.'){
                 if (is_dir($pathDirectory . "/" . $file)) {
@@ -151,6 +154,9 @@ class FilesController extends Controller
             $directory = "/" . $directory;
         
         $this->view->currentDir = $directory;
+        error_log("currentDir ".$this->view->currentDir);
+        
+
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
     }
@@ -170,12 +176,12 @@ class FilesController extends Controller
         if ($this->request->isPost()) {
 
             // Get the name of the new folder.
-            $foldername = $this->request->getPost("foldername");
+            $foldername = urldecode($this->request->getPost("foldername"));
 
             // Get the path where the new folder will be created.
-            $pos = strpos($_SERVER['REQUEST_URI'],$folderpath);
+            $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$folderpath);
             if($pos)
-                $folderpath = substr($_SERVER['REQUEST_URI'], $pos);
+                $folderpath = urldecode(substr($_SERVER['REQUEST_URI'], $pos));
 
             // Check for forbidden characters in the folder name.
             if (preg_match('/[\/:?*<>"|]/', $foldername)) {
@@ -188,7 +194,7 @@ class FilesController extends Controller
             }
 
             exec("svn add \"".$this->persistent->userPath . "/" . $folderpath . "/" . $foldername."\"");
-
+            exec("svn up --accept mine-full");
             return $this->dispatcher->forward(array(
                 'controller' => 'files',
                 'action' => 'list'
