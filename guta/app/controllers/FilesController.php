@@ -8,7 +8,7 @@ class FilesController extends Controller
     {
         $this->assets
             ->addCss("css/bootstrap.min.css")
-            ->addCss("css/styles.css")
+            ->addCss("css/design.css")
             ->addCss("css/dropzone.css");
 
         $this->assets
@@ -31,24 +31,49 @@ class FilesController extends Controller
     {
     }
 
-    public function uploadAction()
+    public function uploadAction($directory = null)
     {
         $ds          = DIRECTORY_SEPARATOR;  // '/'
 
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
          
         $user = $this->session->get('auth')['idUser'];; //the user who signed in
-        
+       
+        // Get the folder path  with userPath as the folder root for the user.
+        $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
+        if($pos)
+            $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
+
         if (!empty($_FILES)) {
              
             $tempFile = $_FILES['file']['tmp_name'];
               
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
-             
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . urldecode($directory) . $ds;
+            
             $targetFile =  $targetPath. $_FILES['file']['name'];
          
             move_uploaded_file($tempFile,$targetFile);
-             
+            
+            chdir($targetPath); 
+            exec("svn add \"".$targetFile."\"");
+            exec("svn commit -m \"uploaded file\"");
+            exec("svn up --accept mine-full");
+        }
+    }
+
+    public function deleteAction($fileName){
+        $fileName = str_replace('¤', '\\', $fileName);
+        $ds = DIRECTORY_SEPARATOR;
+        $storeFolder = "uploadedFiles"; //same as upload
+        $user = $this->session->get('auth')['idUser'];
+        $folder=".." . $ds . "app" . $ds . $storeFolder . $ds . $user;
+        error_log(getcwd());
+        if(file_exists(realpath($folder.$ds.$fileName)))
+        {   
+            chdir($folder);
+            exec("svn rm \"".$fileName."\"");
+            exec("svn commit -m \"removed file\"");
+            exec("svn up --accept mine-full");
         }
     }
 
@@ -100,23 +125,19 @@ class FilesController extends Controller
 
     public function listAction($directory = null)
     {
-
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
 
-
         // Get the folder path  with userPath as the folder root for the user.
-        $pos = strpos($_SERVER['REQUEST_URI'],$directory);
+        $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
         if($pos)
-            $directory = substr($_SERVER['REQUEST_URI'], $pos);
+            $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
         
-
-        $pathDirectory = $this->persistent->userPath . $directory;
+        $pathDirectory = urldecode($this->persistent->userPath . $directory);
         $files = scandir($pathDirectory);
 
         $directory = rtrim(ltrim($directory, '/'), '/');
-
         foreach ($files as $file) {            
             if($file != '.'){
                 if (is_dir($pathDirectory . "/" . $file)) {
@@ -140,7 +161,11 @@ class FilesController extends Controller
 
         if($directory != null)
             $directory = "/" . $directory;
+        
         $this->view->currentDir = $directory;
+        error_log("currentDir ".$this->view->currentDir);
+        
+
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
     }
@@ -149,32 +174,112 @@ class FilesController extends Controller
         
     }
 
-    /* Creation of a new folder by the user. */
+
+    /**
+     * Creation of a new folder by the user.
+     *
+     * @param string $folderpath
+     */
     public function createFolderAction($folderpath = null) {
 
         if ($this->request->isPost()) {
 
             // Get the name of the new folder.
-            $foldername = $this->request->getPost("foldername");
+            $foldername = urldecode($this->request->getPost("foldername"));
+            if ($foldername == null) {
+                echo '<div class="alert alert-danger" role="alert">';
+                $this->flash->error("Le nom d'un dossier ne peut être vide.");
+                echo "</div>";
+                return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
+            }
+            // 
+            if (file_exists($this->persistent->userPath . "/" . $folderpath . '/'.$foldername)) {
+                echo '<div class="alert alert-danger" role="alert">';
+                $this->flash->error("Ce nom existe déja.");
+                echo "</div>";
+                return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
+            }
 
             // Get the path where the new folder will be created.
-            $pos = strpos($_SERVER['REQUEST_URI'],$folderpath);
+            $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$folderpath);
             if($pos)
-                $folderpath = substr($_SERVER['REQUEST_URI'], $pos);
+                $folderpath = urldecode(substr($_SERVER['REQUEST_URI'], $pos));
 
             // Check for forbidden characters in the folder name.
             if (preg_match('/[\/:?*<>"|]/', $foldername)) {
                 $this->flash->error('Les caractères "/", "\", ":", "?", "*", "<", ">", """, "|" sont interdits.');
             } else {
                 mkdir($this->persistent->userPath . "/" . $folderpath . "/" . $foldername);
-                $this->flash->success("Le dossier ".$foldername." a été correctement créé.");
+                echo '<div class="alert alert-success" role="alert">';
+                $this->flash->success("Le dossier ".$foldername." a été correctement créé");
+                echo "</div>";
             }
 
+            exec("svn add \"".$this->persistent->userPath . "/" . $folderpath . "/" . $foldername."\"");
+            exec("svn up --accept mine-full");
             return $this->dispatcher->forward(array(
                 'controller' => 'files',
                 'action' => 'list'
             ));
         }
+    }
+
+
+    /**
+     * Search a file or a folder.
+     *
+     * @param string $pattern
+     */
+    public function searchAction($pattern='*') {
+        
+        if ($this->request->isPost())
+            $pattern = $this->request->getPost('pattern');
+
+        // Pattern matching through the folders tree.
+        $path = $this->persistent->userPath;
+        $paths = array( $path );
+        $results = array();
+        while( count( $paths ) > 0 )
+        {
+            $path = array_shift( $paths );
+            $paths = array_merge( $paths, glob( $path.'*', GLOB_MARK | GLOB_ONLYDIR | GLOB_NOSORT ) );
+            $results = array_merge( $results, glob( $path."*$pattern*", GLOB_NOSORT ) );
+        }
+
+        if( count($results) == 0 ) 
+        {
+            $this->flash->error("Aucun résultat trouvé.");
+        }
+
+        // Set the variables for the view.
+        $dirArray = array();
+        $fileArray = array();
+        foreach ( $results as $file )
+        {
+            $name = substr(strrchr($file, '\\'), 1);
+            $localPath = explode($this->persistent->userPath, $file);
+            $localPath = $localPath[1];
+            
+            if( is_dir($file) ){
+                $size = $this->getDirSize($file);
+                array_push($dirArray, array('name' => $name, 'size' => $size, 'path' => $localPath));
+            } else {
+                $size = filesize($file);
+                $modifyDate = date ("d/m/Y H:i:s.", filemtime($file));
+                array_push($fileArray, array('name' => $name, 'size' => $size, 'modifyDate' => $modifyDate, 'path' => $localPath));
+            }
+        }
+
+        $this->view->files = $fileArray;
+        $this->view->directories = $dirArray;
+        
+        
     }
 
 }

@@ -5,7 +5,7 @@ html,body {
 h1 {
   font-family: Arial,sans-serif
   font-size:80px;
-  color:#E3EFFF;
+  color:#000000;
 }
 
 h4{
@@ -21,7 +21,7 @@ h4{
   margin: 0 auto;
   width: 100%;
   min-height:100%;
-  background-color:#4CA8FF;
+  background-color:#ffffff;
   color:#eee;
   overflow:hidden;
 }
@@ -29,6 +29,10 @@ h4{
 .container-full a {
   color:#efefef;
   text-decoration:none;
+}
+
+.container-full table, .container-full table a, .container-full p {
+  color:#000000;
 }
 
 /* MENU */
