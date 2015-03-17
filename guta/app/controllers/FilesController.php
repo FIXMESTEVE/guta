@@ -58,13 +58,22 @@ class FilesController extends Controller
             exec("svn add \"".$targetFile."\"");
             exec("svn commit -m \"uploaded file\"");
             exec("svn up --accept mine-full");
+        }
+    }
 
-            /*echo "cd ".$targetPath." && git -c user.email=tom.solacroup@gmail.com -c user.name=apache add -f \"".$targetFile."\"";
-            exec("cd ".$targetPath." && git -c user.email=tom.solacroup@gmail.com -c user.name=apache add -f \"".$targetFile."\"",$output,$result);
-            file_put_contents($targetPath.$ds."resultAdd", implode("\r\n", $output), FILE_APPEND);
-            exec("cd ".$targetPath." && git -c user.email=tom.solacroup@gmail.com -c user.name=apache commit -m \"uploaded ".$targetFile."\"", $output, $result);
-            file_put_contents($targetPath.$ds."result", implode("\r\n", $output), FILE_APPEND);
-            */
+    public function deleteAction($fileName){
+        $fileName = str_replace('¤', '\\', $fileName);
+        $ds = DIRECTORY_SEPARATOR;
+        $storeFolder = "uploadedFiles"; //same as upload
+        $user = $this->session->get('auth')['idUser'];
+        $folder=".." . $ds . "app" . $ds . $storeFolder . $ds . $user;
+        error_log(getcwd());
+        if(file_exists(realpath($folder.$ds.$fileName)))
+        {   
+            chdir($folder);
+            exec("svn rm \"".$fileName."\"");
+            exec("svn commit -m \"removed file\"");
+            exec("svn up --accept mine-full");
         }
     }
 
