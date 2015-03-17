@@ -2,19 +2,6 @@
 
 <h1 class="text-center">Recherche</h1>
 
-{{ form('files/search', 'method': 'post', "class": "col-lg-12", "style": "width:340px;margin:0 auto;") }}
-	
-	
-    <div class="form-group input-group ">
-        {{ text_field("pattern", 'class': 'form-control', "id": "inputUsername","placeholder":"Recherche") }}
-        <span class="input-group-btn">
-        	{{ submit_button('Go!', "class":"btn btn-default") }}
-      	</span>
-    </div>
-
-
-    
-{{ end_form() }}
 <table class="table table-hover" style="width:80%" data-sortable>
 	<thead>
 		<tr>

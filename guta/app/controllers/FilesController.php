@@ -177,6 +177,25 @@ class FilesController extends Controller
 
             // Get the name of the new folder.
             $foldername = urldecode($this->request->getPost("foldername"));
+            if ($foldername == null) {
+                echo '<div class="alert alert-danger" role="alert">';
+                $this->flash->error("Le nom d'un dossier ne peut être vide.");
+                echo "</div>";
+                return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
+            }
+            // 
+            if (file_exists($this->persistent->userPath . "/" . $folderpath . '/'.$foldername)) {
+                echo '<div class="alert alert-danger" role="alert">';
+                $this->flash->error("Ce nom existe déja.");
+                echo "</div>";
+                return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
+            }
 
             // Get the path where the new folder will be created.
             $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$folderpath);
