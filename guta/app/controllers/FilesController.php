@@ -141,6 +141,11 @@ class FilesController extends Controller
             $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
         
         $pathDirectory = urldecode($this->persistent->userPath . $directory);
+
+        if(!is_dir($pathDirectory)) {
+            $pathDirectory = urldecode($this->persistent->userPath);
+        }
+
         $files = scandir($pathDirectory);
 
         $directory = rtrim(ltrim($directory, '/'), '/');
@@ -174,6 +179,8 @@ class FilesController extends Controller
 
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
+        $this->view->shareInfo = null;
+
     }
 
     public function viewAction($directory = null) {
@@ -298,35 +305,30 @@ class FilesController extends Controller
         }
 
         $userId = $this->session->get('auth')['idUser'];
-        $listEmail = $this->request->getPost("userMails");
+        $email = $this->request->getPost("userMail");
 
-        $usersShare = array();
-        foreach ($listEmail as $email) {
-            $userShare = User::findFirstByemail($email);
-            $userShare.add($userShare);
-        }
+        if($userShare = User::findFirstByemail($email)) {
         
-        $sharedPaths = $this->request->getPost("paths");
+            $sharedPaths = $this->request->getPost("paths");
 
-        foreach ($sharedPaths as $path) {
-            if($sharedFile = Sharedfile::findFirstBypath($path)) {
-                foreach ($usersShare as $userShare) {
-                    $sharedFile->id_user.add($userShare->idUser);
+            foreach ($sharedPaths as $path) {
+                if($sharedFile = Sharedfile::findFirstBypath($path)) {
+                    if($sharedFile->id_user == $userShare->idUser) {
+                        $this->view->shareInfo = "Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur";
+                        return;
+                    }   
+                } else {
+                    $sharedFile = new Sharedfile();
+                    $sharedFile->id_user = $userShare->idUser;
+                    $sharedFile->path = $path;
+                    $sharedFile->id_owner = $userId;
                 }
-            } else {
-                $sharedFile = new Sharedfile();
-                $sharedFile->id_user = array();
-                $sharedFile->id_user.add($userShare->idUser);
-                $sharedFile->path = $path;
-                $sharedFile->id_owner = $userId;
+                $sharedFile->save();
+                $this->view->shareInfo = "Partage réussi";
             }
-            $sharedFile->save();
+        } else {
+             $this->view->shareInfo = "Adresse mail non valide";
         }
-
-        return $this->dispatcher->forward(array(
-                "controller" => "Files",
-                "action" => "list"
-            ));
     }
 
 }
