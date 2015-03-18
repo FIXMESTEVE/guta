@@ -71,9 +71,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary center-block" onclick="">Partager</button>
+                    <button type="button" class="btn btn-primary center-block" onclick="share()">Partager</button>
                 </div>
-            {{ end_form() }}
         </div>
     </div>
 </div>

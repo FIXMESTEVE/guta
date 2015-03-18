@@ -15,7 +15,8 @@ class FilesController extends Controller
             ->addJs("js/jquery-1.11.2.min.js")
             ->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
-            ->addJs("js/contextMenu.js");
+            ->addJs("js/contextMenu.js")
+            ->addJs("js/share.js");
 
         \Phalcon\Tag::setTitle('MyDropbox');
 
@@ -289,7 +290,6 @@ class FilesController extends Controller
     
 
     public function shareAction() {
-
         if (!$this->request->isPost()) {
             return $this->dispatcher->forward(array(
                 "controller" => "Files",

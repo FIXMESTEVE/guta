@@ -7,17 +7,11 @@ $(document).on('click', 'a.menulink', function(event){
 	menu_click($(this));
 });
 
-var target;
-var folderPath;
-var str = "view/";
+var clicked;
 
 $("tr").bind("contextmenu", function(event){
 	event.preventDefault();
-	$(this).find('a').each(function(){
-		var pos = $(this).attr('href').indexOf(str);
-		target = $(this).attr('href').substring(pos + str.length).replace(/\//g, '¤');
-		folderPath = $(this).attr('href').substring(0, pos);
-	});
+	clicked = $(this);
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
 	$("li.download").hide();
 });
@@ -34,7 +28,7 @@ menu = function(){
 	string = "<ul class='dropdown-menu'>";
 	//contextual menu here
 	string += "<li class='download'><a id='download' class='menulink' href=''>Télécharger</a></li>"
-	string += "<li class='share'><a id='share' class='menulink' href=''>Partager</a></li>"
+	string += "<li class='share'><a id='share' class='menulink' href='#myShareModal' data-toggle='modal'>Partager</a></li>"
 	string += "<li class='divider'></li>";
 	string += "<li><a id='delete' class='menulink' href=''>Supprimer</a></li>"
 	// menu's end
@@ -44,19 +38,31 @@ menu = function(){
 
 //Associate the actions of the contextual menu here
 menu_click = function(object){
+	var pos;
+	var target;
+	var folderPath;
+	var str = "view/";
+	clicked.find('a').each(function(){
+		pos = $(this).attr('href').indexOf(str);
+		target = $(this).attr('href').substring(pos + str.length).replace(/\//g, '¤');
+		folderPath = $(this).attr('href').substring(0, pos);
+	});
 	switch(object.attr('id')){
 	case 'download':
 		$(location).attr('href', folderPath + "download/" + target);
-		//var file = "testFile.txt";
-		//$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + file);
 		break;
 	case 'delete':
 		$(location).attr('href', folderPath + "delete/" + target);
-		//var file = "testFile.txt";
-		//$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + file);
+		break;
+	case 'share':
+		//We just check the checkbox and then go to the share modal
+		var checkbox;
+		clicked.find('input').each(function(){
+			checkbox = $(this);//.checked(true);
+		});
+		checkbox.prop('checked', true);
 		break;
 	default:
-		$(location).attr('href', object.attr('href'));
 		break;
 	}
 }
