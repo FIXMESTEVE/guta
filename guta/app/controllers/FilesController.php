@@ -61,35 +61,38 @@ class FilesController extends Controller
         }
     }
 
-    public function deleteAction($fileName){
-        $fileName = str_replace('¤', '\\', $fileName);
+    public function deleteAction($fileSubPath){
+        $fileSubPath = str_replace('¤', '\\', $fileSubPath);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
         $user = $this->session->get('auth')['idUser'];
         $folder=".." . $ds . "app" . $ds . $storeFolder . $ds . $user;
-        error_log(getcwd());
-        if(file_exists(realpath($folder.$ds.$fileName)))
+        //error_log(getcwd());
+        if(file_exists(realpath($folder.$ds.$fileSubPath)))
         {   
             chdir($folder);
-            exec("svn rm \"".$fileName."\"");
+            exec("svn rm \"".$fileSubPath."\"");
             exec("svn commit -m \"removed file\"");
             exec("svn up --accept mine-full");
         }
+
+        $this->response->redirect('files/list/');
+        $this->view->disable();
     }
 
-    public function downloadAction($fileName)
+    public function downloadAction($fileSubPath)
     {
-        $fileName = str_replace('¤', '\\', $fileName);
+        $fileSubPath = str_replace('¤', '\\', $fileSubPath);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
-        $user = $this->session->get('auth')['idUser'];; 
+        $user = $this->session->get('auth')['idUser'];
         //Force the download of a file
-        $file=".." . $ds . "app" . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+        $file=".." . $ds . "app" . $ds . $storeFolder . $ds . $user . $ds . $fileSubPath;
         if(file_exists(realpath($file)))
         {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Content-Disposition: attachment; fileSubPath='.basename($file));
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
@@ -102,6 +105,18 @@ class FilesController extends Controller
             echo "File not found";
         }
     }
+
+    public function copyAction($fileSubPath){
+        $ds = DIRECTORY_SEPARATOR;
+        $user = $this->session->get('auth')['idUser'];
+        $fileSubPath = urldecode(str_replace('¤', $ds, $fileSubPath));
+        //$this->session->set("copiedPath", $user.$ds.$fileSubPath);
+        //error_log($this->session->get('copiedPath'));
+        $this->persistent->copiedPath = $user.$ds.$fileSubPath;
+        $this->response->redirect('files/list/');
+        $this->view->disable();
+    }
+
 
     public function getDirSize($path)
     {
@@ -163,7 +178,7 @@ class FilesController extends Controller
             $directory = "/" . $directory;
         
         $this->view->currentDir = $directory;
-        error_log("currentDir ".$this->view->currentDir);
+        //error_log("currentDir ".$this->view->currentDir);
         
 
         $this->view->directories = $dirArray;
@@ -173,6 +188,7 @@ class FilesController extends Controller
     public function viewAction($directory = null) {
         
     }
+
 
 
     /**

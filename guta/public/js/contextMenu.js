@@ -33,9 +33,20 @@ menu = function(){
 	//contextual menu here
 	string += "<li><a id='download' class='menulink' href=''>Download</a></li>"
 	string += "<li><a id='delete' class='menulink' href=''>Delete</a></li>"
+	string += "<li><a id='copy' class='menulink' href=''>Copy</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
 }
 
 //Associate the actions of the contextual menu here
@@ -48,8 +59,17 @@ menu_click = function(object){
 		break;
 	case 'delete':
 		$(location).attr('href', folderPath + "delete/" + target);
-		//var file = "testFile.txt";
-		//$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + file);
+		break;
+	case 'copy':
+		//$(location).attr('href', folderPath + "copy/" + target);
+		httpGet(folderPath + "copy/" + target);
+
+		// taken from StackOverflow, by Anu - SO
+		$("#notification").fadeIn("slow").append('Fichier copié');
+		$(".dismiss").click(function(){
+		       $("#notification").fadeOut("slow");
+		});
+
 		break;
 	default:
 		$(location).attr('href', object.attr('href'));

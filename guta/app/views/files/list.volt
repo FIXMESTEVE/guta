@@ -13,6 +13,11 @@
 {{ end_form() }}
 <br><br>
 
+<!--notification popup for copied files -->
+<div id="notification" style="display: none;">
+  <span class="dismiss"><a title="dismiss this notification">X</a></span>
+</div>
+
 
 <!-- Modal creation folder -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
