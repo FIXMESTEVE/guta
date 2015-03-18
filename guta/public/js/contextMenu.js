@@ -8,12 +8,17 @@ $(document).on('click', 'a.menulink', function(event){
 });
 
 var target;
+var folderPath;
+var str = "view/";
 
 $("tr.downloadable").bind("contextmenu", function(event){
 	event.preventDefault();
 	//Récup des infos du click
 	$(this).find('a').each(function(){
-		target = $(this).attr('href').substring(22).replace(/\//g, '¤');
+		var pos = $(this).attr('href').indexOf(str);
+		target = $(this).attr('href').substring(pos + str.length).replace(/\//g, '¤');
+		folderPath = $(this).attr('href').substring(0, pos);
+		console.log($(this).attr('href'));
 		console.log(target);
 	});
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
@@ -27,6 +32,7 @@ menu = function(){
 	string = "<ul class='dropdown-menu'><li>Context Menu</li><li class='divider'></li>";
 	//contextual menu here
 	string += "<li><a id='download' class='menulink' href=''>Download</a></li>"
+	string += "<li><a id='delete' class='menulink' href=''>Delete</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
@@ -36,7 +42,12 @@ menu = function(){
 menu_click = function(object){
 	switch(object.attr('id')){
 	case 'download':
-		$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + target);
+		$(location).attr('href', folderPath + "download/" + target);
+		//var file = "testFile.txt";
+		//$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + file);
+		break;
+	case 'delete':
+		$(location).attr('href', folderPath + "delete/" + target);
 		//var file = "testFile.txt";
 		//$(location).attr('href', "http://localhost/guta/guta/public/files/download/" + file);
 		break;
