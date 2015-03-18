@@ -37,7 +37,7 @@ class FilesController extends Controller
 
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
          
-        $user = $this->session->get('auth')['idUser'];; //the user who signed in
+        $user = $this->session->get('auth')['idUser']; //the user who signed in
        
         // Get the folder path  with userPath as the folder root for the user.
         $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
@@ -202,6 +202,25 @@ class FilesController extends Controller
 
             // Get the name of the new folder.
             $foldername = urldecode($this->request->getPost("foldername"));
+            if ($foldername == null) {
+                echo '<div class="alert alert-danger" role="alert">';
+                $this->flash->error("Le nom d'un dossier ne peut être vide.");
+                echo "</div>";
+                return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
+            }
+            // 
+            if (file_exists($this->persistent->userPath . "/" . $folderpath . '/'.$foldername)) {
+                echo '<div class="alert alert-danger" role="alert">';
+                $this->flash->error("Ce nom existe déja.");
+                echo "</div>";
+                return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
+            }
 
             // Get the path where the new folder will be created.
             $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$folderpath);
@@ -277,6 +296,47 @@ class FilesController extends Controller
         $this->view->directories = $dirArray;
         
         
+    }
+
+    public function shareAction() {
+
+        if (!$this->request->isPost()) {
+            return $this->dispatcher->forward(array(
+                "controller" => "Files",
+                "action" => "list"
+            ));
+        }
+
+        $userId = $this->session->get('auth')['idUser'];
+        $listEmail = $this->request->getPost("userMails");
+
+        $usersShare = array();
+        foreach ($listEmail as $email) {
+            $userShare = User::findFirstByemail($email);
+            $userShare.add($userShare);
+        }
+        
+        $sharedPaths = $this->request->getPost("paths");
+
+        foreach ($sharedPaths as $path) {
+            if($sharedFile = Sharedfile::findFirstBypath($path)) {
+                foreach ($usersShare as $userShare) {
+                    $sharedFile->id_user.add($userShare->idUser);
+                }
+            } else {
+                $sharedFile = new Sharedfile();
+                $sharedFile->id_user = array();
+                $sharedFile->id_user.add($userShare->idUser);
+                $sharedFile->path = $path;
+                $sharedFile->id_owner = $userId;
+            }
+            $sharedFile->save();
+        }
+
+        return $this->dispatcher->forward(array(
+                "controller" => "Files",
+                "action" => "list"
+            ));
     }
 
 }

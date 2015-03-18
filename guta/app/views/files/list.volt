@@ -61,12 +61,34 @@
     </div>
 </div>
 
+<div class="modal fade" id="myShareModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Partager avec :</h4>
+            </div>
+                <div class="modal-body">
+                    <div class="form-group ">
+                        <label for="mail">Adresse mail</label>
+                        {{ email_field("email","class": "form-control input-lg",  "id": "inputEmail", "placeholder": "Adresse mail") }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary center-block" onclick="">Partager</button>
+                </div>
+            {{ end_form() }}
+        </div>
+    </div>
+</div>
+
 
 <!--<table class="table table-hover" style="width:80%" data-sortable>-->
 <div class="table-responsive">
     <table class="table table-striped table-hover" style="width:80%" data-sortable>
 		<thead>
 			<tr>
+				<th>#</th>
 				<th>Nom</th>
 				<th>Taille</th>
 				<th>Modification</th>
@@ -75,6 +97,7 @@
 		<tbody>
 			{% for dir in directories %}
 				<tr>
+					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ dir['name'] }}" /></td>
 					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
@@ -82,6 +105,7 @@
 			{% endfor %}
 			{% for file in files %}
 				<tr class="downloadable">
+					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ file['name'] }}" /></td>
 					<td><span class="glyphicon glyphicon-file"> {{ link_to("files/view" ~ currentDir  ~ "/" ~ file['name'], file['name']) }}</span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>
