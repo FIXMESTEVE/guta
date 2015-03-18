@@ -278,8 +278,49 @@ class FilesController extends Controller
 
         $this->view->files = $fileArray;
         $this->view->directories = $dirArray;
+    }
+
+    
+
+    public function shareAction() {
+
+        if (!$this->request->isPost()) {
+            return $this->dispatcher->forward(array(
+                "controller" => "Files",
+                "action" => "list"
+            ));
+        }
+
+        $userId = $this->session->get('auth')['idUser'];
+        $listEmail = $this->request->getPost("userMails");
+
+        $usersShare = array();
+        foreach ($listEmail as $email) {
+            $userShare = User::findFirstByemail($email);
+            $userShare.add($userShare);
+        }
         
-        
+        $sharedPaths = $this->request->getPost("paths");
+
+        foreach ($sharedPaths as $path) {
+            if($sharedFile = Sharedfile::findFirstBypath($path)) {
+                foreach ($usersShare as $userShare) {
+                    $sharedFile->id_user.add($userShare->idUser);
+                }
+            } else {
+                $sharedFile = new Sharedfile();
+                $sharedFile->id_user = array();
+                $sharedFile->id_user.add($userShare->idUser);
+                $sharedFile->path = $path;
+                $sharedFile->id_owner = $userId;
+            }
+            $sharedFile->save();
+        }
+
+        return $this->dispatcher->forward(array(
+                "controller" => "Files",
+                "action" => "list"
+            ));
     }
 
 }
