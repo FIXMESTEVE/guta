@@ -14,6 +14,7 @@ $("tr.downloadable").bind("contextmenu", function(event){
 	//Récup des infos du click
 	$(this).find('a').each(function(){
 		target = $(this).attr('href').substring(22).replace(/\//g, '¤');
+		console.log(target);
 	});
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
 });
