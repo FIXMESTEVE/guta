@@ -11,28 +11,32 @@ var target;
 var folderPath;
 var str = "view/";
 
-$("tr.downloadable").bind("contextmenu", function(event){
+$("tr").bind("contextmenu", function(event){
 	event.preventDefault();
-	//Récup des infos du click
 	$(this).find('a').each(function(){
 		var pos = $(this).attr('href').indexOf(str);
 		target = $(this).attr('href').substring(pos + str.length).replace(/\//g, '¤');
 		folderPath = $(this).attr('href').substring(0, pos);
-		console.log($(this).attr('href'));
-		console.log(target);
 	});
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
+	$("li.download").hide();
+});
+$("tr.downloadable").bind("contextmenu", function(event){
+	$("li.download").css({display: "block"});
 });
 $(document).bind("click", function(event){
 	$("ul.dropdown-menu").hide();
+	$("li.download").hide();
 });
 
 //HTML of the contextual menu
 menu = function(){
-	string = "<ul class='dropdown-menu'><li>Context Menu</li><li class='divider'></li>";
+	string = "<ul class='dropdown-menu'>";
 	//contextual menu here
-	string += "<li><a id='download' class='menulink' href=''>Download</a></li>"
-	string += "<li><a id='delete' class='menulink' href=''>Delete</a></li>"
+	string += "<li class='download'><a id='download' class='menulink' href=''>Télécharger</a></li>"
+	string += "<li class='share'><a id='share' class='menulink' href=''>Partager</a></li>"
+	string += "<li class='divider'></li>";
+	string += "<li><a id='delete' class='menulink' href=''>Supprimer</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;

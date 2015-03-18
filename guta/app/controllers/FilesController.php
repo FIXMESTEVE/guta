@@ -75,6 +75,12 @@ class FilesController extends Controller
             exec("svn commit -m \"removed file\"");
             exec("svn up --accept mine-full");
         }
+        //Redirection to stay in folder view
+        $names = explode('\\', $fileName);
+        array_pop($names);
+        $folder = implode('\\', $names);
+        $this->response->redirect("files/list/".$folder);
+        return;
     }
 
     public function downloadAction($fileName)
