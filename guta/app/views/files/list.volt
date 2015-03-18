@@ -1,8 +1,7 @@
 {{ content() }}
 
 <h1 class="text-center">Mes fichiers</h1>
-<!--button href="#myModal" role="button" class="btn btn-primary pull-right" style="margin-right: 10%;" data-toggle="modal">Nouveau dossier</button-->
-<!--button href="#myUploadModal" role="button"  data-toggle="modal">Uploader des fichiers</button-->
+
 <div class="btn-group" role="group" aria-label="...">
   	<button type="button" class="btn btn-default" onClick="changeViewToList()"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>
   	<button type="button" class="btn btn-default" onClick="changeViewToIcone()"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>
@@ -55,7 +54,7 @@
 </div>
 
 
-<!-- Modal creation folder -->
+<!-- Modal upload -->
 <div class="modal fade" id="myUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
     	<div class="modal-content">
@@ -72,12 +71,39 @@
     </div>
 </div>
 
+<!-- Modal share -->
+<div class="modal fade" id="myShareModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Partager avec :</h4>
+            </div>
+                <div class="modal-body">
+                    <div class="form-group ">
+                        <label for="mail">Adresse mail</label>
+                        {{ email_field("email","class": "form-control input-lg",  "id": "inputEmail", "placeholder": "Adresse mail") }}
+                    </div>
+                    <div class="form-group ">
+                    	{% if shareInfo != null %}
+                    		<label>{{ shareInfo }}</label>
+                    	{% endif %}
+            		</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary center-block" onclick="share()">Partager</button>
+                </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Vue liste -->
 <div class="table-responsive" id="listViewTable" style="display:inline;">
     <table class="table table-striped table-hover" style="width:80%" data-sortable>
 		<thead>
 			<tr>
+				<th>#</th>
 				<th>Nom</th>
 				<th>Taille</th>
 				<th>Modification</th>
@@ -86,6 +112,7 @@
 		<tbody>
 			{% for dir in directories %}
 				<tr>
+					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ dir['name'] }}" /></td>
 					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
@@ -93,6 +120,7 @@
 			{% endfor %}
 			{% for file in files %}
 				<tr class="downloadable">
+					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ file['name'] }}" /></td>
 					<td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>

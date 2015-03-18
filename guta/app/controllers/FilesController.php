@@ -16,7 +16,8 @@ class FilesController extends Controller
             ->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
             ->addJs("js/showFile.js")
-            ->addJs("js/contextMenu.js");
+            ->addJs("js/contextMenu.js")
+            ->addJs("js/share.js");
 
         \Phalcon\Tag::setTitle('MyDropbox');
 
@@ -76,6 +77,12 @@ class FilesController extends Controller
             exec("svn commit -m \"removed file\"");
             exec("svn up --accept mine-full");
         }
+        //Redirection to stay in folder view
+        $names = explode('\\', $fileName);
+        array_pop($names);
+        $folder = implode('\\', $names);
+        $this->response->redirect("files/list/".$folder);
+        return;
     }
 
     public function downloadAction($fileName)
@@ -136,6 +143,11 @@ class FilesController extends Controller
             $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
         
         $pathDirectory = urldecode($this->persistent->userPath . $directory);
+
+        if(!is_dir($pathDirectory)) {
+            $pathDirectory = urldecode($this->persistent->userPath);
+        }
+
         $files = scandir($pathDirectory);
 
         $directory = rtrim(ltrim($directory, '/'), '/');
@@ -169,6 +181,8 @@ class FilesController extends Controller
 
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
+        $this->view->shareInfo = null;
+
     }
 
     public function viewAction($directory = null) {
@@ -222,7 +236,7 @@ class FilesController extends Controller
             $Parsedown = new Parsedown();
             $Parsedown->text('Hello _Parsedown_!')
         */
-        $response->setContent(json_encode($data));
+        $response->setContent(json_encode($onlinePath));
 
         return $response;
     }
@@ -344,8 +358,43 @@ class FilesController extends Controller
 
         $this->view->files = $fileArray;
         $this->view->directories = $dirArray;
+    }
+
+    
+
+    public function shareAction() {
+        if (!$this->request->isPost()) {
+            return $this->dispatcher->forward(array(
+                "controller" => "Files",
+                "action" => "list"
+            ));
+        }
+
+        $userId = $this->session->get('auth')['idUser'];
+        $email = $this->request->getPost("userMail");
+
+        if($userShare = User::findFirstByemail($email)) {
         
-        
+            $sharedPaths = $this->request->getPost("paths");
+
+            foreach ($sharedPaths as $path) {
+                if($sharedFile = Sharedfile::findFirstBypath($path)) {
+                    if($sharedFile->id_user == $userShare->idUser) {
+                        $this->view->shareInfo = "Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur";
+                        return;
+                    }   
+                } else {
+                    $sharedFile = new Sharedfile();
+                    $sharedFile->id_user = $userShare->idUser;
+                    $sharedFile->path = $path;
+                    $sharedFile->id_owner = $userId;
+                }
+                $sharedFile->save();
+                $this->view->shareInfo = "Partage réussi";
+            }
+        } else {
+             $this->view->shareInfo = "Adresse mail non valide";
+        }
     }
 
 }
