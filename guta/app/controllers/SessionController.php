@@ -68,7 +68,7 @@ class SessionController extends ControllerBase
                 $ds = DIRECTORY_SEPARATOR;  // '/'
                 $storeFolder = 'uploadedFiles';   // the folder where we store all the files
                 $user = $user->idUser;
-                $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+                $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
                 
                 $this->response->redirect("files/list/");
                 return;

@@ -3,5 +3,9 @@
 guta/app/cache/
 guta/app/config/config.php
 guta/app/config/config.php
+uploadedFiles/*
+svnrep/*
 guta/app/uploadedFiles/*
 guta/app/svnrep/*
+guta/svnrep/*
+guta/uploadedFiles/*

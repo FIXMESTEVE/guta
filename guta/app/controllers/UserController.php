@@ -142,17 +142,17 @@ class UserController extends ControllerBase
             $ds          = DIRECTORY_SEPARATOR;  // '/'
             $storeFolder = 'uploadedFiles';   // the folder where we store all the files
             $user = $User->idUser;
-            $svnrep = dirname( __FILE__ ) . $ds . '..' . $ds . "svnrep";
+            $svnrep = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "svnrep";
             if(!file_exists($svnrep))
                 mkdir($svnrep);
-            if(!file_exists(dirname( __FILE__ ) . $ds . '..' . $ds . "svnrep".$ds.$user)){
+            if(!file_exists(dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "svnrep".$ds.$user)){
                 //create svn repo
                 chdir($svnrep);
                 exec("svnadmin create ".$user);
                 chdir("..");
             }
 
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
 
             //mkdir($targetPath);
             //chdir($targetPath);

@@ -15,6 +15,7 @@ class FilesController extends Controller
             ->addJs("js/jquery-1.11.2.min.js")
             ->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
+            ->addJs("js/showFile.js")
             ->addJs("js/contextMenu.js");
 
         \Phalcon\Tag::setTitle('MyDropbox');
@@ -22,7 +23,7 @@ class FilesController extends Controller
         $ds = DIRECTORY_SEPARATOR;  // '/'
         $storeFolder = 'uploadedFiles';   // the folder where we store all the files
         $user = $this->session->get('auth')['idUser'];
-        $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
+        $userPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
 
         $this->persistent->userPath = $userPath;
     }
@@ -48,7 +49,7 @@ class FilesController extends Controller
              
             $tempFile = $_FILES['file']['tmp_name'];
               
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . urldecode($directory) . $ds;
+            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . urldecode($directory) . $ds;
             
             $targetFile =  $targetPath. $_FILES['file']['name'];
          
@@ -174,6 +175,71 @@ class FilesController extends Controller
         
     }
 
+    public function getFileAction($path){
+        $this->view->disable();
+        $response = new \Phalcon\Http\Response();
+
+        $oldPath = $path;
+        $ds = DIRECTORY_SEPARATOR;
+        $olds = "/";
+
+        $path = str_replace("{}", $ds, $path);
+        $olpath = str_replace("{}", "/", $oldPath);
+
+        $userID = $this->session->get('auth')['idUser'];; //the user who signed in
+        
+        $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" . $ds . $userID . $path;
+        
+        $onlinePath = "http://localhost/ped/guta/uploadedFiles/". $userID . $olpath;
+        
+        $image = getimagesize($onlinePath) ? true : false;
+        $ext = pathinfo($targetPath, PATHINFO_EXTENSION);
+
+        $data = file_get_contents($targetPath, FILE_USE_INCLUDE_PATH);
+
+        if($ext == "html"){
+            $data = str_replace("&", "&amp", $data);
+            $data = str_replace("<", "&lt", $data);
+            $data = str_replace(">", "&gt", $data);
+        }else if($ext == "md"){
+            $Parsedown = new Parsedown();
+            $data = $Parsedown->text($data);
+        }else if($ext == "php" || $ext == "doc" || $ext == "docx"){
+            $data = "Fichiers non pris en chargent !" ;
+        }else if($ext == "pdf"){
+            $pdfPath = $onlinePath;
+            $pdfPath = str_replace("/", "{}", $pdfPath);
+            $data = '<a target="_blank" href="http://localhost/ped/guta/guta/files/viewPDF/' . $pdfPath . '" style="color: black;"> Visionner le fichier PDF </a>';
+        }
+
+        $data = "<pre>" . $data . "</pre>" ;
+
+        if($image){
+            $data = "<img style='width: 100%' src='" . $onlinePath . "' />";
+        }
+
+        /*  parser pour les fichiers md
+            $Parsedown = new Parsedown();
+            $Parsedown->text('Hello _Parsedown_!')
+        */
+        $response->setContent(json_encode($data));
+
+        return $response;
+    }
+
+    public function viewPDFAction($path){
+        $this->view->disable();
+
+        $path = str_replace("{}", "/", $path);
+
+        $file = $path;
+        $filename = 'toto.pdf';
+        header('Content-type: application/pdf');
+        header('Content-Disposition: inline; filename="' . $filename . '"');
+        header('Content-Transfer-Encoding: binary');
+        header('Accept-Ranges: bytes');
+        @readfile($file);
+    }
 
     /**
      * Creation of a new folder by the user.
