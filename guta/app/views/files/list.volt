@@ -84,10 +84,8 @@
                         <label for="mail">Adresse mail</label>
                         {{ email_field("email","class": "form-control input-lg",  "id": "inputEmail", "placeholder": "Adresse mail") }}
                     </div>
-                    <div class="form-group ">
-                    	{% if shareInfo != null %}
-                    		<label>{{ shareInfo }}</label>
-                    	{% endif %}
+                    <div class="form-group ">	
+                    	<label id="shareInfo"></label>
             		</div>
                 </div>
                 <div class="modal-footer">

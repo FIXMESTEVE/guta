@@ -366,7 +366,6 @@ class FilesController extends Controller
     
 
     public function shareAction() {
-
         if (!$this->request->isPost()) {
             return $this->dispatcher->forward(array(
                 "controller" => "Files",
@@ -377,16 +376,14 @@ class FilesController extends Controller
         $userId = $this->session->get('auth')['idUser'];
         $email = $this->request->getPost("userMail");
 
-        error_log($email);
         if($userShare = User::findFirstByemail($email)) {
             $sharedPaths = $this->request->getPost("paths");
 
             foreach ($sharedPaths as $path) {
                 if($sharedFile = Sharedfile::findFirstBypath($path)) {
-                    error_log("EXIST : " . $sharedFile->path);
                     if($sharedFile->id_user == $userShare->idUser) {
-                        $this->view->shareInfo = "Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur";
-                        return;
+                        $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur'));
+                        return $this->response;
                     }   
                 } else {
                     $sharedFile = new Sharedfile();
@@ -397,12 +394,11 @@ class FilesController extends Controller
                 if(!$sharedFile->save())
                     $this->flash->error("Erreur lors du partage.");
                 else
-                    $this->view->shareInfo = "Partage réussi";
-
+                    $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Partage réussi !'));
             }
         } else {
-             $this->view->shareInfo = "Adresse mail non valide";
+            $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Mail invalide'));
         }
+        return $this->response;
     }
-
 }
