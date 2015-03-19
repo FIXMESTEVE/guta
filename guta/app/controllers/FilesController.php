@@ -201,7 +201,7 @@ class FilesController extends Controller
         $path = str_replace("{}", $ds, $path);
         $olpath = str_replace("{}", "/", $oldPath);
 
-        $userID = $this->session->get('auth')['idUser'];; //the user who signed in
+        $userID = $this->session->get('auth')['idUser']; //the user who signed in
         
         $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" . $ds . $userID . $path;
         
@@ -226,6 +226,9 @@ class FilesController extends Controller
             $pdfPath = str_replace("/", "{}", $pdfPath);
             $data = '<a target="_blank" href="http://localhost/ped/guta/guta/files/viewPDF/' . $pdfPath . '" style="color: black;"> Visionner le fichier PDF </a>';
         }
+        /*else if($ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "gif")
+            $data = "<img style='width: 100%' src='" . $onlinePath . "' />";*/
+        
 
         $data = "<pre>" . $data . "</pre>" ;
 
@@ -233,12 +236,13 @@ class FilesController extends Controller
             $data = "<img style='width: 100%' src='" . $onlinePath . "' />";
         }
 
+        $response->setContent(json_encode($data));
+
         /*  parser pour les fichiers md
             $Parsedown = new Parsedown();
             $Parsedown->text('Hello _Parsedown_!')
         */
-        $response->setContent(json_encode($data));
-
+        
         return $response;
     }
 

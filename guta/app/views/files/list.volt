@@ -2,7 +2,7 @@
 
 <h1 class="text-center">Mes fichiers</h1>
 
-<div class="btn-group pull-right" role="group" aria-label="...">
+<div class="btn-group pull-right" role="group" aria-label="..." style="margin-right:10%">
   	<button type="button" class="btn btn-default" onClick="changeViewToList()"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>
   	<button type="button" class="btn btn-default" onClick="changeViewToIcone()"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>
 </div>
