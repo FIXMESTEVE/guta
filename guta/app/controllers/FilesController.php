@@ -146,7 +146,7 @@ class FilesController extends Controller
         $pathDirectory = urldecode($this->persistent->userPath . $directory);
 
         if(!is_dir($pathDirectory)) {
-            $pathDirectory = urldecode($this->persistent->userPath);
+            $this->response->redirect("Files/list/");
         }
 
         $files = scandir($pathDirectory);
@@ -366,6 +366,7 @@ class FilesController extends Controller
     
 
     public function shareAction() {
+
         if (!$this->request->isPost()) {
             return $this->dispatcher->forward(array(
                 "controller" => "Files",
@@ -376,12 +377,13 @@ class FilesController extends Controller
         $userId = $this->session->get('auth')['idUser'];
         $email = $this->request->getPost("userMail");
 
+        error_log($email);
         if($userShare = User::findFirstByemail($email)) {
-        
             $sharedPaths = $this->request->getPost("paths");
 
             foreach ($sharedPaths as $path) {
                 if($sharedFile = Sharedfile::findFirstBypath($path)) {
+                    error_log("EXIST : " . $sharedFile->path);
                     if($sharedFile->id_user == $userShare->idUser) {
                         $this->view->shareInfo = "Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur";
                         return;
@@ -392,8 +394,11 @@ class FilesController extends Controller
                     $sharedFile->path = $path;
                     $sharedFile->id_owner = $userId;
                 }
-                $sharedFile->save();
-                $this->view->shareInfo = "Partage réussi";
+                if(!$sharedFile->save())
+                    $this->flash->error("Erreur lors du partage.");
+                else
+                    $this->view->shareInfo = "Partage réussi";
+
             }
         } else {
              $this->view->shareInfo = "Adresse mail non valide";
