@@ -229,8 +229,8 @@ class UserController extends ControllerBase
         echo '</div>';
 
         return $this->dispatcher->forward(array(
-            "controller" => "User",
-            "action" => "index"
+            "controller" => "Files",
+            "action" => "list"
         ));
     }
 
