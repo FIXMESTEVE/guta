@@ -14,16 +14,17 @@
                         </div>
                         {{ form('user/create', 'method': 'post', "class": "col-lg-12", "style": "width:340px;margin:0 auto;") }}
                             <div class="modal-body">
-                                <div class="form-group ">
-                                    <label for="mail">Adresse mail</label>
-                                    {{ email_field("email","class": "form-control input-lg",  "id": "inputEmail", "placeholder": "Adresse mail") }}
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon" for="mail" style="font-weight: bold;"> @ </span>
+                                    {{ email_field("email","class": "form-control input-lg",  "id": "inputEmail", "placeholder": "Email") }}
                                 </div>
-                                <div class="form-group ">
-                                    <label> Nom d'utilisateur </label>
+    
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
                                     {{ text_field("login", 'class': 'form-control input-lg', "id": "inputUsername","placeholder":"Nom d'utilisateur") }}
                                 </div>
-                                <div class="form-group ">
-                                    <label> Mot de passe </label>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></span>
                                     {{ password_field("password", 'class': 'form-control input-lg', "id": "inputPassword","placeholder":"Mot de passe") }}
                                 </div>
                             </div>

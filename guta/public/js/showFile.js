@@ -13,7 +13,7 @@ function showFile(path, file){
        	success : function(data, status){
            	console.log("success fetching file content")
            	modalBody.innerHTML = ""
-           	modalBody.innerHTML = JSON.parse(data)
+            modalBody.innerHTML = JSON.parse(data)
        	},
 
        	error : function(resultat, statut, erreur){
@@ -37,3 +37,4 @@ function changeViewToIcone(){
 	document.getElementById("listViewTable").style.display = "none"
 	document.getElementById("iconeViewTable").style.display = "inline"
 }
+
