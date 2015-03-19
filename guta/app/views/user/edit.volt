@@ -7,10 +7,10 @@
 <!-- Login Form -->
 <div class="row"> 
         <div class="v-center">
-            {{ form('User/save','role': 'form', 'class': "form-horizontal", 'style': "width:35%;margin:0 auto;") }}
+            {{ form('User/save','role': 'form', 'class': "form-horizontal", 'style': "width:20%;margin:0 auto;") }}
                 <div class="form-group ">
-                    <label for="avatar" class="col-sm-2 control-label">Avatar</label>
-                    <div id="avatar" class="col-sm-10">
+                    <label for="avatar" class="control-label">Avatar</label>
+                    <div id="avatar">
                         <?php
                         echo Phalcon\Tag::image(array("avatars/".$idUser.".gif", "id" => "avatarPicture", "style" => "width: 84px;"));
                         ?>
@@ -20,23 +20,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="login" class="col-sm-2 control-label">Nom d'utilisateur</label>
-                    <div class="col-sm-10">
-                        {{ text_field('login', 'class': "form-control input-lg") }}
-                    </div>
+                <div class="form-group input-group">
+                    <span class="input-group-addon" for="login"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+                    {{ text_field('login', 'class': "form-control input-lg") }}
                 </div>
-                <div class="form-group">
-                    <label for="Email" class="col-sm-2 control-label">Email</label>
-                    <div class="col-sm-10">
-                        {{ text_field('email', 'class': "form-control input-lg") }}
-                    </div>
+                <div class="form-group input-group">
+                    <span class="input-group-addon" for="Email" style="font-weight: bold;"> @ </span>
+                    {{ text_field('email', 'class': "form-control input-lg") }}
                 </div>
-                <div class="form-group">
-                    <label for="password" class="col-sm-2 control-label">Mot de passe</label>
-                    <div class="col-sm-10">
-                        {{ password_field('password', 'class': "form-control input-lg") }}
-                    </div>
+                <div class="form-group input-group">
+                    <span class="input-group-addon" for="password"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></span>
+                    {{ password_field('password', 'class': "form-control input-lg") }}
                 </div>
                 <div class="form-group">
                     <?php echo $this->tag->hiddenField("idUser") ?>
