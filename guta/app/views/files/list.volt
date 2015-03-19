@@ -120,7 +120,7 @@
 			{% endfor %}
 			{% for file in files %}
 				<tr class="downloadable">
-					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ file['name'] }}" /></td>
+					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['name']) }}" /></td>
 					<td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>
