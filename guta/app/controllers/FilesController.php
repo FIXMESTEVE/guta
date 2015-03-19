@@ -210,7 +210,7 @@ class FilesController extends Controller
         $path = str_replace("{}", $ds, $path);
         $olpath = str_replace("{}", "/", $oldPath);
 
-        $userID = $this->session->get('auth')['idUser'];; //the user who signed in
+        $userID = $this->session->get('auth')['idUser']; //the user who signed in
         
         $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" . $ds . $userID . $path;
         
@@ -235,6 +235,9 @@ class FilesController extends Controller
             $pdfPath = str_replace("/", "{}", $pdfPath);
             $data = '<a target="_blank" href="http://localhost/ped/guta/guta/files/viewPDF/' . $pdfPath . '" style="color: black;"> Visionner le fichier PDF </a>';
         }
+        /*else if($ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "gif")
+            $data = "<img style='width: 100%' src='" . $onlinePath . "' />";*/
+        
 
         $data = "<pre>" . $data . "</pre>" ;
 
@@ -242,12 +245,13 @@ class FilesController extends Controller
             $data = "<img style='width: 100%' src='" . $onlinePath . "' />";
         }
 
+        $response->setContent(json_encode($data));
+
         /*  parser pour les fichiers md
             $Parsedown = new Parsedown();
             $Parsedown->text('Hello _Parsedown_!')
         */
-        $response->setContent(json_encode($data));
-
+        
         return $response;
     }
 
@@ -375,7 +379,6 @@ class FilesController extends Controller
     
 
     public function shareAction() {
-
         if (!$this->request->isPost()) {
             return $this->dispatcher->forward(array(
                 "controller" => "Files",
@@ -386,16 +389,14 @@ class FilesController extends Controller
         $userId = $this->session->get('auth')['idUser'];
         $email = $this->request->getPost("userMail");
 
-        error_log($email);
         if($userShare = User::findFirstByemail($email)) {
             $sharedPaths = $this->request->getPost("paths");
 
             foreach ($sharedPaths as $path) {
                 if($sharedFile = Sharedfile::findFirstBypath($path)) {
-                    error_log("EXIST : " . $sharedFile->path);
                     if($sharedFile->id_user == $userShare->idUser) {
-                        $this->view->shareInfo = "Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur";
-                        return;
+                        $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur'));
+                        return $this->response;
                     }   
                 } else {
                     $sharedFile = new Sharedfile();
@@ -406,12 +407,11 @@ class FilesController extends Controller
                 if(!$sharedFile->save())
                     $this->flash->error("Erreur lors du partage.");
                 else
-                    $this->view->shareInfo = "Partage réussi";
-
+                    $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Partage réussi !'));
             }
         } else {
-             $this->view->shareInfo = "Adresse mail non valide";
+            $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Mail invalide'));
         }
+        return $this->response;
     }
-
 }

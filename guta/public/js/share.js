@@ -20,6 +20,9 @@ share = function(){
 	var email = $('#inputEmail').val();
 
 	//On envoie en POST à file/share/
-	$.post("/guta/guta/files/share", { paths: files, userMail: email })
-		.always($('#inputEmail').val(''));
+	$.post("/guta/guta/files/share", { paths: files, userMail: email }, 
+		function(data) {
+			$('#shareInfo').text(data.message);
+		}, "json"
+	).always($('#inputEmail').val(''));
 }

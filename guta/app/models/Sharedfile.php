@@ -34,11 +34,6 @@ class Sharedfile extends \Phalcon\Mvc\Model
     public function validation()
     {
         $this->validate(new PresenceOf([
-          'field' => 'idShared_File',
-          'message' => 'Un identifiant de fichier est nécessaire.'
-        ]));
-
-        $this->validate(new PresenceOf([
           'field' => 'id_owner',
           'message' => 'Un identifiant propriétaire est nécessaire.'
         ]));
