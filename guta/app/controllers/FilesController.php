@@ -137,15 +137,8 @@ class FilesController extends Controller
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
-
-        //Searching for the shared files/directories
-        $userId = $this->session->get('auth')['idUser'];
-        $sharedfiles = Sharedfile::findByIdUser($userId);
-        foreach ($sharedfiles as $sharedfile) {
-            echo $sharedfile->path;
-        }
-        //$query = $this->modelsManager->createQuery("SELECT * FROM Sharedfile where id_user=:userId:");
-        //$sharedfiles = $query->execute(array('userId' => $userId));
+        $sharedFiles = array();
+        $sharedDirectories = array();
 
         // Get the folder path  with userPath as the folder root for the user.
         $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
@@ -179,6 +172,30 @@ class FilesController extends Controller
             }
         }
 
+        //Searching for the shared files/directories
+        $userId = $this->session->get('auth')['idUser'];
+        $query = Sharedfile::findByIdUser($userId);
+        foreach ($query as $sharedpath) {
+            $physicalPath = $this->persistent->userPath . "../" .  $sharedpath->id_owner . '/' . $sharedpath->path;
+            $pathArray = explode('/', $sharedpath->path);
+            if(is_dir($sharedpath->path)){
+                array_push($sharedDirectories, array(
+                    'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                    'name' => array_pop($pathArray),
+                    'size' => $this->getDirSize($physicalPath)
+                    ));
+            }
+            else {
+                $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
+                array_push($sharedFiles, array(
+                    'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                    'name' => array_pop($pathArray),
+                    'size' => filesize($physicalPath),
+                    'modifyDate' => $modifyDate
+                    ));
+            }
+        }
+
         sort($dirArray);
         sort($fileArray);
 
@@ -192,7 +209,8 @@ class FilesController extends Controller
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
         $this->view->shareInfo = null;
-
+        $this->view->sharedFiles = $sharedFiles;
+        $this->view->sharedDirectories = $sharedDirectories;
     }
 
     public function viewAction($directory = null) {

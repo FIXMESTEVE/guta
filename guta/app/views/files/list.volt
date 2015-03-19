@@ -110,24 +110,36 @@
 		<tbody>
 			{% for dir in directories %}
 				<tr>
-					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ dir['name'] }}" /></td>
+					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ dir['name'] ~ "/"}}" /></td>
 					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
 				</tr>
 			{% endfor %}
+            {% for dir in sharedDirectories %}
+                <tr>
+                    <td><input type="checkbox" id="{{ currentDir ~ "/" ~ dir['realPath'] ~ "/"}}" disabled="true"/></td>
+                    <td><span class="glyphicon glyphicon-folder-open">{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
+                    <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
 			{% for file in files %}
 				<tr class="downloadable">
 					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['name']) }}" /></td>
 					<td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>
-
-					<!--td><span class="glyphicon glyphicon-file"> {{ link_to("files/view" ~ currentDir  ~ "/" ~ file['name'], file['name']) }}</span></td>
-					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
-					<td>{{ file['modifyDate'] }}</td-->
 				</tr>
 			{% endfor %}
+            {% for file in sharedFiles %}
+                <tr>
+                    <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
+                    <td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
+                    <td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
+                    <td>{{ file['modifyDate'] }}</td>
+                </tr>
+            {% endfor %}
 		</tbody>
 	</table>
 </div>

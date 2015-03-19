@@ -58,7 +58,7 @@ menu_click = function(object){
 		//We just check the checkbox and then go to the share modal
 		var checkbox;
 		clicked.find('input').each(function(){
-			checkbox = $(this);//.checked(true);
+			checkbox = $(this);
 		});
 		checkbox.prop('checked', true);
 		break;
