@@ -124,11 +124,17 @@ class FilesController extends Controller
                 if($file != ".." && $file != ".")
                     $size += $this->getDirSize($newPath);
             } else {
-                $size += filesize($path . "/" . $file);
+                $size += $this->getFileSize(filesize($path . "/" . $file));
             }
         }
 
         return $size;
+    }
+
+    public function getFileSize($bytes, $decimals = 2) {
+        $size = array('o','ko','Mo','Go','To');
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$size[$factor];
     }
 
 
@@ -164,6 +170,7 @@ class FilesController extends Controller
                     }
                 } else {
                     $size = filesize($pathDirectory . "/" . $file);
+                    $size = $this->getFileSize(filesize($pathDirectory . "/" . $file));
                     $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
                     array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
                 }
