@@ -41,11 +41,11 @@ menu_click = function(object){
 	var pos;
 	var target;
 	var folderPath;
-	var str = "view/";
-	clicked.find('a').each(function(){
-		pos = $(this).attr('href').indexOf(str);
-		target = $(this).attr('href').substring(pos + str.length).replace(/\//g, '¤');
-		folderPath = $(this).attr('href').substring(0, pos);
+	var str = "/";
+	clicked.find('input').each(function(){
+		pos = $(this).attr('id').indexOf(str);
+		target = $(this).attr('id').substring(pos + str.length).replace(/\//g, '¤');
+		folderPath = $(this).attr('id').substring(0, pos);
 	});
 	switch(object.attr('id')){
 	case 'download':
