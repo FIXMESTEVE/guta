@@ -110,7 +110,7 @@
 		<tbody>
 			{% for dir in directories %}
 				<tr>
-					<td><input type="checkbox" id="{{ currentDir ~ "/" ~ dir['name'] }}" /></td>
+					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) }}" /></td>
 					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
