@@ -68,7 +68,7 @@ class FilesController extends Controller
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
         $user = $this->session->get('auth')['idUser'];
-        $folder=".." . $ds . "app" . $ds . $storeFolder . $ds . $user;
+        $folder=".." . $ds . ".." . $ds . $storeFolder . $ds . $user;
         error_log(getcwd());
         if(file_exists(realpath($folder.$ds.$fileName)))
         {   
@@ -80,8 +80,8 @@ class FilesController extends Controller
         //Redirection to stay in folder view
         $names = explode('\\', $fileName);
         array_pop($names);
-        $folder = implode('\\', $names);
-        $this->response->redirect("files/list/".$folder);
+        $folderView = implode('\\', $names);
+        $this->response->redirect("files/list/".$folderView);
         return;
     }
 

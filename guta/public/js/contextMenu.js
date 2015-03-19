@@ -41,11 +41,11 @@ menu_click = function(object){
 	var pos;
 	var target;
 	var folderPath;
-	var str = "/";
+	var str = "files/";
 	clicked.find('input').each(function(){
 		pos = $(this).attr('id').indexOf(str);
 		target = $(this).attr('id').substring(pos + str.length).replace(/\//g, '¤');
-		folderPath = $(this).attr('id').substring(0, pos);
+		folderPath = $(this).attr('id').substring(0, pos) + "files/";
 	});
 	switch(object.attr('id')){
 	case 'download':
