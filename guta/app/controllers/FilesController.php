@@ -92,7 +92,8 @@ class FilesController extends Controller
         $storeFolder = "uploadedFiles"; //same as upload
         $user = $this->session->get('auth')['idUser'];; 
         //Force the download of a file
-        $file=".." . $ds . "app" . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+        $file=".." . $ds . ".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+        
         if(file_exists(realpath($file)))
         {
             header('Content-Description: File Transfer');
@@ -236,16 +237,18 @@ class FilesController extends Controller
             $Parsedown = new Parsedown();
             $Parsedown->text('Hello _Parsedown_!')
         */
-        $response->setContent(json_encode($onlinePath));
+        $response->setContent(json_encode($data));
 
         return $response;
     }
 
     public function viewPDFAction($path){
+        // Enlève vue (menu...)
         $this->view->disable();
 
         $path = str_replace("{}", "/", $path);
 
+        // Affiche le pdf
         $file = $path;
         $filename = 'toto.pdf';
         header('Content-type: application/pdf');
