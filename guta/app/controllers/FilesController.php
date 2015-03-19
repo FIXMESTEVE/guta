@@ -144,6 +144,15 @@ class FilesController extends Controller
         $dirArray = array();
         $fileArray = array();
 
+        //Searching for the shared files/directories
+        $userId = $this->session->get('auth')['idUser'];
+        $sharedfiles = Sharedfile::findByIdUser($userId);
+        foreach ($sharedfiles as $sharedfile) {
+            echo $sharedfile->path;
+        }
+        //$query = $this->modelsManager->createQuery("SELECT * FROM Sharedfile where id_user=:userId:");
+        //$sharedfiles = $query->execute(array('userId' => $userId));
+
         // Get the folder path  with userPath as the folder root for the user.
         $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
         if($pos)
