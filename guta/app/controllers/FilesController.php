@@ -146,7 +146,7 @@ class FilesController extends Controller
         $pathDirectory = urldecode($this->persistent->userPath . $directory);
 
         if(!is_dir($pathDirectory)) {
-            $pathDirectory = urldecode($this->persistent->userPath);
+            $this->response->redirect("Files/list/");
         }
 
         $files = scandir($pathDirectory);

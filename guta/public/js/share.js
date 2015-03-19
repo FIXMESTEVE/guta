@@ -12,5 +12,5 @@ var share = function(){
 	var email = $('#inputEmail').val();
 
 	//On envoie en POST à file/share/
-	$.post("/guta/guta/files/share", { paths: files, userMail: email });
+	$.post("/guta/guta/Files/share", { paths: files, userMail: email });
 }
