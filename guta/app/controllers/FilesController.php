@@ -92,8 +92,8 @@ class FilesController extends Controller
         $storeFolder = "uploadedFiles"; //same as upload
         $user = $this->session->get('auth')['idUser'];; 
         //Force the download of a file
-        $file=".." . $ds . ".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
-        
+        $file=".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+
         if(file_exists(realpath($file)))
         {
             header('Content-Description: File Transfer');
