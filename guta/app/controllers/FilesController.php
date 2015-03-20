@@ -124,11 +124,17 @@ class FilesController extends Controller
                 if($file != ".." && $file != ".")
                     $size += $this->getDirSize($newPath);
             } else {
-                $size += filesize($path . "/" . $file);
+                $size += $this->getFileSize(filesize($path . "/" . $file));
             }
         }
 
         return $size;
+    }
+
+    public function getFileSize($bytes, $decimals = 2) {
+        $size = array('o','ko','Mo','Go','To');
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$size[$factor];
     }
 
 
@@ -166,6 +172,7 @@ class FilesController extends Controller
                     }
                 } else {
                     $size = filesize($pathDirectory . "/" . $file);
+                    $size = $this->getFileSize(filesize($pathDirectory . "/" . $file));
                     $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
                     array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
                 }
@@ -408,27 +415,40 @@ class FilesController extends Controller
         $email = $this->request->getPost("userMail");
 
         if($userShare = User::findFirstByemail($email)) {
-            $sharedPaths = $this->request->getPost("paths");
+            if($userId == $userShare->idUser) {
+                $this->response->setJsonContent(array('message' => "Désolé, il n'est pas possible de partager avec soit-même..."));
+                return $this->response;
+            }
 
-            foreach ($sharedPaths as $path) {
-                if($sharedFile = Sharedfile::findFirstBypath($path)) {
-                    if($sharedFile->id_user == $userShare->idUser) {
-                        $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur'));
+            $sharedPaths = $this->request->getPost("paths");
+            if($sharedPaths) {  
+                foreach ($sharedPaths as $path) {
+                    if($sharedFile = Sharedfile::findFirstBypath($path)) {
+                        if($sharedFile->id_user == $userShare->idUser) {
+                            $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur'));
+                        } else {
+                            $sharedFile = new Sharedfile();
+                            $sharedFile->id_user = $userShare->idUser;
+                            $sharedFile->path = $path;
+                            $sharedFile->id_owner = $userId;
+                        }
+                    } else {
+                        $sharedFile = new Sharedfile();
+                        $sharedFile->id_user = $userShare->idUser;
+                        $sharedFile->path = $path;
+                        $sharedFile->id_owner = $userId;
+                    }
+                    if(!$sharedFile->save()) {
+                        $this->response->setJsonContent(array('message' => 'Erreur lors du partage'));
                         return $this->response;
-                    }   
-                } else {
-                    $sharedFile = new Sharedfile();
-                    $sharedFile->id_user = $userShare->idUser;
-                    $sharedFile->path = $path;
-                    $sharedFile->id_owner = $userId;
+                    }
                 }
-                if(!$sharedFile->save())
-                    $this->flash->error("Erreur lors du partage.");
-                else
-                    $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Partage réussi !'));
+                $this->response->setJsonContent(array('message' => 'Partage réussi !'));
+            } else {
+                $this->response->setJsonContent(array('message' => "Vous n'avez rien séléctionné !"));
             }
         } else {
-            $this->response->setJsonContent(array('status' => 'ERROR', 'message' => 'Mail invalide'));
+            $this->response->setJsonContent(array('message' => 'Mail invalide'));
         }
         return $this->response;
     }
