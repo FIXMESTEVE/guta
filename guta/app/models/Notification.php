@@ -11,10 +11,6 @@ class Notification extends \Phalcon\Mvc\Model
      */
     public $idNotification;
 
-    /**
-     *
-     * @var string
-     */
     public $date;
 
     /**
@@ -47,12 +43,17 @@ class Notification extends \Phalcon\Mvc\Model
 
         $this->validate(new PresenceOf([
           'field' => 'unread',
-          'message' => 'Un booléen idiquant la lecture de la notif est nécessaire'
+          'message' => 'Un booléen indiquant la lecture de la notif est nécessaire'
         ]));
 
         if ($this->validationHasFailed() == true) {
             return false;
         }
+    }
+
+    public function beforeValidationOnCreate()
+    {
+        $this->date = date('Y-m-d H:i:s');
     }
 
     /**
@@ -62,4 +63,5 @@ class Notification extends \Phalcon\Mvc\Model
     {
         $this->setSource('Notification');
     }
+
 }

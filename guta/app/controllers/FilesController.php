@@ -431,25 +431,43 @@ class FilesController extends Controller
                             $sharedFile->id_user = $userShare->idUser;
                             $sharedFile->path = $path;
                             $sharedFile->id_owner = $userId;
+                            $this->response->setJsonContent(array('message' => 'Partage réussi !'));
+
                         }
                     } else {
                         $sharedFile = new Sharedfile();
                         $sharedFile->id_user = $userShare->idUser;
                         $sharedFile->path = $path;
                         $sharedFile->id_owner = $userId;
+                        $this->response->setJsonContent(array('message' => 'Partage réussi !'));
                     }
                     if(!$sharedFile->save()) {
                         $this->response->setJsonContent(array('message' => 'Erreur lors du partage'));
                         return $this->response;
+                    } else {
+                        $notif = new Notification();
+                        $pathArray = explode('/', $sharedFile->path);
+                        $elemShared = array_pop($pathArray);
+                        $notif->message = $this->session->get('auth')['login'] . " a partage " . $elemShared . " avec vous.";
+                        $notif->unread = true;
+                        $notif->id_SharedFile = $sharedFile->idShared_File;
+                        if(!$notif->save()) {
+                            $this->response->setJsonContent(array('message' => "TEST"));
+                            foreach ($notif->getMessages() as $message) { 
+                                $this->flash->error($message);
+                            }
+                        }
                     }
                 }
-                $this->response->setJsonContent(array('message' => 'Partage réussi !'));
             } else {
                 $this->response->setJsonContent(array('message' => "Vous n'avez rien séléctionné !"));
+                return $this->response;
             }
         } else {
             $this->response->setJsonContent(array('message' => 'Mail invalide'));
+            return $this->response;
         }
+
         return $this->response;
     }
 }
