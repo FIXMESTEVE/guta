@@ -137,7 +137,6 @@ class FilesController extends Controller
         return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$size[$factor];
     }
 
-
     public function listAction($directory = null)
     {
         $directoryArray = array();
@@ -146,72 +145,101 @@ class FilesController extends Controller
         $sharedFiles = array();
         $sharedDirectories = array();
 
+        $owner = null;
+        $inSharedDirectory = false;
+
         // Get the folder path  with userPath as the folder root for the user.
         $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
         if($pos)
             $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
         
-        $pathDirectory = urldecode($this->persistent->userPath . $directory);
+        // Checking if in a shared directory and redirecting the path accordingly
+        if(is_numeric(current(explode('/', $directory)))) {
+            $owner = current(explode('/', $directory));
+            $inSharedDirectory = true;
+            $pathDirectory = urldecode($this->persistent->userPath . "../" . $directory);
+        }
+        else {
+            $pathDirectory = urldecode($this->persistent->userPath . $directory);
+        }
 
+        // If url wrong or access refused (not a shared directory)
+        /*var_dump($directory);
+        $query = $this->modelsManager->createQuery(
+            'SELECT * FROM sharedfile WHERE id_owner = :owner: AND id_user = :user: AND path LIKE :path:\% ESCAPE \ ');
+        $result = $query->execute(array(
+            'owner' => $owner,
+            'user' => $this->session->get('auth')['idUser'],
+            'path' => $directory
+        ));
+        foreach ($result as $sharedPath) {
+            var_dump($sharedPath->id_owner . "/" . $sharedPath->path);
+        }*/
         if(!is_dir($pathDirectory)) {
-            $this->response->redirect("Files/list/");
+            $this->response->redirect("files/list/");
         }
 
         $files = scandir($pathDirectory);
-
         $directory = rtrim(ltrim($directory, '/'), '/');
+        //Searching for files/directories in directory and putting them in arrays for view
         foreach ($files as $file) {            
             if($file != '.'){
                 if (is_dir($pathDirectory . "/" . $file)) {
-                    if(!(strlen($directory) == 0 && $file == "..")) {
+                    $size = null;
+                    if(!(strlen($directory) == 0 && $file == "..")){
                         if($file != ".." && $file != ".")
                             $size = $this->getDirSize($pathDirectory . "/" . $file);
                         else
                             $size = null;
-                        array_push($dirArray, array('name' => $file, 'size' => $size));
-                    }
+                        }
+                        if(!$inSharedDirectory)
+                            array_push($dirArray, array('name' => $file, 'size' => $size));
+                        else
+                            array_push($sharedDirectories, array('realPath' => $file, 'name' => $file, 'size' => $size));
                 } else {
-                    $size = filesize($pathDirectory . "/" . $file);
                     $size = $this->getFileSize(filesize($pathDirectory . "/" . $file));
                     $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
-                    array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
+                    if(!$inSharedDirectory)
+                        array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
+                    else
+                        array_push($sharedFiles, array('realPath' => $file, 'name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
                 }
             }
         }
-
-        //Searching for the shared files/directories
-        $userId = $this->session->get('auth')['idUser'];
-        $query = Sharedfile::findByIdUser($userId);
-        foreach ($query as $sharedpath) {
-            $physicalPath = $this->persistent->userPath . "../" .  $sharedpath->id_owner . '/' . $sharedpath->path;
-            $pathArray = explode('/', $sharedpath->path);
-            if(is_dir($sharedpath->path)){
-                array_push($sharedDirectories, array(
-                    'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
-                    'name' => array_pop($pathArray),
-                    'size' => $this->getDirSize($physicalPath)
-                    ));
-            }
-            else {
-                $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
-                array_push($sharedFiles, array(
-                    'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
-                    'name' => array_pop($pathArray),
-                    'size' => filesize($physicalPath),
-                    'modifyDate' => $modifyDate
-                    ));
+        //Searching for the shared files/directories and putting them in arrays for view
+        if($directory == null){
+            $userId = $this->session->get('auth')['idUser'];
+            $query = Sharedfile::findByIdUser($userId);
+            foreach ($query as $sharedpath) {
+                $physicalPath = $this->persistent->userPath . "../" .  $sharedpath->id_owner . '/' . $sharedpath->path;
+                $pathArray = explode('/', $sharedpath->path);
+                if(is_dir($physicalPath)){
+                    end($pathArray);
+                    array_push($sharedDirectories, array(
+                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                        'name' => prev($pathArray),
+                        'size' => $this->getDirSize($physicalPath)
+                        ));
+                }
+                else {
+                    $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
+                    array_push($sharedFiles, array(
+                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                        'name' => array_pop($pathArray),
+                        'size' => filesize($physicalPath),
+                        'modifyDate' => $modifyDate
+                        ));
+                }
             }
         }
-
         sort($dirArray);
         sort($fileArray);
 
         if($directory != null)
             $directory = "/" . $directory;
-        
+
         $this->view->currentDir = $directory;
-        error_log("currentDir ".$this->view->currentDir);
-        
+        //var_dump("currentDir : ".$this->view->currentDir);
 
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
