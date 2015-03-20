@@ -110,7 +110,7 @@
 		<tbody>
 			{% for dir in directories %}
 				<tr>
-					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) }}" /></td>
+					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" /></td>
 					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
@@ -118,8 +118,8 @@
 			{% endfor %}
             {% for dir in sharedDirectories %}
                 <tr>
-                    <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'] ~ "/")}}" disabled="true"/></td>
-                    <td><span class="glyphicon glyphicon-folder-open">{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
+                    <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
+                    <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open">{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
                     <td></td>
                 </tr>
@@ -135,7 +135,7 @@
             {% for file in sharedFiles %}
                 <tr>
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
-                    <td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
+                    <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></span></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
                     <td>{{ file['modifyDate'] }}</td>
                 </tr>
