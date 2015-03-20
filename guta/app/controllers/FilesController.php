@@ -474,7 +474,8 @@ class FilesController extends Controller
                         return $this->response;
                     } else {
                         $notif = new Notification();
-                        $pathArray = explode('/', $sharedFile->path);
+                        $path = rtrim(ltrim($sharedFile->path, '/'), '/');
+                        $pathArray = explode('/', $path);
                         $elemShared = array_pop($pathArray);
                         $notif->message = $this->session->get('auth')['login'] . " a partage " . $elemShared . " avec vous.";
                         $notif->unread = true;

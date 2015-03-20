@@ -119,7 +119,7 @@
             {% for dir in sharedDirectories %}
                 <tr>
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
-                    <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open">{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
+                    <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
                     <td></td>
                 </tr>
