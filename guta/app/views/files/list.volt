@@ -97,6 +97,40 @@
     </div>
 </div>
 
+<!-- Modal previous versions of a file -->
+<div class="modal fade" id="myVersionsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    	<div class="modal-content">
+	       <div class="modal-header">
+	            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	            <h4 class="modal-title" id="myVersionsLabel">Versions</h4>
+	        </div>
+        
+        	<div class="modal-body">
+				<div class="table-responsive" id="versionsTable" style="display:inline;">
+					<thead>
+						<tr>
+							<th>Date et heure</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for ver in output %}
+							<tr>
+								<td>{{ ver }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--notification popup for copied files -->
+<div id="copyNotification" style="display: none;">
+  <span class="dismiss"><a title="dismiss this notification">X</a></span>
+</div>
+
 
 <!-- Vue liste -->
 <div class="table-responsive" id="listViewTable" style="display:inline;">

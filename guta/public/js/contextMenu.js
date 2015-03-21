@@ -31,10 +31,22 @@ menu = function(){
 	string += "<li class='share'><a id='share' class='menulink' href='#myShareModal' data-toggle='modal'>Partager</a></li>"
 	string += "<li class='divider'></li>";
 	string += "<li><a id='delete' class='menulink' href=''>Supprimer</a></li>"
+	string += "<li><a id='copy' class='menulink' href=''>Copier</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
 }
+
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+
 
 //Associate the actions of the contextual menu here
 menu_click = function(object){
@@ -53,6 +65,15 @@ menu_click = function(object){
 		break;
 	case 'delete':
 		$(location).attr('href', folderPath + "delete/" + target);
+		break;
+	case 'copy':
+		httpGet(folderPath + "copy/" + target);
+
+		// taken from StackOverflow, by Anu - SO
+		$("#copyNotification").fadeIn("slow").append('Fichier copié');
+		$(".dismiss").click(function(){
+		       $("#copyNotification").fadeOut("slow");
+		});
 		break;
 	case 'share':
 		//We just check the checkbox and then go to the share modal

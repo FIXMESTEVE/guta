@@ -177,17 +177,46 @@ class FilesController extends Controller
             $directory = "/" . $directory;
         
         $this->view->currentDir = $directory;
-        error_log("currentDir ".$this->view->currentDir);
-        
-
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
         $this->view->shareInfo = null;
-
     }
 
     public function viewAction($directory = null) {
         
+    }
+
+    public function copyAction($fileSubPath){
+        $ds = DIRECTORY_SEPARATOR;
+        $user = $this->session->get('auth')['idUser'];
+        $fileSubPath = urldecode(str_replace('¤', $ds, $fileSubPath));
+        //$this->session->set("copiedPath", $user.$ds.$fileSubPath);
+        //error_log($this->session->get('copiedPath'));
+        $this->persistent->copiedPath = $user.$ds.$fileSubPath;
+        //$this->response->redirect('files/list/');
+        //$this->view->disable();
+    }
+
+    public function pasteAction($destSubPath){
+        $ds = DIRECTORY_SEPARATOR;
+        $user = $this->session->get('auth')['idUser'];
+        $destSubPath = urldecode(str_replace('¤', $ds, $destSubPath));
+        $dest = $user.$ds.$destSubPath.$ds.".";
+        exec("cp ".$this->persistent->copiedPath." ".$dest);
+    }
+
+    public function getVersionsAction($fileName = null){
+        $fileName = str_replace('¤', '\\', $fileName);
+        $ds = DIRECTORY_SEPARATOR;
+        $storeFolder = "uploadedFiles"; //same as upload
+        $user = $this->session->get('auth')['idUser'];; 
+        //Force the download of a file
+        $file=".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+
+        exec("svn log -q ".$file." | grep '^r' | cut -f5,6 -d' '", $output, $returnvalue);
+
+        $this->view->output = $output;
+        var_dump($output);
     }
 
     public function getFileAction($path){
