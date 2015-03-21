@@ -1,5 +1,6 @@
 html,body {
   height:100%;
+  background-color: yellow;
 }
 
 h1 {
@@ -57,9 +58,9 @@ h4{
   margin: 40px 30px 0px 30px;
 }
 
-.btn-group{
+/*.btn-group{
   margin-right: 10%;
-}
+}*/
 
 #avatar{
     display: inline-block;
@@ -117,10 +118,9 @@ h4{
 }
 
 .row .thumbnail{
-  width: 200px;
+  width: 210px;
   height: 210px;
 }
-
 
 .row .thumbnail:hover{
   background-color: #F5F5F5;
@@ -135,7 +135,7 @@ h4{
   display:inline-block;
   white-space: nowrap; 
   size: 14px;
-  width: 160px;
+  width: 155px;
   overflow: hidden;
   text-overflow: ellipsis;
   color: #000000;

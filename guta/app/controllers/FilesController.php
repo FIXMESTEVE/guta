@@ -124,62 +124,127 @@ class FilesController extends Controller
                 if($file != ".." && $file != ".")
                     $size += $this->getDirSize($newPath);
             } else {
-                $size += filesize($path . "/" . $file);
+                $size += $this->getFileSize(filesize($path . "/" . $file));
             }
         }
 
         return $size;
     }
 
+    public function getFileSize($bytes, $decimals = 2) {
+        $size = array('o','ko','Mo','Go','To');
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$size[$factor];
+    }
 
     public function listAction($directory = null)
     {
         $directoryArray = array();
         $dirArray = array();
         $fileArray = array();
+        $sharedFiles = array();
+        $sharedDirectories = array();
+
+        $owner = null;
+        $inSharedDirectory = false;
 
         // Get the folder path  with userPath as the folder root for the user.
         $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
         if($pos)
             $directory = urldecode(substr($_SERVER['REQUEST_URI'], $pos));  
         
-        $pathDirectory = urldecode($this->persistent->userPath . $directory);
+        // Checking if in a shared directory and redirecting the path accordingly
+        if(is_numeric(current(explode('/', $directory)))) {
+            $owner = current(explode('/', $directory));
+            $inSharedDirectory = true;
+            $pathDirectory = urldecode($this->persistent->userPath . "../" . $directory);
+        }
+        else {
+            $pathDirectory = urldecode($this->persistent->userPath . $directory);
+        }
 
+        // If url wrong or access refused (not a shared directory)
+        /*var_dump($directory);
+        $query = $this->modelsManager->createQuery(
+            'SELECT * FROM sharedfile WHERE id_owner = :owner: AND id_user = :user: AND path LIKE :path:\% ESCAPE \ ');
+        $result = $query->execute(array(
+            'owner' => $owner,
+            'user' => $this->session->get('auth')['idUser'],
+            'path' => $directory
+        ));
+        foreach ($result as $sharedPath) {
+            var_dump($sharedPath->id_owner . "/" . $sharedPath->path);
+        }*/
         if(!is_dir($pathDirectory)) {
-            $pathDirectory = urldecode($this->persistent->userPath);
+            $this->response->redirect("files/list/");
         }
 
         $files = scandir($pathDirectory);
-
         $directory = rtrim(ltrim($directory, '/'), '/');
+        //Searching for files/directories in directory and putting them in arrays for view
         foreach ($files as $file) {            
             if($file != '.'){
                 if (is_dir($pathDirectory . "/" . $file)) {
-                    if(!(strlen($directory) == 0 && $file == "..")) {
+                    $size = null;
+                    if(!(strlen($directory) == 0 && $file == "..")){
                         if($file != ".." && $file != ".")
                             $size = $this->getDirSize($pathDirectory . "/" . $file);
                         else
                             $size = null;
-                        array_push($dirArray, array('name' => $file, 'size' => $size));
-                    }
+                        }
+                        if(!$inSharedDirectory)
+                            array_push($dirArray, array('name' => $file, 'size' => $size));
+                        else
+                            array_push($sharedDirectories, array('realPath' => $file, 'name' => $file, 'size' => $size));
                 } else {
-                    $size = filesize($pathDirectory . "/" . $file);
+                    $size = $this->getFileSize(filesize($pathDirectory . "/" . $file));
                     $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
-                    array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
+                    if(!$inSharedDirectory)
+                        array_push($fileArray, array('name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
+                    else
+                        array_push($sharedFiles, array('realPath' => $file, 'name' => $file, 'size' => $size, 'modifyDate' => $modifyDate));
                 }
             }
         }
-
+        //Searching for the shared files/directories and putting them in arrays for view
+        if($directory == null){
+            $userId = $this->session->get('auth')['idUser'];
+            $query = Sharedfile::findByIdUser($userId);
+            foreach ($query as $sharedpath) {
+                $physicalPath = $this->persistent->userPath . "../" .  $sharedpath->id_owner . '/' . $sharedpath->path;
+                $pathArray = explode('/', $sharedpath->path);
+                if(is_dir($physicalPath)){
+                    end($pathArray);
+                    array_push($sharedDirectories, array(
+                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                        'name' => prev($pathArray),
+                        'size' => $this->getDirSize($physicalPath)
+                        ));
+                }
+                else {
+                    $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
+                    array_push($sharedFiles, array(
+                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                        'name' => array_pop($pathArray),
+                        'size' => filesize($physicalPath),
+                        'modifyDate' => $modifyDate
+                        ));
+                }
+            }
+        }
         sort($dirArray);
         sort($fileArray);
 
         if($directory != null)
             $directory = "/" . $directory;
-        
+
         $this->view->currentDir = $directory;
+        //var_dump("currentDir : ".$this->view->currentDir);
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
         $this->view->shareInfo = null;
+        $this->view->sharedFiles = $sharedFiles;
+        $this->view->sharedDirectories = $sharedDirectories;
     }
 
     public function viewAction($directory = null) {
@@ -223,51 +288,42 @@ class FilesController extends Controller
         $this->view->disable();
         $response = new \Phalcon\Http\Response();
 
-        $oldPath = $path;
         $ds = DIRECTORY_SEPARATOR;
-        $olds = "/";
 
         $path = str_replace("{}", $ds, $path);
-        $olpath = str_replace("{}", "/", $oldPath);
 
-        $userID = $this->session->get('auth')['idUser'];; //the user who signed in
+        $userID = $this->session->get('auth')['idUser']; //the user who signed in
         
         $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" . $ds . $userID . $path;
-        
-        $onlinePath = "http://localhost/ped/guta/uploadedFiles/". $userID . $olpath;
-        
-        $image = getimagesize($onlinePath) ? true : false;
+
+        $image = getimagesize($targetPath) ? true : false;
         $ext = pathinfo($targetPath, PATHINFO_EXTENSION);
 
-        $data = file_get_contents($targetPath, FILE_USE_INCLUDE_PATH);
-
-        if($ext == "html"){
-            $data = str_replace("&", "&amp", $data);
-            $data = str_replace("<", "&lt", $data);
-            $data = str_replace(">", "&gt", $data);
-        }else if($ext == "md"){
-            $Parsedown = new Parsedown();
-            $data = $Parsedown->text($data);
-        }else if($ext == "php" || $ext == "doc" || $ext == "docx"){
-            $data = "Fichiers non pris en chargent !" ;
+        if($ext == "php" || $ext == "doc" || $ext == "docx"){
+            $data = "Fichier non pris en charge !" ;
         }else if($ext == "pdf"){
-            $pdfPath = $onlinePath;
-            $pdfPath = str_replace("/", "{}", $pdfPath);
-            $data = '<a target="_blank" href="http://localhost/ped/guta/guta/files/viewPDF/' . $pdfPath . '" style="color: black;"> Visionner le fichier PDF </a>';
+            $pdfPath = $targetPath;
+            $pdfPath = str_replace($ds, "{}", $pdfPath);
+            $data = '<a target="_blank" href="' . $this->url->getBaseUri() .'files/viewPDF/' . $pdfPath . '" style="color: black;"> Visionner le fichier PDF </a>';
+        }else if($image || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "gif"){
+            $imgpath = $targetPath;
+            $imgpath = str_replace($ds, "{}", $imgpath);
+            $data = '<img style="width: 100%" src="' . $this->url->getBaseUri() .'files/readFile/' . $imgpath . '"/>';
+        }else{
+            $data = file_get_contents($targetPath, FILE_USE_INCLUDE_PATH);
+            if($ext == "html"){
+                $data = str_replace("&", "&amp", $data);
+                $data = str_replace("<", "&lt", $data);
+                $data = str_replace(">", "&gt", $data);
+            }else if($ext == "md"){
+                $Parsedown = new Parsedown();
+                $data = $Parsedown->text($data);
+            }
+            $data = "<pre>" . $data . "</pre>" ;
         }
 
-        $data = "<pre>" . $data . "</pre>" ;
-
-        if($image){
-            $data = "<img style='width: 100%' src='" . $onlinePath . "' />";
-        }
-
-        /*  parser pour les fichiers md
-            $Parsedown = new Parsedown();
-            $Parsedown->text('Hello _Parsedown_!')
-        */
         $response->setContent(json_encode($data));
-
+        
         return $response;
     }
 
@@ -287,6 +343,12 @@ class FilesController extends Controller
         @readfile($file);
     }
 
+    public function readFileAction($path){
+        $this->view->disable();
+        $path = str_replace("{}", DIRECTORY_SEPARATOR, $path);
+        readfile($path);
+    }
+
     /**
      * Creation of a new folder by the user.
      *
@@ -295,7 +357,6 @@ class FilesController extends Controller
     public function createFolderAction($folderpath = null) {
 
         if ($this->request->isPost()) {
-
             // Get the name of the new folder.
             $foldername = urldecode($this->request->getPost("foldername"));
             if ($foldername == null) {
@@ -406,27 +467,60 @@ class FilesController extends Controller
         $email = $this->request->getPost("userMail");
 
         if($userShare = User::findFirstByemail($email)) {
-        
-            $sharedPaths = $this->request->getPost("paths");
+            if($userId == $userShare->idUser) {
+                $this->response->setJsonContent(array('message' => "Désolé, il n'est pas possible de partager avec soit-même..."));
+                return $this->response;
+            }
 
-            foreach ($sharedPaths as $path) {
-                if($sharedFile = Sharedfile::findFirstBypath($path)) {
-                    if($sharedFile->id_user == $userShare->idUser) {
-                        $this->view->shareInfo = "Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur";
-                        return;
-                    }   
-                } else {
-                    $sharedFile = new Sharedfile();
-                    $sharedFile->id_user = $userShare->idUser;
-                    $sharedFile->path = $path;
-                    $sharedFile->id_owner = $userId;
+            $sharedPaths = $this->request->getPost("paths");
+            if($sharedPaths) {  
+                foreach ($sharedPaths as $path) {
+                    if($sharedFile = Sharedfile::findFirstBypath($path)) {
+                        if($sharedFile->id_user == $userShare->idUser) {
+                            $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur'));
+                        } else {
+                            $sharedFile = new Sharedfile();
+                            $sharedFile->id_user = $userShare->idUser;
+                            $sharedFile->path = $path;
+                            $sharedFile->id_owner = $userId;
+                            $this->response->setJsonContent(array('message' => 'Partage réussi !'));
+
+                        }
+                    } else {
+                        $sharedFile = new Sharedfile();
+                        $sharedFile->id_user = $userShare->idUser;
+                        $sharedFile->path = $path;
+                        $sharedFile->id_owner = $userId;
+                        $this->response->setJsonContent(array('message' => 'Partage réussi !'));
+                    }
+                    if(!$sharedFile->save()) {
+                        $this->response->setJsonContent(array('message' => 'Erreur lors du partage'));
+                        return $this->response;
+                    } else {
+                        $notif = new Notification();
+                        $path = rtrim(ltrim($sharedFile->path, '/'), '/');
+                        $pathArray = explode('/', $path);
+                        $elemShared = array_pop($pathArray);
+                        $notif->message = $this->session->get('auth')['login'] . " a partage " . $elemShared . " avec vous.";
+                        $notif->unread = true;
+                        $notif->id_SharedFile = $sharedFile->idShared_File;
+                        if(!$notif->save()) {
+                            $this->response->setJsonContent(array('message' => "TEST"));
+                            foreach ($notif->getMessages() as $message) { 
+                                $this->flash->error($message);
+                            }
+                        }
+                    }
                 }
-                $sharedFile->save();
-                $this->view->shareInfo = "Partage réussi";
+            } else {
+                $this->response->setJsonContent(array('message' => "Vous n'avez rien séléctionné !"));
+                return $this->response;
             }
         } else {
-             $this->view->shareInfo = "Adresse mail non valide";
+            $this->response->setJsonContent(array('message' => 'Mail invalide'));
+            return $this->response;
         }
-    }
 
+        return $this->response;
+    }
 }
