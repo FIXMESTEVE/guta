@@ -1,5 +1,6 @@
 html,body {
   height:100%;
+  background-color: yellow;
 }
 
 h1 {
@@ -112,15 +113,14 @@ h4{
 
 /* Affichage liste-icône */
 .row .bloc{
-  width: 230px;
+  width: 210px;
   height: 230px;
 }
 
 .row .thumbnail{
-  width: 230px;
+  width: 210px;
   height: 210px;
 }
-
 
 .row .thumbnail:hover{
   background-color: #F5F5F5;
@@ -135,7 +135,7 @@ h4{
   display:inline-block;
   white-space: nowrap; 
   size: 14px;
-  width: 200px;
+  width: 155px;
   overflow: hidden;
   text-overflow: ellipsis;
   color: #000000;

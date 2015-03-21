@@ -9,7 +9,8 @@ class UserController extends ControllerBase
     {
         $this->assets
             ->addCss("css/bootstrap.min.css")
-            ->addCss("css/design.css");
+            ->addCss("css/design.css")
+            ->addCss("css/hideMenuIcone.css");
 
         $this->assets
             ->addJs("js/jquery-1.11.2.min.js")

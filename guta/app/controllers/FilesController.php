@@ -194,54 +194,41 @@ class FilesController extends Controller
         $this->view->disable();
         $response = new \Phalcon\Http\Response();
 
-        $oldPath = $path;
         $ds = DIRECTORY_SEPARATOR;
-        $olds = "/";
 
         $path = str_replace("{}", $ds, $path);
-        $olpath = str_replace("{}", "/", $oldPath);
 
         $userID = $this->session->get('auth')['idUser']; //the user who signed in
         
         $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" . $ds . $userID . $path;
-        
-        $onlinePath = "http://localhost/ped/guta/uploadedFiles/". $userID . $olpath;
-        
-        $image = getimagesize($onlinePath) ? true : false;
+
+        $image = getimagesize($targetPath) ? true : false;
         $ext = pathinfo($targetPath, PATHINFO_EXTENSION);
 
-        $data = file_get_contents($targetPath, FILE_USE_INCLUDE_PATH);
-
-        if($ext == "html"){
-            $data = str_replace("&", "&amp", $data);
-            $data = str_replace("<", "&lt", $data);
-            $data = str_replace(">", "&gt", $data);
-        }else if($ext == "md"){
-            $Parsedown = new Parsedown();
-            $data = $Parsedown->text($data);
-        }else if($ext == "php" || $ext == "doc" || $ext == "docx"){
-            $data = "Fichiers non pris en chargent !" ;
+        if($ext == "php" || $ext == "doc" || $ext == "docx"){
+            $data = "Fichier non pris en charge !" ;
         }else if($ext == "pdf"){
-            $pdfPath = $onlinePath;
-            $pdfPath = str_replace("/", "{}", $pdfPath);
-            $data = '<a target="_blank" href="http://localhost/ped/guta/guta/files/viewPDF/' . $pdfPath . '" style="color: black;"> Visionner le fichier PDF </a>';
-        }
-        /*else if($ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "gif")
-            $data = "<img style='width: 100%' src='" . $onlinePath . "' />";*/
-        
-
-        $data = "<pre>" . $data . "</pre>" ;
-
-        if($image){
-            $data = "<img style='width: 100%' src='" . $onlinePath . "' />";
+            $pdfPath = $targetPath;
+            $pdfPath = str_replace($ds, "{}", $pdfPath);
+            $data = '<a target="_blank" href="' . $this->url->getBaseUri() .'files/viewPDF/' . $pdfPath . '" style="color: black;"> Visionner le fichier PDF </a>';
+        }else if($image || $ext == "png" || $ext == "jpg" || $ext == "jpeg" || $ext == "gif"){
+            $imgpath = $targetPath;
+            $imgpath = str_replace($ds, "{}", $imgpath);
+            $data = '<img style="width: 100%" src="' . $this->url->getBaseUri() .'files/readFile/' . $imgpath . '"/>';
+        }else{
+            $data = file_get_contents($targetPath, FILE_USE_INCLUDE_PATH);
+            if($ext == "html"){
+                $data = str_replace("&", "&amp", $data);
+                $data = str_replace("<", "&lt", $data);
+                $data = str_replace(">", "&gt", $data);
+            }else if($ext == "md"){
+                $Parsedown = new Parsedown();
+                $data = $Parsedown->text($data);
+            }
+            $data = "<pre>" . $data . "</pre>" ;
         }
 
         $response->setContent(json_encode($data));
-
-        /*  parser pour les fichiers md
-            $Parsedown = new Parsedown();
-            $Parsedown->text('Hello _Parsedown_!')
-        */
         
         return $response;
     }
@@ -262,6 +249,12 @@ class FilesController extends Controller
         @readfile($file);
     }
 
+    public function readFileAction($path){
+        $this->view->disable();
+        $path = str_replace("{}", DIRECTORY_SEPARATOR, $path);
+        readfile($path);
+    }
+
     /**
      * Creation of a new folder by the user.
      *
@@ -270,7 +263,6 @@ class FilesController extends Controller
     public function createFolderAction($folderpath = null) {
 
         if ($this->request->isPost()) {
-
             // Get the name of the new folder.
             $foldername = urldecode($this->request->getPost("foldername"));
             if ($foldername == null) {

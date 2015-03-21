@@ -2,9 +2,13 @@
 
 <h1 class="text-center">Mes fichiers</h1>
 
-<div class="btn-group pull-right" role="group" aria-label="..." style="margin-right:10%">
-  	<button type="button" class="btn btn-default" onClick="changeViewToList()"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>
-  	<button type="button" class="btn btn-default" onClick="changeViewToIcone()"><span class="glyphicon glyphicon-th" aria-hidden="true"></span></button>
+<div class="btn-group pull-right" role="group" aria-label="..." style="margin-right:10%" data-toggle="buttons">
+    <label class="btn btn-default active" id="toggledButtonList" onclick="changeViewToList()">
+        <input type="radio" class="btn btn-default" name="options" autocomplete="off" checked /><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+    </label>
+    <label class="btn btn-default" id="toggledButtonIcone" onclick="changeViewToIcone()">
+        <input type="radio" class="btn btn-default" name="options" autocomplete="off" /><span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+    </label>
 </div>
 
 {{ form('files/search', 'method': 'post', "class": "form-inline", "style": "width:340px;margin:0 auto;") }}
