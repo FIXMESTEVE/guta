@@ -155,7 +155,7 @@
 				</tr>
 			{% endfor %}
             {% for dir in sharedDirectories %}
-                <tr>
+                <tr class="shared">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
@@ -171,7 +171,7 @@
 				</tr>
 			{% endfor %}
             {% for file in sharedFiles %}
-                <tr class="downloadable">
+                <tr class="downloadable shared">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></span></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>

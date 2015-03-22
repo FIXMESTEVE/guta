@@ -15,6 +15,11 @@ $("tr").bind("contextmenu", function(event){
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
 	$("li.download").hide();
 });
+$("tr.shared").bind("contextmenu", function(event){
+	$("li.share").hide();
+	$("li.delete").hide();
+	$("li.copy").hide();
+});
 $("tr.downloadable").bind("contextmenu", function(event){
 	$("li.download").css({display: "block"});
 });
@@ -30,8 +35,8 @@ menu = function(){
 	string += "<li class='download'><a id='download' class='menulink' href=''>Télécharger</a></li>"
 	string += "<li class='share'><a id='share' class='menulink' href='#myShareModal' data-toggle='modal'>Partager</a></li>"
 	string += "<li class='divider'></li>";
-	string += "<li><a id='delete' class='menulink' href=''>Supprimer</a></li>"
-	string += "<li><a id='copy' class='menulink' href=''>Copier</a></li>"
+	string += "<li class='delete'><a id='delete' class='menulink' href=''>Supprimer</a></li>"
+	string += "<li class='copy'><a id='copy' class='menulink' href=''>Copier</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
