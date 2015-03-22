@@ -196,6 +196,7 @@ class FilesController extends Controller
             $accessGranted = true;
         if(!is_dir($pathDirectory) || !$accessGranted) {
             $this->response->redirect("files/list/");
+            return;
         }
 
         $files = scandir($pathDirectory);
@@ -210,11 +211,11 @@ class FilesController extends Controller
                             $size = $this->getDirSize($pathDirectory . "/" . $file);
                         else
                             $size = null;
-                        }
                         if(!$inSharedDirectory)
                             array_push($dirArray, array('name' => $file, 'size' => $size));
                         else
                             array_push($sharedDirectories, array('realPath' => $file, 'name' => $file, 'size' => $size));
+                    }
                 } else {
                     $size = $this->getFileSize(filesize($pathDirectory . "/" . $file));
                     $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
@@ -468,11 +469,14 @@ class FilesController extends Controller
             $name = substr(strrchr($file, '\\'), 1);
             $localPath = explode($this->persistent->userPath, $file);
             $localPath = $localPath[1];
-            
+            $localPath = str_replace('\\', '/', $localPath);
             if( is_dir($file) ){
                 $size = $this->getDirSize($file);
                 array_push($dirArray, array('name' => $name, 'size' => $size, 'path' => $localPath));
             } else {
+                $localPath = explode('/', $localPath);
+                array_pop($localPath);
+                $localPath = '/' . implode('/', $localPath);
                 $size = filesize($file);
                 $modifyDate = date ("d/m/Y H:i:s.", filemtime($file));
                 array_push($fileArray, array('name' => $name, 'size' => $size, 'modifyDate' => $modifyDate, 'path' => $localPath));
