@@ -231,23 +231,30 @@ class FilesController extends Controller
             $query = Sharedfile::findByIdUser($userId);
             foreach ($query as $sharedpath) {
                 $physicalPath = $this->persistent->userPath . "../" .  $sharedpath->id_owner . '/' . $sharedpath->path;
-                $pathArray = explode('/', $sharedpath->path);
-                if(is_dir($physicalPath)){
-                    end($pathArray);
-                    array_push($sharedDirectories, array(
-                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
-                        'name' => prev($pathArray),
-                        'size' => $this->getDirSize($physicalPath)
-                        ));
+                // In case owner deletes the shared file, we update the database
+                if(!file_exists($physicalPath)){
+                    //Delete database entry, maybe a notification could be good
+                    $sharedpath->delete();
                 }
-                else {
-                    $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
-                    array_push($sharedFiles, array(
-                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
-                        'name' => array_pop($pathArray),
-                        'size' => filesize($physicalPath),
-                        'modifyDate' => $modifyDate
+                else{
+                    $pathArray = explode('/', $sharedpath->path);
+                    if(is_dir($physicalPath)){
+                        end($pathArray);
+                        array_push($sharedDirectories, array(
+                            'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                            'name' => prev($pathArray),
+                            'size' => $this->getDirSize($physicalPath)
+                            ));
+                    }
+                    else {
+                        $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
+                        array_push($sharedFiles, array(
+                            'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                            'name' => array_pop($pathArray),
+                            'size' => filesize($physicalPath),
+                            'modifyDate' => $modifyDate
                         ));
+                    }
                 }
             }
         }

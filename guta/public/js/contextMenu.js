@@ -13,6 +13,9 @@ $("tr").bind("contextmenu", function(event){
 	event.preventDefault();
 	clicked = $(this);
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
+	$("li.share").css({display: "block"});
+	$("li.delete").css({display: "block"});
+	$("li.copy").css({display: "block"});
 	$("li.download").hide();
 });
 $("tr.shared").bind("contextmenu", function(event){
