@@ -90,9 +90,15 @@ class FilesController extends Controller
         $fileName = str_replace('¤', '\\', $fileName);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
-        $user = $this->session->get('auth')['idUser'];; 
+        $user = $this->session->get('auth')['idUser'];
         //Force the download of a file
-        $file=".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+        $file = ".." . $ds . ".." . $ds . $storeFolder . $ds;
+        // Check if we are in a another directory and changes the path accordingly
+        if(is_numeric(current(explode('\\', $fileName))))
+            $file .= $fileName;
+        else
+            $file .= $user . $ds . $fileName;
+        var_dump($file);
 
         if(file_exists(realpath($file)))
         {
@@ -108,7 +114,11 @@ class FilesController extends Controller
         }
         else
         {
-            echo "File not found";
+            $names = explode('\\', $fileName);
+            array_pop($names);
+            $folderView = implode('\\', $names);
+            $this->response->redirect("files/list/".$folderView);
+            return;
         }
     }
 
@@ -163,19 +173,28 @@ class FilesController extends Controller
             $pathDirectory = urldecode($this->persistent->userPath . $directory);
         }
 
-        // If url wrong or access refused (not a shared directory)
-        /*var_dump($directory);
-        $query = $this->modelsManager->createQuery(
-            'SELECT * FROM sharedfile WHERE id_owner = :owner: AND id_user = :user: AND path LIKE :path:\% ESCAPE \ ');
-        $result = $query->execute(array(
-            'owner' => $owner,
-            'user' => $this->session->get('auth')['idUser'],
-            'path' => $directory
-        ));
-        foreach ($result as $sharedPath) {
-            var_dump($sharedPath->id_owner . "/" . $sharedPath->path);
-        }*/
-        if(!is_dir($pathDirectory)) {
+        // Checking if we can go in a shared directory
+        if($owner != null){
+            $query = $this->modelsManager->createBuilder()
+                ->from('Sharedfile')
+                ->where('id_owner = :owner: AND id_user = :user:', ['owner' => $owner, 'user' => $this->session->get('auth')['idUser']])
+                ->getQuery();
+            $result = $query->execute(array(
+                'owner' => $owner,
+                'user' => $this->session->get('auth')['idUser'],
+            ));
+            $accessGranted = false;
+            foreach ($result as $sharedPath) {
+                $string = $sharedPath->id_owner . "/" . $sharedPath->path ;
+                if(substr_compare($string, $directory, 0, strlen($string)) == 0){
+                    $accessGranted = true;
+                    break;
+                }
+            }
+        }
+        else
+            $accessGranted = true;
+        if(!is_dir($pathDirectory) || !$accessGranted) {
             $this->response->redirect("files/list/");
         }
 
@@ -294,7 +313,11 @@ class FilesController extends Controller
 
         $userID = $this->session->get('auth')['idUser']; //the user who signed in
         
-        $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" . $ds . $userID . $path;
+        $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles";
+        if(is_numeric(next(explode($ds, $path))))
+            $targetPath .= $path;
+        else
+            $targetPath .= $ds . $userID . $path;
 
         $image = getimagesize($targetPath) ? true : false;
         $ext = pathinfo($targetPath, PATHINFO_EXTENSION);

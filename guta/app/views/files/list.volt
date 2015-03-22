@@ -171,7 +171,7 @@
 				</tr>
 			{% endfor %}
             {% for file in sharedFiles %}
-                <tr>
+                <tr class="downloadable">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></span></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
