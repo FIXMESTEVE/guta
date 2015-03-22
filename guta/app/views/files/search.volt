@@ -14,48 +14,6 @@
     </div>
 </div>
 
-<!-- Modal creation folder -->
-<div class='modal fade' id='myModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
-    <div class='modal-dialog'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-                <h4 class='modal-title' id='myModalLabel'>Nouveau dossier</h4>
-            </div>
-            {{ form('files/createFolder' ~ currentDir, 'method': 'post', 'class': 'col-lg-12', 'style': 'width:340px;margin:0 auto;') }}
-                <div class='modal-body'>
-                    <div class='form-group '>
-                        <label> Nom du dossier </label>
-                        <br><br>
-                        {{ text_field('foldername', 'class': 'form-control input-lg', 'id': 'inputUsername','placeholder':'Nom de dossier') }}
-                    </div>
-                </div>
-                <div class='modal-footer'>
-                    {{ submit_button('Valider', 'class':'btn btn-primary center-block') }}
-                </div>
-            {{ end_form() }}
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal upload -->
-<div class='modal fade' id='myUploadModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
-    <div class='modal-dialog'>
-        <div class='modal-content'>
-        <div class='modal-header'>
-                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-                <h4 class='modal-title' id='myUploadLabel'>Upload</h4>
-            </div>
-        
-            <div class='modal-body'>
-                {{ form('files/upload' ~ currentDir, 'method': 'post', 'class': 'dropzone') }}
-                {{end_form()}}
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal share -->
 <div class='modal fade' id='myShareModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
     <div class='modal-dialog'>
