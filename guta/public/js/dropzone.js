@@ -25,6 +25,12 @@
  *
  */
 
+//a simple modification to force reload in our software
+//not included in the original Dropzone.js script
+$('#myUploadModal').on('hidden.bs.modal', function () {
+  location.reload();
+});
+
 (function() {
   var Dropzone, Emitter, camelize, contentLoaded, detectVerticalSquash, drawImageIOSFix, noop, without,
     __slice = [].slice,
