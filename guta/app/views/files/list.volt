@@ -20,37 +20,37 @@
 <br><br>
 
 <!-- Modal affichage fichier -->
-<div class="modal fade" id="myFileModal" tabindex="-1" role="dialog" aria-labelledby="myFileModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myFileModalLabel"></h4>
+<div class='modal fade' id='myFileModal' tabindex='-1' role='dialog' aria-labelledby='myFileModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                <h4 class='modal-title' id='myFileModalLabel'></h4>
             </div>
-            <div id="fileModalBody">
+            <div id='fileModalBody'>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal creation folder -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Nouveau dossier</h4>
+<div class='modal fade' id='myModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                <h4 class='modal-title' id='myModalLabel'>Nouveau dossier</h4>
             </div>
-            {{ form('files/createFolder' ~ currentDir, 'method': 'post', "class": "col-lg-12", "style": "width:340px;margin:0 auto;") }}
-                <div class="modal-body">
-                    <div class="form-group ">
+            {{ form('files/createFolder' ~ currentDir, 'method': 'post', 'class': 'col-lg-12', 'style': 'width:340px;margin:0 auto;') }}
+                <div class='modal-body'>
+                    <div class='form-group '>
                         <label> Nom du dossier </label>
                         <br><br>
-                        {{ text_field("foldername", 'class': 'form-control input-lg', "id": "inputUsername","placeholder":"Nom de dossier") }}
+                        {{ text_field('foldername', 'class': 'form-control input-lg', 'id': 'inputUsername','placeholder':'Nom de dossier') }}
                     </div>
                 </div>
-                <div class="modal-footer">
-                    {{ submit_button('Valider', "class":"btn btn-primary center-block") }}
+                <div class='modal-footer'>
+                    {{ submit_button('Valider', 'class':'btn btn-primary center-block') }}
                 </div>
             {{ end_form() }}
         </div>
@@ -59,46 +59,79 @@
 
 
 <!-- Modal upload -->
-<div class="modal fade" id="myUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    	<div class="modal-content">
-	       <div class="modal-header">
-	            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	            <h4 class="modal-title" id="myUploadLabel">Upload</h4>
-	        </div>
+<div class='modal fade' id='myUploadModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+        <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                <h4 class='modal-title' id='myUploadLabel'>Upload</h4>
+            </div>
         
-        	<div class="modal-body">
-				{{ form("files/upload" ~ currentDir, 'method': 'post', "class": "dropzone") }}
-				{{end_form()}}
+            <div class='modal-body'>
+                {{ form('files/upload' ~ currentDir, 'method': 'post', 'class': 'dropzone') }}
+                {{end_form()}}
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal share -->
-<div class="modal fade" id="myShareModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Partager avec :</h4>
+<div class='modal fade' id='myShareModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                <h4 class='modal-title' id='myModalLabel'>Partager avec :</h4>
             </div>
-                <div class="modal-body">
-                    <div class="form-group ">
-                        <label for="mail">Adresse mail</label>
-                        {{ email_field("email","class": "form-control input-lg",  "id": "inputEmail", "placeholder": "Adresse mail") }}
+                <div class='modal-body'>
+                    <div class='form-group '>
+                        <label for='mail'>Adresse mail</label>
+                        {{ email_field('email','class': 'form-control input-lg',  'id': 'inputEmail', 'placeholder': 'Adresse mail') }}
                     </div>
-                    <div class="form-group ">	
-                    	<label id="shareInfo"></label>
-            		</div>
+                    <div class='form-group '>   
+                        <label id='shareInfo'></label>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary center-block" onclick="share()">Partager</button>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-primary center-block' onclick='share()'>Partager</button>
                 </div>
         </div>
     </div>
 </div>
 
+<!-- Modal previous versions of a file -->
+<div class='modal fade' id='myVersionsModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+        <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                <h4 class='modal-title' id='myVersionsLabel'>Versions</h4>
+            </div>
+        
+            <div class='modal-body'>
+                <div class='table-responsive' id='versionsTable' style='display:inline;'>
+                    <thead>
+                        <tr>
+                            <th>Date et heure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ver in output %}
+                            <tr>
+                                <td>{{ ver }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--notification popup for copied files -->
+<div id="copyNotification" style="display: none;">
+  <span class="dismiss"><a title="dismiss this notification">X</a></span>
+</div>
 
 <!-- Vue liste -->
 <div class="table-responsive" id="listViewTable" style="display:inline;">
@@ -121,7 +154,7 @@
 				</tr>
 			{% endfor %}
             {% for dir in sharedDirectories %}
-                <tr>
+                <tr class="shared">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
@@ -137,7 +170,7 @@
 				</tr>
 			{% endfor %}
             {% for file in sharedFiles %}
-                <tr>
+                <tr class="downloadable shared">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></span></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>

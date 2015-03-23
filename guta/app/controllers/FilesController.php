@@ -90,9 +90,15 @@ class FilesController extends Controller
         $fileName = str_replace('¤', '\\', $fileName);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
-        $user = $this->session->get('auth')['idUser'];; 
+        $user = $this->session->get('auth')['idUser'];
         //Force the download of a file
-        $file=".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+        $file = ".." . $ds . ".." . $ds . $storeFolder . $ds;
+        // Check if we are in a another directory and changes the path accordingly
+        if(is_numeric(current(explode('\\', $fileName))))
+            $file .= $fileName;
+        else
+            $file .= $user . $ds . $fileName;
+        var_dump($file);
 
         if(file_exists(realpath($file)))
         {
@@ -108,7 +114,11 @@ class FilesController extends Controller
         }
         else
         {
-            echo "File not found";
+            $names = explode('\\', $fileName);
+            array_pop($names);
+            $folderView = implode('\\', $names);
+            $this->response->redirect("files/list/".$folderView);
+            return;
         }
     }
 
@@ -163,20 +173,30 @@ class FilesController extends Controller
             $pathDirectory = urldecode($this->persistent->userPath . $directory);
         }
 
-        // If url wrong or access refused (not a shared directory)
-        /*var_dump($directory);
-        $query = $this->modelsManager->createQuery(
-            'SELECT * FROM sharedfile WHERE id_owner = :owner: AND id_user = :user: AND path LIKE :path:\% ESCAPE \ ');
-        $result = $query->execute(array(
-            'owner' => $owner,
-            'user' => $this->session->get('auth')['idUser'],
-            'path' => $directory
-        ));
-        foreach ($result as $sharedPath) {
-            var_dump($sharedPath->id_owner . "/" . $sharedPath->path);
-        }*/
-        if(!is_dir($pathDirectory)) {
+        // Checking if we can go in a shared directory
+        if($owner != null){
+            $query = $this->modelsManager->createBuilder()
+                ->from('Sharedfile')
+                ->where('id_owner = :owner: AND id_user = :user:', ['owner' => $owner, 'user' => $this->session->get('auth')['idUser']])
+                ->getQuery();
+            $result = $query->execute(array(
+                'owner' => $owner,
+                'user' => $this->session->get('auth')['idUser'],
+            ));
+            $accessGranted = false;
+            foreach ($result as $sharedPath) {
+                $string = $sharedPath->id_owner . "/" . $sharedPath->path ;
+                if(substr_compare($string, $directory, 0, strlen($string)) == 0){
+                    $accessGranted = true;
+                    break;
+                }
+            }
+        }
+        else
+            $accessGranted = true;
+        if(!is_dir($pathDirectory) || !$accessGranted) {
             $this->response->redirect("files/list/");
+            return;
         }
 
         $files = scandir($pathDirectory);
@@ -191,11 +211,11 @@ class FilesController extends Controller
                             $size = $this->getDirSize($pathDirectory . "/" . $file);
                         else
                             $size = null;
-                        }
                         if(!$inSharedDirectory)
                             array_push($dirArray, array('name' => $file, 'size' => $size));
                         else
                             array_push($sharedDirectories, array('realPath' => $file, 'name' => $file, 'size' => $size));
+                    }
                 } else {
                     $size = $this->getFileSize(filesize($pathDirectory . "/" . $file));
                     $modifyDate = date ("d/m/Y H:i:s.", filemtime($pathDirectory . "/" . $file));
@@ -212,23 +232,30 @@ class FilesController extends Controller
             $query = Sharedfile::findByIdUser($userId);
             foreach ($query as $sharedpath) {
                 $physicalPath = $this->persistent->userPath . "../" .  $sharedpath->id_owner . '/' . $sharedpath->path;
-                $pathArray = explode('/', $sharedpath->path);
-                if(is_dir($physicalPath)){
-                    end($pathArray);
-                    array_push($sharedDirectories, array(
-                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
-                        'name' => prev($pathArray),
-                        'size' => $this->getDirSize($physicalPath)
-                        ));
+                // In case owner deletes the shared file, we update the database
+                if(!file_exists($physicalPath)){
+                    //Delete database entry, maybe a notification could be good
+                    $sharedpath->delete();
                 }
-                else {
-                    $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
-                    array_push($sharedFiles, array(
-                        'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
-                        'name' => array_pop($pathArray),
-                        'size' => filesize($physicalPath),
-                        'modifyDate' => $modifyDate
+                else{
+                    $pathArray = explode('/', $sharedpath->path);
+                    if(is_dir($physicalPath)){
+                        end($pathArray);
+                        array_push($sharedDirectories, array(
+                            'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                            'name' => prev($pathArray),
+                            'size' => $this->getDirSize($physicalPath)
+                            ));
+                    }
+                    else {
+                        $modifyDate = date ("d/m/Y H:i:s.", filemtime($physicalPath));
+                        array_push($sharedFiles, array(
+                            'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
+                            'name' => array_pop($pathArray),
+                            'size' => filesize($physicalPath),
+                            'modifyDate' => $modifyDate
                         ));
+                    }
                 }
             }
         }
@@ -240,7 +267,6 @@ class FilesController extends Controller
 
         $this->view->currentDir = $directory;
         //var_dump("currentDir : ".$this->view->currentDir);
-
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
         $this->view->shareInfo = null;
@@ -250,6 +276,39 @@ class FilesController extends Controller
 
     public function viewAction($directory = null) {
         
+    }
+
+    public function copyAction($fileSubPath){
+        $ds = DIRECTORY_SEPARATOR;
+        $user = $this->session->get('auth')['idUser'];
+        $fileSubPath = urldecode(str_replace('¤', $ds, $fileSubPath));
+        //$this->session->set("copiedPath", $user.$ds.$fileSubPath);
+        //error_log($this->session->get('copiedPath'));
+        $this->persistent->copiedPath = $user.$ds.$fileSubPath;
+        //$this->response->redirect('files/list/');
+        //$this->view->disable();
+    }
+
+    public function pasteAction($destSubPath){
+        $ds = DIRECTORY_SEPARATOR;
+        $user = $this->session->get('auth')['idUser'];
+        $destSubPath = urldecode(str_replace('¤', $ds, $destSubPath));
+        $dest = $user.$ds.$destSubPath.$ds.".";
+        exec("cp ".$this->persistent->copiedPath." ".$dest);
+    }
+
+    public function getVersionsAction($fileName = null){
+        $fileName = str_replace('¤', '\\', $fileName);
+        $ds = DIRECTORY_SEPARATOR;
+        $storeFolder = "uploadedFiles"; //same as upload
+        $user = $this->session->get('auth')['idUser'];; 
+        //Force the download of a file
+        $file=".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
+
+        exec("svn log -q ".$file." | grep '^r' | cut -f5,6 -d' '", $output, $returnvalue);
+
+        $this->view->output = $output;
+        var_dump($output);
     }
 
     public function getFileAction($path){
@@ -262,7 +321,11 @@ class FilesController extends Controller
 
         $userID = $this->session->get('auth')['idUser']; //the user who signed in
         
-        $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" . $ds . $userID . $path;
+        $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles";
+        if(is_numeric(next(explode($ds, $path))))
+            $targetPath .= $path;
+        else
+            $targetPath .= $ds . $userID . $path;
 
         $image = getimagesize($targetPath) ? true : false;
         $ext = pathinfo($targetPath, PATHINFO_EXTENSION);
@@ -406,11 +469,14 @@ class FilesController extends Controller
             $name = substr(strrchr($file, '\\'), 1);
             $localPath = explode($this->persistent->userPath, $file);
             $localPath = $localPath[1];
-            
+            $localPath = str_replace('\\', '/', $localPath);
             if( is_dir($file) ){
                 $size = $this->getDirSize($file);
                 array_push($dirArray, array('name' => $name, 'size' => $size, 'path' => $localPath));
             } else {
+                $localPath = explode('/', $localPath);
+                array_pop($localPath);
+                $localPath = '/' . implode('/', $localPath);
                 $size = filesize($file);
                 $modifyDate = date ("d/m/Y H:i:s.", filemtime($file));
                 array_push($fileArray, array('name' => $name, 'size' => $size, 'modifyDate' => $modifyDate, 'path' => $localPath));

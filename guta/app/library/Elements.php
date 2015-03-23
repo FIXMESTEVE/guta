@@ -65,14 +65,25 @@ class Elements extends Component
         echo $this->tag->linkTo('files' . '/' . 'list', 'Mes fichiers');
         echo '</li>';
 
-        echo '<form class="navbar-form navbar-left" role="form">';
+       /* echo '<form class="navbar-form navbar-left" role="form">';
         echo '<div class="btn-group" role="group" aria-label="...">'.
              '<button href="#myShareModal" title="Partager" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-share" style="color:#096BC6;" aria-hidden="true"></span></button>'.
              '<button href="#myUploadModal" title="Transférer" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-cloud-upload" style="color:#096BC6;" aria-hidden="true"></span></button>'.
              '<button href="#myModal" title="Nouveau dossier" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-folder-open" style="color:#096BC6;" aria-hidden="true"></span></button>'.
             '</div>';
-        echo '</form>';
-
+        echo '</form>';*/
+       
+        // Checking if in a shared directory and desactivating share, upload and new direcotry modals
+        if(!is_numeric(current(explode('/', substr($_SERVER['REQUEST_URI'], strlen($this->url->getBaseUri() . "files/list/")))))) {
+            echo '<form class="navbar-form navbar-left" role="form">';
+            echo '<div class="btn-group" role="group" aria-label="...">'.
+                '<button href="#myShareModal" title="Partager" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-share" style="color:#096BC6;" aria-hidden="true"></span></button>';
+            if(substr($_SERVER['REQUEST_URI'], strlen($this->url->getBaseUri() . "files/")) != "search")
+                echo '<button href="#myUploadModal" title="Transférer" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-cloud-upload" style="color:#096BC6;" aria-hidden="true"></span></button>'.
+                    '<button href="#myModal" title="Nouveau dossier" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-folder-open" style="color:#096BC6;" aria-hidden="true"></span></button>'.
+                    '</div>';
+            echo '</form>';
+        }
         echo '</ul>';
 
 
