@@ -73,16 +73,32 @@ class FilesController extends Controller
         if(file_exists(realpath($folder.$ds.$fileName)))
         {   
             chdir($folder);
-            exec("svn rm \"".$fileName."\"");
-            exec("svn commit -m \"removed file\"");
-            exec("svn up --accept mine-full");
+            if(is_dir($fileName)){
+                exec("svn up");
+                exec("svn rm \"".addslashes($fileName)."\"");
+                exec("svn up --accept mine-full");
+
+                //Redirection to stay in folder view
+                $names = explode('\\', $fileName);
+                array_pop($names);
+                array_pop($names);
+                $folderView = implode('\\', $names);
+                $this->response->redirect("files/list/".$folderView);
+                return;
+            }
+            else{
+                exec("svn rm \"".addslashes($fileName)."\"");
+                exec("svn commit -m \"removed file\"");
+                exec("svn up --accept mine-full");
+
+                //Redirection to stay in folder view
+                $names = explode('\\', $fileName);
+                array_pop($names);
+                $folderView = implode('\\', $names);
+                $this->response->redirect("files/list/".$folderView);
+                return;
+            }
         }
-        //Redirection to stay in folder view
-        $names = explode('\\', $fileName);
-        array_pop($names);
-        $folderView = implode('\\', $names);
-        $this->response->redirect("files/list/".$folderView);
-        return;
     }
 
     public function downloadAction($fileName)
