@@ -445,7 +445,7 @@ class FilesController extends Controller
                 foreach ($sharedPaths as $path) {
                     if($sharedFile = Sharedfile::findFirstBypath($path)) {
                         if($sharedFile->id_user == $userShare->idUser) {
-                            $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cette utilisateur'));
+                            $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cet utilisateur'));
                         } else {
                             $sharedFile = new Sharedfile();
                             $sharedFile->id_user = $userShare->idUser;
