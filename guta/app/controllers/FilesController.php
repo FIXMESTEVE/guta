@@ -61,6 +61,10 @@ class FilesController extends Controller
             exec("svn commit -m \"uploaded file\"");
             exec("svn up --accept mine-full");
         }
+        return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
     }
 
     public function deleteAction($fileName){
