@@ -11,6 +11,6 @@
 			"viewsDir" => "../app/views/",
 			"libraryDir" => "../app/library",
 			"baseUri" => "/guta/guta/",
-			"cacheDir" => "../app/cache/volt/",
+			"cacheDir" => "../app/cache/",
 			"pluginDir" => "../app/plugin")
 	));

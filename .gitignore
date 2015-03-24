@@ -1,3 +1,5 @@
-guta/app/cache/volt/*
+guta/app/cache/*
 uploadedFiles/*
 svnrep/*
+
+!guta/app/cache/README.md
