@@ -65,50 +65,12 @@ class SessionController extends ControllerBase
                 return;
             }
         }
-        /*if ($this->request->isPost()) {
-
-            //Receiving the variables sent by POST
-            $login = $this->request->getPost('login');
-            $password = $this->request->getPost('password');
-
-            $password =  $this->security->hash($password); //bcrypt
-
-            //Find for the user in the database
-            $user = User::findFirst(array(
-                "login = :login: AND password = :password:",
-                "bind" => array('login' => $login, 'password' => $password)
-            ));
-            if ($user != false) {
-
-                $this->registerSession($user);
-
-                $this->flash->success('Welcome ' . $user->login);
-
-                //REDIRECTION APRES SUCCES DE CONNEXION VERS LA PAGE DES FICHIERS: ACTUELLEMENT VERS LA PAGE D'INSCRIPTION
-                return $this->dispatcher->forward(array(
-                    'controller' => 'User',
-                    'action' => 'index'
-                ));
-            }
-
-            $this->flash->error('Wrong login/password');
-        }
-
-        //Forward to the login form again
-        return $this->dispatcher->forward(array(
-            'controller' => 'index',
-            'action' => 'index'
-        ));*/
     }
 
     public function endAction(){
         $this->session->destroy();
 
-        $this->response->redirect("index");
-        /*$this->dispatcher->forward(array(
-            'controller' => 'index',
-            'action' => 'index'
-        ));*/
+        $this->response->redirect("");
         return;
     }
 }

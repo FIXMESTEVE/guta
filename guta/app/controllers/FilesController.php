@@ -55,10 +55,8 @@ class FilesController extends Controller
             exec("svn commit -m \"uploaded file\"");
             exec("svn up --accept mine-full");
         }
-        return $this->dispatcher->forward(array(
-                    'controller' => 'files',
-                    'action' => 'list'
-                ));
+        $this->response->redirect("files/list/");
+        return;
     }
 
     public function deleteAction($fileName){
@@ -136,7 +134,7 @@ class FilesController extends Controller
         }
     }
 
-    public function getDirSize($path)
+    private function getDirSize($path)
     {
         $size = 0;
         $files = scandir($path);
@@ -153,7 +151,7 @@ class FilesController extends Controller
         return $size;
     }
 
-    public function getFileSize($bytes, $decimals = 2) {
+    private function getFileSize($bytes, $decimals = 2) {
         $size = array('o','ko','Mo','Go','To');
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$size[$factor];

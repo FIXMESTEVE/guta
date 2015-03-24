@@ -1,11 +1,3 @@
-/cache/
-/config/development/
-guta/app/cache/
-guta/app/config/config.php
-guta/app/config/config.php
+guta/app/cache/volt/*
 uploadedFiles/*
 svnrep/*
-guta/app/uploadedFiles/*
-guta/app/svnrep/*
-guta/svnrep/*
-guta/uploadedFiles/*

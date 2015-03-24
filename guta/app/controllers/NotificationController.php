@@ -32,10 +32,10 @@ class NotificationController extends ControllerBase
         }
 
         //REDIRECTION VERS LE FICHIER PARTAGE!
-        //POUR LE MOMENT VERS L'INDEX
+        //POUR LE MOMENT VERS LA LISTE
         return $this->dispatcher->forward(array(
-            'controller' => 'User',
-                'action' => 'index'
+            'controller' => 'files',
+                'action' => 'list'
         ));
     }
 }

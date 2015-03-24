@@ -8,6 +8,8 @@ use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
 use Phalcon\Mvc\Model\Manager as ModelsManager;
+use Phalcon\Events\Event,
+    Phalcon\Mvc\Dispatcher;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -97,4 +99,13 @@ $di->set('flash', function(){
         'notice' => 'alert alert-info',
     ));
     return $flash;
+});
+
+$di->set('dispatcher', function() use ($di){
+    $eventsManager = $di->getShared('eventsManager');
+    $security = new Security($di);
+    $eventsManager->attach('dispatch', $security);
+    $dispatcher = new Phalcon\Mvc\Dispatcher();
+    $dispatcher->setEventsManager($eventsManager);
+    return $dispatcher;
 });
