@@ -150,7 +150,7 @@
 		</thead>
 		<tbody>
 			{% for dir in directories %}
-				<tr>
+				<tr class="contextMenu">
 					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" /></td>
 					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
@@ -165,7 +165,7 @@
 				</tr>
 			{% endfor %}
             {% for dir in sharedDirectories %}
-                <tr class="shared">
+                <tr class="shared contextMenu">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
@@ -180,7 +180,7 @@
                 </tr>
             {% endfor %}
 			{% for file in files %}
-				<tr class="downloadable">
+				<tr class="downloadable contextMenu">
 					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['name']) }}" /></td>
 					<td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
@@ -195,7 +195,7 @@
 				</tr>
 			{% endfor %}
             {% for file in sharedFiles %}
-                <tr class="downloadable shared">
+                <tr class="downloadable shared contextMenu">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></span></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
@@ -216,8 +216,9 @@
 <!-- Vue icône -->
 <div class="row" id="iconeViewTable" style="display:none;">
 	{% for dir in directories %}
-	  	<div class="bloc col-sm-6 col-md-8">
+	  	<div class="bloc col-sm-6 col-md-8 contextMenu">
 	    	<div class="thumbnail">
+                <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" hidden='true'/>
 	      		<span class="glyphicon glyphicon-folder-open"></span>
 	      		<div class="caption">
 	        		<h3>{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</h3>
@@ -232,10 +233,28 @@
 	    	</div>
 	  	</div>
 	{% endfor %}
-
+    {% for dir in sharedDirectories %}
+        <div class="bloc col-sm-6 col-md-8 shared contextMenu">
+            <div class="thumbnail">
+                <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath']) ~ "/"}}" hidden='true'/>
+                <span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"></span></span>
+                <div class="caption">
+                    <h3>{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</h3>
+                    <p>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</p>
+                    <p><br></br></p>
+                    <div class="btn-group " role="group">
+                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 	{% for file in files %}
-		<div class="bloc col-sm-6 col-md-8">
+		<div class="bloc col-sm-6 col-md-8 downloadable contextMenu">
     		<div class="thumbnail">
+                <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['name']) }}" hidden='true'/>
     			<span class="glyphicon glyphicon-file"></span>
     			<div class="caption">
     				<h3 class="downloadable"><a title="{{ file['name'] }}" href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></h3>
@@ -250,6 +269,24 @@
     		</div>
     	</div>
 	{% endfor %}
+    {% for file in sharedFiles %}
+        <div class="bloc col-sm-6 col-md-8 shared downloadable contextMenu">
+            <div class="thumbnail">
+                <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" hidden='true'/>
+                <span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"></span></span>
+                <div class="caption">
+                    <h3 class="downloadable"><a title="{{ file['name'] }}" href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['realPath'] }}')">{{ file['name'] }}</a></h3>
+                    <p>Taille : {% if file['size'] != null %} {{ file['size'] }} {% endif %}</p>
+                    <p>Dernière modification le {{ file['modifyDate'] }}</p>
+                    <div class="btn-group " role="group">
+                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 
 </div>
 

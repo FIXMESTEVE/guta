@@ -18,10 +18,14 @@ function manageToggledButton(){
 
 function showFile(path, file){
 	var modalBody = document.getElementById("fileModalBody")
-	path = path.replace(/\//g, "{}")
-	var key = (path == "") ? "{}"+file : path+"{}"+file
+  var name = file.split('/')
+  name = name[name.length -1]
+  alert(path);
+  document.getElementById("myFileModalLabel").innerHTML = "Fichier : " + name
 
-	document.getElementById("myFileModalLabel").innerHTML = "Fichier : " + file
+  path = path.replace(/\//g, "{}")
+  file = file.replace(/\//g, "{}")
+  var key = (path == "") ? "{}"+file : path+"{}"+file
 
     $.ajax({
    		 url : app + key,
