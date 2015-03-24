@@ -220,7 +220,7 @@
 	      		<div class="caption">
 	        		<h3>{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</h3>
 	        		<p>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</p>
-                    <p><br></br></p> 
+                    <p><br></br></p>
                     <div class="btn-group " role="group">
                         <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                         <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
