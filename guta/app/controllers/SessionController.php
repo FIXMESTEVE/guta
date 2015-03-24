@@ -39,32 +39,23 @@ class SessionController extends ControllerBase
             $user = User::findFirstByLogin($login);
 
             if (!$user) {
-                echo '<div class="alert alert-danger" role="alert">';
-                $this->flash->error("Cet utilisateur n'existe pas.");
-                echo '</div>';
-                
+                $this->flash->error("Cet utilisateur n'existe pas.");                
                 return $this->dispatcher->forward(array(
                     'controller' => 'index',
                     'action' => 'index'
                 ));
 
             } elseif (!$this->security->checkHash($password, $user->password)) {
-                echo '<div class="alert alert-danger" role="alert">';
                 $this->flash->error("Mot de passe incorrect");
-                echo '</div>';
-                
                 return $this->dispatcher->forward(array(
                     'controller' => 'index',
                     'action' => 'index'
                 ));
             } else {
-
                 $this->registerSession($user);
 
-                echo '<div class="alert alert-success" role="alert">';
                 $this->flash->success('Bienvenue ' . $user->login);
-                echo '</div>';
-
+               
                 $ds = DIRECTORY_SEPARATOR;  // '/'
                 $storeFolder = 'uploadedFiles';   // the folder where we store all the files
                 $user = $user->idUser;

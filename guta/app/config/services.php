@@ -88,3 +88,13 @@ $di->set('elements', function(){
 $di->set('modelsManager', function() {
     return new ModelsManager();
 });
+
+//Register the flash service with custom CSS classes
+$di->set('flash', function(){
+    $flash = new \Phalcon\Flash\Direct(array(
+        'error' => 'alert alert-danger',
+        'success' => 'alert alert-success',
+        'notice' => 'alert alert-info',
+    ));
+    return $flash;
+});

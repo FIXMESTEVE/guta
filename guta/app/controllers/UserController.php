@@ -48,10 +48,7 @@ class UserController extends ControllerBase
 
         $User = User::find($parameters);
         if (count($User) == 0) {
-            echo '<div class="alert alert-info" role="alert">';
             $this->flash->notice("The search did not find any User");
-            echo '</div>';
-
             return $this->dispatcher->forward(array(
                 "controller" => "User",
                 "action" => "index"
@@ -86,10 +83,7 @@ class UserController extends ControllerBase
 
             $User = User::findFirstByidUser($idUser);
             if (!$User) {
-                echo '<div class="alert alert-danger" role="alert">';
                 $this->flash->error("User was not found");
-                echo '</div>';
-                
                 return $this->dispatcher->forward(array(
                     "controller" => "User",
                     "action" => "index"
@@ -128,12 +122,9 @@ class UserController extends ControllerBase
         $User->password = $this->security->hash($password);
 
         if (!$User->save()) {
-            echo '<div class="alert alert-danger" role="alert">';
             foreach ($User->getMessages() as $message) { 
                 $this->flash->error($message);  
             }
-            echo '</div>';
-
             return $this->dispatcher->forward(array(
                 "controller" => "User",
                 "action" => "new"
@@ -167,10 +158,7 @@ class UserController extends ControllerBase
             //exec("git config user.email \"someone@someplace.com\"");
             //file_put_contents($targetPath.$ds."resultCreate", implode("\r\n", $output), FILE_APPEND);
 
-            echo '<div class="alert alert-success" role="alert">';
             $this->flash->success("L'inscription s'est déroulée correctement.");
-            echo '</div>';
-
             return $this->dispatcher->forward(array(
                 "controller" => "index",
                 "action" => "index"
@@ -195,10 +183,7 @@ class UserController extends ControllerBase
 
         $User = User::findFirstByidUser($idUser);
         if (!$User) {
-            echo '<div class="alert alert-danger" role="alert">';
             $this->flash->error("User does not exist " . $idUser);
-            echo '</div>';
-
             return $this->dispatcher->forward(array(
                 "controller" => "User",
                 "action" => "index"
@@ -212,12 +197,9 @@ class UserController extends ControllerBase
         $User->avatar = $this->request->getPost("avatar");
         
         if (!$User->save()) {
-            echo '<div class="alert alert-danger" role="alert">';
             foreach ($User->getMessages() as $message) {
                 $this->flash->error($message);
             }
-            echo '</div>';
-
             return $this->dispatcher->forward(array(
                 "controller" => "User",
                 "action" => "edit",
@@ -225,10 +207,7 @@ class UserController extends ControllerBase
             ));
         }
 
-        echo '<div class="alert alert-success" role="alert">';
         $this->flash->success("User was updated successfully");
-        echo '</div>';
-
         return $this->dispatcher->forward(array(
             "controller" => "Files",
             "action" => "list"
@@ -244,10 +223,7 @@ class UserController extends ControllerBase
     {
         $User = User::findFirstByidUser($idUser);
         if (!$User) {
-            echo '<div class="alert alert-danger" role="alert">';
             $this->flash->error("User was not found");
-            echo '</div>';
-
             return $this->dispatcher->forward(array(
                 "controller" => "User",
                 "action" => "index"
@@ -255,22 +231,15 @@ class UserController extends ControllerBase
         }
 
         if (!$User->delete()) {
-            echo '<div class="alert alert-danger" role="alert">';
             foreach ($User->getMessages() as $message) {
                 $this->flash->error($message);
             }
-            echo '</div>';
-
             return $this->dispatcher->forward(array(
                 "controller" => "User",
                 "action" => "search"
             ));
         }
-
-        echo '<div class="alert alert-success" role="alert">';
         $this->flash->success("User was deleted successfully");
-        echo '</div>';
-
         return $this->dispatcher->forward(array(
             "controller" => "User",
             "action" => "index"

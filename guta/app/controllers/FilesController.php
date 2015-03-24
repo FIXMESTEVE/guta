@@ -36,10 +36,6 @@ class FilesController extends Controller
     public function uploadAction($directory = null)
     {
         $ds          = DIRECTORY_SEPARATOR;  // '/'
-
-        $storeFolder = 'uploadedFiles';   // the folder where we store all the files
-         
-        $user = $this->session->get('auth')['idUser'];; //the user who signed in
        
         // Get the folder path  with userPath as the folder root for the user.
         $pos = strpos(urldecode($_SERVER['REQUEST_URI']),$directory);
@@ -49,9 +45,7 @@ class FilesController extends Controller
         if (!empty($_FILES)) {
              
             $tempFile = $_FILES['file']['tmp_name'];
-              
-            $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds . urldecode($directory) . $ds;
-            
+            $targetPath = $this->persistent->userPath . urldecode($directory) . $ds;
             $targetFile =  $targetPath. $_FILES['file']['name'];
          
             move_uploaded_file($tempFile,$targetFile);
@@ -61,6 +55,10 @@ class FilesController extends Controller
             exec("svn commit -m \"uploaded file\"");
             exec("svn up --accept mine-full");
         }
+        return $this->dispatcher->forward(array(
+                    'controller' => 'files',
+                    'action' => 'list'
+                ));
     }
 
     public function deleteAction($fileName){
@@ -141,7 +139,6 @@ class FilesController extends Controller
     public function getDirSize($path)
     {
         $size = 0;
-
         $files = scandir($path);
 
         foreach ($files as $file) {
@@ -153,7 +150,6 @@ class FilesController extends Controller
                 $size += $this->getFileSize(filesize($path . "/" . $file));
             }
         }
-
         return $size;
     }
 
@@ -407,9 +403,7 @@ class FilesController extends Controller
             // Get the name of the new folder.
             $foldername = urldecode($this->request->getPost("foldername"));
             if ($foldername == null) {
-                echo '<div class="alert alert-danger" role="alert">';
                 $this->flash->error("Le nom d'un dossier ne peut être vide.");
-                echo "</div>";
                 return $this->dispatcher->forward(array(
                     'controller' => 'files',
                     'action' => 'list'
@@ -417,9 +411,7 @@ class FilesController extends Controller
             }
             // 
             if (file_exists($this->persistent->userPath . "/" . $folderpath . '/'.$foldername)) {
-                echo '<div class="alert alert-danger" role="alert">';
                 $this->flash->error("Ce nom existe déja.");
-                echo "</div>";
                 return $this->dispatcher->forward(array(
                     'controller' => 'files',
                     'action' => 'list'
@@ -436,9 +428,7 @@ class FilesController extends Controller
                 $this->flash->error('Les caractères "/", "\", ":", "?", "*", "<", ">", """, "|" sont interdits.');
             } else {
                 mkdir($this->persistent->userPath . "/" . $folderpath . "/" . $foldername);
-                echo '<div class="alert alert-success" role="alert">';
                 $this->flash->success("Le dossier ".$foldername." a été correctement créé");
-                echo "</div>";
             }
 
             exec("svn add \"".$this->persistent->userPath . "/" . $folderpath . "/" . $foldername."\"");
