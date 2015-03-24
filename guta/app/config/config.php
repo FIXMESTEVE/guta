@@ -10,7 +10,7 @@
 			"modelsDir" => "../app/models/",
 			"viewsDir" => "../app/views/",
 			"libraryDir" => "../app/library",
-			"baseUri" => "/guta/guta/",
+			"baseUri" => "/ped/guta/guta/",
 			"cacheDir" => "../app/cache/",
 			"pluginDir" => "../app/plugin")
 	));
