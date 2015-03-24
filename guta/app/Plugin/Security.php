@@ -28,7 +28,7 @@ class Security extends Plugin
 		$publicResources = array(
 			'index' => array('index', 'signup'),
 			'user' => array('create'),
-			'session' => array('start', 'end')
+			'session' => array('start')
 		);
 		foreach ($publicResources as $resource => $actions) {
 		    $acl->addResource(new Phalcon\Acl\Resource($resource), $actions);
@@ -37,7 +37,8 @@ class Security extends Plugin
 		$privateResources = array(
 			'files' => array('upload', 'delete', 'download', 'list', 'copy', 'paste', 'getVersion', 'getFile', 'viewPDF', 'readFile', 'createFolder', 'search', 'share'),
 			'notification' => array('read'),
-			'user' => array('edit', 'delete', 'save')
+			'user' => array('edit', 'delete', 'save'),
+			'session' => array('end')
 		);
 		foreach ($privateResources as $resource => $actions) {
 		    $acl->addResource(new Phalcon\Acl\Resource($resource), $actions);
@@ -50,11 +51,9 @@ class Security extends Plugin
 		    }
 		}
 		//Grant access to public areas to both users and guests
-		foreach ($roles as $role) {
-		    foreach ($publicResources as $resource => $actions) {
-		        $acl->allow($role->getName(), $resource, $actions);
-		    }
-		}
+	    foreach ($publicResources as $resource => $actions) {
+	        $acl->allow('Guests', $resource, $actions);
+	    }
 		return $acl;
 	}
 
@@ -76,13 +75,23 @@ class Security extends Plugin
 
 		$allowed = $acl->isAllowed($role, $controller, $action);
         if ($allowed != Phalcon\Acl::ALLOW) {
-        	$this->flash->error("Vous n'avez pas accès à cette partie du site");
-        	$dispatcher->forward(
-                array(
-                    'controller' => 'index',
-                    'action' => 'index'
-                )
-            );
+        	if($role == 'Guests'){
+        		$this->flash->error("Vous n'avez pas accès à cette partie du site");
+	        	$dispatcher->forward(
+	                array(
+	                    'controller' => 'index',
+	                    'action' => 'index'
+	                )
+	            );
+	        }
+	        if($role == 'Users'){
+	        	$dispatcher->forward(
+	                array(
+	                    'controller' => 'files',
+	                    'action' => 'list'
+	                )
+	            );
+	        }
             return false;
         }
     }

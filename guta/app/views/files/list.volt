@@ -11,9 +11,11 @@
     </label>
 </div>
 
+{% if !inSharedDirectory %}
 <button type="button" class="btn btn-default pull-right" style="margin-right:10%">
   <span class="glyphicon glyphicon-paste" aria-hidden="false"></span> Coller
 </button>
+{% endif %}
 
 {{ form('files/search', 'method': 'post', "class": "form-inline", "style": "width:340px;margin:0 auto;") }}
 <div class="form-group">

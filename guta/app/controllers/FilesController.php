@@ -55,8 +55,10 @@ class FilesController extends Controller
             exec("svn commit -m \"uploaded file\"");
             exec("svn up --accept mine-full");
         }
-        $this->response->redirect("files/list/");
-        return;
+        return $this->dispatcher->forward(array(
+            "controller" => "files",
+            "action" => "list"
+        ));
     }
 
     public function deleteAction($fileName){
@@ -276,12 +278,12 @@ class FilesController extends Controller
             $directory = "/" . $directory;
 
         $this->view->currentDir = $directory;
-        //var_dump("currentDir : ".$this->view->currentDir);
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
         $this->view->shareInfo = null;
         $this->view->sharedFiles = $sharedFiles;
         $this->view->sharedDirectories = $sharedDirectories;
+        $this->view->inSharedDirectory = $inSharedDirectory;
     }
 
     public function viewAction($directory = null) {
