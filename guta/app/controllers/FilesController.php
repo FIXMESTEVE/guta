@@ -322,7 +322,7 @@ class FilesController extends Controller
         $file=".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
 
         exec("svn log -q ".$file." | grep '^r' | cut -f5,6 -d' '", $output, $returnvalue);
-
+        
         $this->view->output = $output;
         var_dump($output);
     }

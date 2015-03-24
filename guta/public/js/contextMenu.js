@@ -39,7 +39,7 @@ menu = function(){
 	string += "<li class='share'><a id='share' class='menulink' href='#myShareModal' data-toggle='modal'>Partager</a></li>"
 	string += "<li class='divider'></li>";
 	string += "<li class='delete'><a id='delete' class='menulink' href=''>Supprimer</a></li>"
-	string += "<li class='copy'><a id='copy' class='menulink' href=''>Copier</a></li>"
+	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
@@ -78,7 +78,7 @@ menu_click = function(object){
 		httpGet(folderPath + "copy/" + target);
 
 		// taken from StackOverflow, by Anu - SO
-		$("#copyNotification").fadeIn("slow").append('Fichier copié');
+		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="dismiss this notification">X</a></span>');
 		$(".dismiss").click(function(){
 		       $("#copyNotification").fadeOut("slow");
 		});

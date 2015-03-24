@@ -11,6 +11,10 @@
     </label>
 </div>
 
+<button type="button" class="btn btn-default pull-right" style="margin-right:10%">
+  <span class="glyphicon glyphicon-paste" aria-hidden="false"></span> Coller
+</button>
+
 {{ form('files/search', 'method': 'post', "class": "form-inline", "style": "width:340px;margin:0 auto;") }}
 <div class="form-group">
 	{{ text_field("pattern", 'class': 'form-control', "id": "inputSearch","placeholder":"Recherche") }}
@@ -128,11 +132,6 @@
     </div>
 </div>
 
-<!--notification popup for copied files -->
-<div id="copyNotification" style="display: none;">
-  <span class="dismiss"><a title="dismiss this notification">X</a></span>
-</div>
-
 <!-- Vue liste -->
 <div class="table-responsive" id="listViewTable" style="display:inline;">
     <table class="table table-striped table-hover" style="width:80%" data-sortable>
@@ -208,4 +207,8 @@
     	</div>
 	{% endfor %}
 </div>
-  
+
+<!--notification popup for copied files -->
+<div id="copyNotification" style="display: none;">
+  <span class="dismiss"><a title="dismiss this notification">X</a></span>
+</div>
