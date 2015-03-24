@@ -56,9 +56,9 @@ class FilesController extends Controller
             exec("svn up --accept mine-full");
         }
         return $this->dispatcher->forward(array(
-                    'controller' => 'files',
-                    'action' => 'list'
-                ));
+            "controller" => "files",
+            "action" => "list"
+        ));
     }
 
     public function deleteAction($fileName){
@@ -136,7 +136,7 @@ class FilesController extends Controller
         }
     }
 
-    public function getDirSize($path)
+    private function getDirSize($path)
     {
         $size = 0;
         $files = scandir($path);
@@ -153,7 +153,7 @@ class FilesController extends Controller
         return $size;
     }
 
-    public function getFileSize($bytes, $decimals = 2) {
+    private function getFileSize($bytes, $decimals = 2) {
         $size = array('o','ko','Mo','Go','To');
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f ", $bytes / pow(1024, $factor)) . @$size[$factor];
@@ -278,12 +278,12 @@ class FilesController extends Controller
             $directory = "/" . $directory;
 
         $this->view->currentDir = $directory;
-        //var_dump("currentDir : ".$this->view->currentDir);
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;
         $this->view->shareInfo = null;
         $this->view->sharedFiles = $sharedFiles;
         $this->view->sharedDirectories = $sharedDirectories;
+        $this->view->inSharedDirectory = $inSharedDirectory;
     }
 
     public function viewAction($directory = null) {

@@ -1,11 +1,5 @@
-/cache/
-/config/development/
-guta/app/cache/
-guta/app/config/config.php
-guta/app/config/config.php
+guta/app/cache/*
 uploadedFiles/*
 svnrep/*
-guta/app/uploadedFiles/*
-guta/app/svnrep/*
-guta/svnrep/*
-guta/uploadedFiles/*
+
+!guta/app/cache/README.md

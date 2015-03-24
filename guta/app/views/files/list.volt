@@ -11,11 +11,13 @@
     </label>
 </div>
 
+{% if !inSharedDirectory %}
 {{ form('files/paste' ~ currentDir, 'method': 'post') }}
     <button type="submit" class="btn btn-default pull-right" style="margin-right:10%">
       <span class="glyphicon glyphicon-paste" aria-hidden="false"></span> Coller
     </button>
 {{ end_form() }}
+{% endif %}
 
 {{ form('files/search', 'method': 'post', "class": "form-inline", "style": "width:340px;margin:0 auto;") }}
 <div class="form-group">
@@ -143,6 +145,7 @@
 				<th>Nom</th>
 				<th>Taille</th>
 				<th>Modification</th>
+                <th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -152,6 +155,13 @@
 					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
+                    <td>
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
 				</tr>
 			{% endfor %}
             {% for dir in sharedDirectories %}
@@ -160,6 +170,13 @@
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
                     <td></td>
+                    <td>
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
 			{% for file in files %}
@@ -168,14 +185,28 @@
 					<td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>
+                    <td>
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
 				</tr>
 			{% endfor %}
             {% for file in sharedFiles %}
                 <tr class="downloadable shared">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
                     <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></span></td>
-                    <td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
+                    <td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
                     <td>{{ file['modifyDate'] }}</td>
+                    <td>
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
 		</tbody>
@@ -191,6 +222,12 @@
 	      		<div class="caption">
 	        		<h3>{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</h3>
 	        		<p>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</p>
+                    <p><br></br></p>
+                    <div class="btn-group " role="group">
+                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    </div>
 	      		</div>
 	    	</div>
 	  	</div>
@@ -202,12 +239,18 @@
     			<span class="glyphicon glyphicon-file"></span>
     			<div class="caption">
     				<h3 class="downloadable"><a title="{{ file['name'] }}" href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ currentDir }}', '{{ file['name'] }}')">{{ file['name'] }}</a></h3>
-    				<p>Taille : {% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</p>
+    				<p>Taille : {% if file['size'] != null %} {{ file['size'] }} {% endif %}</p>
     				<p>Dernière modification le {{ file['modifyDate'] }}</p>
+                    <div class="btn-group " role="group">
+                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    </div>
     			</div>
     		</div>
     	</div>
 	{% endfor %}
+
 </div>
 
 <!--notification popup for copied files -->

@@ -7,7 +7,7 @@
 <!-- Login Form -->
 <div class="row"> 
         <div class="v-center">
-            {{ form('User/save','role': 'form', 'class': "form-horizontal", 'style': "width:20%;margin:0 auto;") }}
+            {{ form('user/save','role': 'form', 'class': "form-horizontal", 'style': "width:20%;margin:0 auto;") }}
                 <div class="form-group ">
                     <label for="avatar" class="control-label">Avatar</label>
                     <div id="avatar">

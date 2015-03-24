@@ -18,87 +18,30 @@ class UserController extends ControllerBase
             ->addJs("js/utils.js");
     }
 
-    
-    /**
-     * Index action
-     */
-    public function indexAction()
-    {
-        $this->persistent->parameters = null;
-    }
-
-    /**
-     * Searches for User
-     */
-    public function searchAction()
-    {
-        $numberPage = 1;
-        if ($this->request->isPost()) {
-            $query = Criteria::fromInput($this->di, "User", $_POST);
-            $this->persistent->parameters = $query->getParams();
-        } else {
-            $numberPage = $this->request->getQuery("page", "int");
-        }
-
-        $parameters = $this->persistent->parameters;
-        if (!is_array($parameters)) {
-            $parameters = array();
-        }
-        $parameters["order"] = "idUser";
-
-        $User = User::find($parameters);
-        if (count($User) == 0) {
-            $this->flash->notice("The search did not find any User");
-            return $this->dispatcher->forward(array(
-                "controller" => "User",
-                "action" => "index"
-            ));
-        }
-
-        $paginator = new Paginator(array(
-            "data" => $User,
-            "limit"=> 10,
-            "page" => $numberPage
-        ));
-
-        $this->view->page = $paginator->getPaginate();
-    }
-
-    /**
-     * Displayes the creation form
-     */
-    public function newAction()
-    {
-
-    }
-
     /**
      * Edits a User
      *
      * @param string $idUser
      */
-    public function editAction($idUser)
+    public function editAction()
     {
-        if (!$this->request->isPost()) {
-
-            $User = User::findFirstByidUser($idUser);
-            if (!$User) {
-                $this->flash->error("User was not found");
-                return $this->dispatcher->forward(array(
-                    "controller" => "User",
-                    "action" => "index"
-                ));
-            }
-
-            $this->view->idUser = $User->idUser;
-
-            $this->tag->setDefault("idUser", $User->idUser);
-            $this->tag->setDefault("login", $User->login);
-            $this->tag->setDefault("email", $User->email);
-            //$this->tag->setDefault("password", $User->password);
-            $this->tag->setDefault("avatar", "avatars/default.gif");
-            
+        $idUser = $this->session->get('auth');
+        $User = User::findFirstByidUser($idUser);
+        if (!$User) {
+            $this->flash->error("User was not found");
+            return $this->dispatcher->forward(array(
+                "controller" => "index",
+                "action" => "index"
+            ));
         }
+
+        $this->view->idUser = $User->idUser;
+
+        $this->tag->setDefault("idUser", $User->idUser);
+        $this->tag->setDefault("login", $User->login);
+        $this->tag->setDefault("email", $User->email);
+        //$this->tag->setDefault("password", $User->password);
+        $this->tag->setDefault("avatar", "avatars/default.gif");
     }
 
     /**
@@ -106,12 +49,9 @@ class UserController extends ControllerBase
      */
     public function createAction()
     {
-
         if (!$this->request->isPost()) {
-            return $this->dispatcher->forward(array(
-                "controller" => "User",
-                "action" => "index"
-            ));
+            $this->response->redirect("");
+            return;
         }
 
         $User = new User();
@@ -126,13 +66,14 @@ class UserController extends ControllerBase
                 $this->flash->error($message);  
             }
             return $this->dispatcher->forward(array(
-                "controller" => "User",
-                "action" => "new"
+                "controller" => "index",
+                "action" => "signup"
             ));
         } else {
-
             $ds          = DIRECTORY_SEPARATOR;  // '/'
             $storeFolder = 'uploadedFiles';   // the folder where we store all the files
+            if(!file_exists(dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder))
+                mkdir(dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder);
             $user = $User->idUser;
             $svnrep = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "svnrep";
             if(!file_exists($svnrep))
@@ -146,23 +87,15 @@ class UserController extends ControllerBase
 
             $targetPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder . $ds . $user. $ds;
 
-            //mkdir($targetPath);
-            //chdir($targetPath);
             exec("svn checkout --force file:///".$svnrep.$ds.$user." ".$targetPath);
 
-            
-
-            //exec("git init " . $targetPath, $output, $result);
-            
-            //exec("git config user.name \"someone\"");
-            //exec("git config user.email \"someone@someplace.com\"");
-            //file_put_contents($targetPath.$ds."resultCreate", implode("\r\n", $output), FILE_APPEND);
-
-            $this->flash->success("L'inscription s'est déroulée correctement.");
+            $this->response->redirect("");
+            return;
+            /*$this->flash->success("L'inscription s'est déroulée correctement.");
             return $this->dispatcher->forward(array(
                 "controller" => "index",
                 "action" => "index"
-            ));
+            ));*/
         }
     }
 
@@ -173,10 +106,8 @@ class UserController extends ControllerBase
     public function saveAction()
     {
         if (!$this->request->isPost()) {
-            return $this->dispatcher->forward(array(
-                "controller" => "User",
-                "action" => "index"
-            ));
+            $this->response->redirect("");
+            return;
         }
 
         $idUser = $this->request->getPost("idUser");
@@ -185,7 +116,7 @@ class UserController extends ControllerBase
         if (!$User) {
             $this->flash->error("User does not exist " . $idUser);
             return $this->dispatcher->forward(array(
-                "controller" => "User",
+                "controller" => "index",
                 "action" => "index"
             ));
         }
@@ -201,15 +132,14 @@ class UserController extends ControllerBase
                 $this->flash->error($message);
             }
             return $this->dispatcher->forward(array(
-                "controller" => "User",
-                "action" => "edit",
-                "params" => array($User->idUser)
+                "controller" => "user",
+                "action" => "edit"
             ));
         }
 
         $this->flash->success("User was updated successfully");
         return $this->dispatcher->forward(array(
-            "controller" => "Files",
+            "controller" => "files",
             "action" => "list"
         ));
     }
@@ -225,7 +155,7 @@ class UserController extends ControllerBase
         if (!$User) {
             $this->flash->error("User was not found");
             return $this->dispatcher->forward(array(
-                "controller" => "User",
+                "controller" => "index",
                 "action" => "index"
             ));
         }
@@ -235,13 +165,13 @@ class UserController extends ControllerBase
                 $this->flash->error($message);
             }
             return $this->dispatcher->forward(array(
-                "controller" => "User",
-                "action" => "search"
+                "controller" => "index",
+                "action" => "index"
             ));
         }
         $this->flash->success("User was deleted successfully");
         return $this->dispatcher->forward(array(
-            "controller" => "User",
+            "controller" => "index",
             "action" => "index"
         ));
     }
