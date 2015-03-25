@@ -105,9 +105,6 @@ menu_click = function(object){
 	case 'share':
 		//We just check the checkbox and then go to the share modal
 		var checkbox;
-		clicked.find('td').each(function(){
-			//alert($(this).attr('class'));
-		})
 		clicked.find('input').each(function(){
 			checkbox = $(this);
 		});

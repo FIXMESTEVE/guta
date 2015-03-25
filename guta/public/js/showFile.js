@@ -46,6 +46,9 @@ function showFile(path, file){
 }
 
 function changeViewToList(){
+  $(document).find('input').each(function(){
+    $(this).prop('checked', false);
+  })
 	console.log("changeViewToList")
   localStorage.toggledButtonID_XYZ = "changeViewToList"
 	document.getElementById("listViewTable").style.display = "inline"
@@ -53,6 +56,9 @@ function changeViewToList(){
 }
 
 function changeViewToIcone(){
+  $(document).find('input').each(function(){
+    $(this).prop('checked', false);
+  })
 	console.log("changeViewToIcone")
   localStorage.toggledButtonID_XYZ = "changeViewToIcone"
 	document.getElementById("listViewTable").style.display = "none"

@@ -48,7 +48,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Modal title</h4>
+                    <h4 class="modal-title">Nouveau Dossier</h4>
                 </div>
                 <div class='modal-body'>
                     <div class='form-group '>
@@ -70,7 +70,7 @@
 <div class='modal fade' id='uploadModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
     <div class='modal-dialog'>
         <div class='modal-content'>
-        <div class='modal-header'>
+            <div class='modal-header'>
                 <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
                 <h4 class='modal-title' id='myUploadLabel'>Upload</h4>
             </div>

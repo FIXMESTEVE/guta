@@ -67,35 +67,50 @@
     </div>
 </div>
 
-<h1 class="text-center">Recherche</h1>
+<h1 class="text-center">Résultat de la recherche</h1>
 
-<table class="table table-hover" style="width:80%" data-sortable>
-	<thead>
-		<tr>
-			<th>#</th>
-			<th>Nom</th>
-			<th>Taille</th>
-			<th>Modification</th>
-		</tr>
-	</thead>
-	<tbody>
-		
-			{% for dir in directories %}
-				<tr>
-					<td><input type="checkbox" id="{{ url( "files/"~ dir['path']) ~ "/"}}" /></td>
-					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list/" ~ dir['path'], dir['name']) }}</span></td>
-					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
-					<td></td>
-				</tr>
-			{% endfor %}
-			{% for file in files %}
-				<tr class="downloadable">
-					<td><input type="checkbox" id="{{ url( "files" ~ file['path']) ~ "/" ~ file['name'] }}" /></td>
-					<td><span class="glyphicon glyphicon-file"><a href="#myFileModal" data-toggle="modal" onclick="showFile( '{{ file['path'] }}', '{{ file['name'] }}')">{{ file['name'] }}</a></span></td>
-					<td>{% if file['size'] != null %} {{ file['size'] }} ko {% endif %}</td>
-					<td>{{ file['modifyDate'] }}</td>
-				</tr>
-			{% endfor %}
-		
-	</tbody>
-</table>
+<div class="table-responsive" id="listViewTable" style="display:inline;">
+    <table class="table table-striped table-hover" style="width:80%" data-sortable>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Taille</th>
+                <th>Modification</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dir in directories %}
+                <tr class="contextMenu">
+                    <td><input type="checkbox" id="{{ url( "files/" ~ dir['path']) ~ "/"}}" /></td>
+                    <td class="navigate"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list/" ~ dir['path'] ~ "/", dir['name']) }}</span></td>
+                    <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
+                    <td></td>
+                    <td>
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for file in files %}
+                <tr class="downloadable contextMenu">
+                    <td><input type="checkbox" id="{{ url( "files" ~ file['path'] ~ "/" ~ file['name']) }}" /></td>
+                    <td class="navigate" href="#myFileModal" data-toggle="modal"><span class="glyphicon glyphicon-file"><a href="" path="{{ file['path'] }}" file="{{ file['name'] }}">{{ file['name'] }}</a></span></td>
+                    <td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
+                    <td>{{ file['modifyDate'] }}</td>
+                    <td>
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
