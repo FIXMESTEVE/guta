@@ -112,7 +112,8 @@ class FilesController extends Controller
             $file .= $fileName;
         else
             $file .= $user . $ds . $fileName;
-        var_dump($file);
+
+        $length   = sprintf("%u", filesize($file));
 
         if(file_exists(realpath($file)))
         {
@@ -122,7 +123,7 @@ class FilesController extends Controller
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($file));
+            header('Content-Length: ' . $length);
             readfile($file);
             exit;
         }
@@ -264,7 +265,7 @@ class FilesController extends Controller
                         array_push($sharedFiles, array(
                             'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
                             'name' => array_pop($pathArray),
-                            'size' => filesize($physicalPath),
+                            'size' => $this->getFileSize(filesize($physicalPath)),
                             'modifyDate' => $modifyDate
                         ));
                     }
@@ -489,7 +490,7 @@ class FilesController extends Controller
                 $localPath = explode('/', $localPath);
                 array_pop($localPath);
                 $localPath = '/' . implode('/', $localPath);
-                $size = filesize($file);
+                $size = $this->getFileSize(filesize($file));
                 $modifyDate = date ("d/m/Y H:i:s.", filemtime($file));
                 array_push($fileArray, array('name' => $name, 'size' => $size, 'modifyDate' => $modifyDate, 'path' => $localPath));
             }

@@ -201,7 +201,7 @@ h4{
   color: #000000;
 }
 
-.row .bloc .caption .btn-group .glyphicon{
+.row .bloc .thumbnail .btn-group .glyphicon{
   font-size: 12px;
   color: #FFFFFF;
 }
@@ -209,7 +209,7 @@ h4{
 
 .row .thumbnail .caption a{  
   display:inline-block;
-  white-space: nowrap; 
+  white-space: nowrap;
   size: 14px;
   width: 155px;
   overflow: hidden;

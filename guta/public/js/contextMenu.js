@@ -19,17 +19,21 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("li.download").hide();
 });
 $('.navigate').bind("click", function(event){
-	//event.preventDefault();
-	if($(this).attr('class').search('downloadable') == -1){
+	event.preventDefault();
+	var file = false;
+	$(this).find('span').each(function(){
+		if($(this).attr('class').search('glyphicon-file') != -1){
+			file = true;
+		}
+	})
+	if(!file){
 		$(this).find('a').each(function(){
 			$(location).attr('href', $(this).attr('href'));
 		})
 	}
 	else{
 		$(this).find('a').each(function(){
-			showFile($(this).attr('path'), $(this).attr('file'))
-			//var func = $(this).attr("onclick");
-			//eval(func);
+			showFile($(this).attr('path'), $(this).attr('file'));
 		})
 	}
 });
@@ -49,11 +53,11 @@ $(document).bind("click", function(event){
 //HTML of the contextual menu
 menu = function(){
 	string = "<ul class='dropdown-menu'>";
-	//contextual menu here
-	string += "<li class='download'><a id='download' class='menulink' href=''>Télécharger</a></li>"
-	string += "<li class='share'><a id='share' class='menulink' href='#shareModal' data-toggle='modal'>Partager</a></li>"
+	//contextual menu here 
+	string += "<li class='download'><a id='download' class='menulink' href=''><span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span> Télécharger</a></li>"
+	string += "<li class='share'><a id='share' class='menulink' href='#shareModal' data-toggle='modal'><span class='glyphicon glyphicon-share' aria-hidden='true'></span> Partager</a></li>"
 	string += "<li class='divider'></li>";
-	string += "<li class='delete'><a id='delete' class='menulink' href=''>Supprimer</a></li>"
+	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
 	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
 	// menu's end
 	string += "</ul>";

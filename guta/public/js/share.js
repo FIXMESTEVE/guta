@@ -5,6 +5,12 @@ $("#inputEmail").keydown(function(e){
 		share();
 });
 
+$('#shareModal').on('hidden.bs.modal', function () {
+  $(document).find('input').each(function(){
+  	$(this).prop('checked', false);
+  })
+});
+
 share = function(){
 	var files = [];
 	//On  récupère les checkbox
