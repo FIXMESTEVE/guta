@@ -206,7 +206,7 @@ class FilesController extends Controller
         }
         else
             $accessGranted = true;
-        if(!is_dir($pathDirectory) || !$accessGranted) {
+        if(!is_dir($pathDirectory) || !$accessGranted || $directory == '.svn') {
             $this->response->redirect("files/list/");
             return;
         }
