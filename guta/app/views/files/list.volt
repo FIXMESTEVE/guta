@@ -157,9 +157,9 @@
 					<td></td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
 				</tr>
@@ -172,9 +172,9 @@
                     <td></td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -187,9 +187,9 @@
 					<td>{{ file['modifyDate'] }}</td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
 				</tr>
@@ -202,9 +202,9 @@
                     <td>{{ file['modifyDate'] }}</td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -225,9 +225,9 @@
 	        		<p>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</p>
                     <p><br></br></p>
                     <div class="btn-group " role="group">
-                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                     </div>
 	      		</div>
 	    	</div>
@@ -243,9 +243,9 @@
                     <p>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</p>
                     <p><br></br></p>
                     <div class="btn-group " role="group">
-                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                     </div>
                 </div>
             </div>
@@ -261,9 +261,9 @@
     				<p>Taille : {% if file['size'] != null %} {{ file['size'] }} {% endif %}</p>
     				<p>Dernière modification le {{ file['modifyDate'] }}</p>
                     <div class="btn-group " role="group">
-                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                     </div>
     			</div>
     		</div>
@@ -279,9 +279,9 @@
                     <p>Taille : {% if file['size'] != null %} {{ file['size'] }} {% endif %}</p>
                     <p>Dernière modification le {{ file['modifyDate'] }}</p>
                     <div class="btn-group " role="group">
-                        <button type="button" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                        <button type="button" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                        <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                     </div>
                 </div>
             </div>
