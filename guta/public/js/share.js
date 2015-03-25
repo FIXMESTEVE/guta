@@ -9,18 +9,22 @@ share = function(){
 	var files = [];
 	//On  récupère les checkbox
 	$(document).find('input').each(function(){
-		if($(this).prop('checked')){
-			str = "files/";
-			pos = $(this).attr('id').indexOf(str);
-			target = $(this).attr('id').substring(pos + str.length);
-			files.push(target);
-		}
+		if($(this).attr('type') == 'checkbox')
+			if($(this).prop('checked')){
+				str = "files/";
+				pos = $(this).attr('id').indexOf(str);
+				target = $(this).attr('id').substring(pos + str.length);
+				files.push(target);
+			}
 	});
 	//On récupère l'adresse mail
 	var email = $('#inputEmail').val();
 
 	//On envoie en POST à file/share/
-	$.post("/guta/guta/files/share", { paths: files, userMail: email }, 
+	app = app.substr(0, index)
+	alert(app);
+	app += 'share'
+	$.post(app, { paths: files, userMail: email }, 
 		function(data) {
 			console.log(data.message);
 			$('#shareInfo').text(data.message);

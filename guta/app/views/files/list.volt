@@ -152,7 +152,7 @@
 			{% for dir in directories %}
 				<tr class="contextMenu">
 					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" /></td>
-					<td><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
+					<td class="navigate"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
                     <td>
@@ -167,7 +167,7 @@
             {% for dir in sharedDirectories %}
                 <tr class="shared contextMenu">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
-                    <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
+                    <td class="navigate"><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
                     <td></td>
                     <td>
@@ -182,7 +182,7 @@
 			{% for file in files %}
 				<tr class="downloadable contextMenu" href="#myFileModal" data-toggle="modal">
 					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['name']) }}" /></td>
-					<td><span class="glyphicon glyphicon-file"><a href="" path="{{ currentDir }}" file="{{ file['name'] }}">{{ file['name'] }}</a></span></td>
+					<td class="navigate"><span class="glyphicon glyphicon-file"><a href="" path="{{ currentDir }}" file="{{ file['name'] }}">{{ file['name'] }}</a></span></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>
                     <td>
@@ -197,7 +197,7 @@
             {% for file in sharedFiles %}
                 <tr class="downloadable shared contextMenu" href="#myFileModal" data-toggle="modal">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
-                    <td><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="" path="{{ currentDir }}" file="{{ file['realPath'] }}">{{ file['name'] }}</a></span></span></td>
+                    <td class="navigate"><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="" path="{{ currentDir }}" file="{{ file['realPath'] }}">{{ file['name'] }}</a></span></span></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
                     <td>{{ file['modifyDate'] }}</td>
                     <td>
@@ -216,7 +216,7 @@
 <!-- Vue icône -->
 <div class="row" id="iconeViewTable" style="display:none;">
 	{% for dir in directories %}
-	  	<div class="bloc col-sm-6 col-md-8 contextMenu">
+	  	<div class="bloc col-sm-6 col-md-8 contextMenu navigate">
 	    	<div class="thumbnail">
                 <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" hidden='true'/>
 	      		<span class="glyphicon glyphicon-folder-open"></span>
@@ -234,7 +234,7 @@
 	  	</div>
 	{% endfor %}
     {% for dir in sharedDirectories %}
-        <div class="bloc col-sm-6 col-md-8 shared contextMenu">
+        <div class="bloc col-sm-6 col-md-8 shared contextMenu navigate">
             <div class="thumbnail">
                 <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath']) ~ "/"}}" hidden='true'/>
                 <span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"></span></span>
@@ -252,7 +252,7 @@
         </div>
     {% endfor %}
 	{% for file in files %}
-		<div class="bloc col-sm-6 col-md-8 downloadable contextMenu" href="#myFileModal" data-toggle="modal">
+		<div class="bloc col-sm-6 col-md-8 downloadable contextMenu navigate" href="#myFileModal" data-toggle="modal">
     		<div class="thumbnail">
                 <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['name']) }}" hidden='true'/>
     			<span class="glyphicon glyphicon-file"></span>
@@ -270,7 +270,7 @@
     	</div>
 	{% endfor %}
     {% for file in sharedFiles %}
-        <div class="bloc col-sm-6 col-md-8 shared downloadable contextMenu" href="#myFileModal" data-toggle="modal">
+        <div class="bloc col-sm-6 col-md-8 shared downloadable contextMenu navigate" href="#myFileModal" data-toggle="modal">
             <div class="thumbnail">
                 <input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" hidden='true'/>
                 <span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"></span></span>
