@@ -301,12 +301,18 @@ class FilesController extends Controller
         //$this->view->disable();
     }
 
-    public function pasteAction($destSubPath){
-        $ds = DIRECTORY_SEPARATOR;
-        $user = $this->session->get('auth')['idUser'];
-        $destSubPath = urldecode(str_replace('¤', $ds, $destSubPath));
-        $dest = $user.$ds.$destSubPath.$ds.".";
-        exec("cp ".$this->persistent->copiedPath." ".$dest);
+    public function pasteAction($destSubPath = null){
+        if (isset($this->persistent->copiedPath)) {
+            $ds = DIRECTORY_SEPARATOR;
+            $user = $this->session->get('auth')['idUser'];
+            $destSubPath = urldecode(str_replace('¤', $ds, $destSubPath));
+            //$copy = $user.$ds.$destSubPath.$ds.".";
+            
+            $destSubPath = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles" .$ds.$user.$ds.$destSubPath.$ds.".";
+            $copy = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "uploadedFiles".$ds.$this->persistent->copiedPath;
+            exec("svn cp \"".$copy."\" \"".$destSubPath."\"");
+            exec("svn up --accept mine-full");
+        }
     }
 
     public function getVersionsAction($fileName = null){

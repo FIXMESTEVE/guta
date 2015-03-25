@@ -9,7 +9,7 @@ $(document).on('click', 'a.menulink', function(event){
 
 var clicked;
 
-$("tr").bind("contextmenu", function(event){
+$(".contextMenu").bind("contextmenu", function(event){
 	event.preventDefault();
 	clicked = $(this);
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
@@ -17,13 +17,27 @@ $("tr").bind("contextmenu", function(event){
 	$("li.delete").css({display: "block"});
 	$("li.copy").css({display: "block"});
 	$("li.download").hide();
+}).bind("click", function(event){
+	event.preventDefault();
+	if($(this).attr('class').search('downloadable') == -1){
+		$(this).find('a').each(function(){
+			$(location).attr('href', $(this).attr('href'));
+		})
+	}
+	else{
+		$(this).find('a').each(function(){
+			showFile($(this).attr('path'), $(this).attr('file'))
+			//var func = $(this).attr("onclick");
+			//eval(func);
+		})
+	}
 });
-$("tr.shared").bind("contextmenu", function(event){
+$(".shared").bind("contextmenu", function(event){
 	$("li.share").hide();
 	$("li.delete").hide();
 	$("li.copy").hide();
 });
-$("tr.downloadable").bind("contextmenu", function(event){
+$(".downloadable").bind("contextmenu", function(event){
 	$("li.download").css({display: "block"});
 });
 $(document).bind("click", function(event){
