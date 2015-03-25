@@ -19,17 +19,21 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("li.download").hide();
 });
 $('.navigate').bind("click", function(event){
-	//event.preventDefault();
-	if($(this).attr('class').search('downloadable') == -1){
+	event.preventDefault();
+	var file = false;
+	$(this).find('span').each(function(){
+		if($(this).attr('class').search('glyphicon-file') != -1){
+			file = true;
+		}
+	})
+	if(!file){
 		$(this).find('a').each(function(){
 			$(location).attr('href', $(this).attr('href'));
 		})
 	}
 	else{
 		$(this).find('a').each(function(){
-			showFile($(this).attr('path'), $(this).attr('file'))
-			//var func = $(this).attr("onclick");
-			//eval(func);
+			showFile($(this).attr('path'), $(this).attr('file'));
 		})
 	}
 });
@@ -101,6 +105,9 @@ menu_click = function(object){
 	case 'share':
 		//We just check the checkbox and then go to the share modal
 		var checkbox;
+		clicked.find('td').each(function(){
+			//alert($(this).attr('class'));
+		})
 		clicked.find('input').each(function(){
 			checkbox = $(this);
 		});

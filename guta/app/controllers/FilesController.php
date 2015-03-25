@@ -264,7 +264,7 @@ class FilesController extends Controller
                         array_push($sharedFiles, array(
                             'realPath' => $sharedpath->id_owner . '/' . $sharedpath->path,
                             'name' => array_pop($pathArray),
-                            'size' => filesize($physicalPath),
+                            'size' => $this->getFileSize(filesize($physicalPath)),
                             'modifyDate' => $modifyDate
                         ));
                     }
