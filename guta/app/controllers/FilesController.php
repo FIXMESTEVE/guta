@@ -215,7 +215,7 @@ class FilesController extends Controller
         $directory = rtrim(ltrim($directory, '/'), '/');
         //Searching for files/directories in directory and putting them in arrays for view
         foreach ($files as $file) {            
-            if($file != '.'){
+            if($file != '.' && $file != '.svn'){
                 if (is_dir($pathDirectory . "/" . $file)) {
                     $size = null;
                     if(!(strlen($directory) == 0 && $file == "..")){
