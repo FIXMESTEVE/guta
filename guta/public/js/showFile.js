@@ -20,7 +20,6 @@ function showFile(path, file){
 	var modalBody = document.getElementById("fileModalBody")
   var name = file.split('/')
   name = name[name.length -1]
-  alert(path);
   document.getElementById("myFileModalLabel").innerHTML = "Fichier : " + name
 
   path = path.replace(/\//g, "{}")

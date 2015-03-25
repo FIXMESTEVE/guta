@@ -18,6 +18,7 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("li.copy").css({display: "block"});
 	$("li.download").hide();
 }).bind("click", function(event){
+	event.preventDefault();
 	if($(this).attr('class').search('downloadable') == -1){
 		$(this).find('a').each(function(){
 			$(location).attr('href', $(this).attr('href'));
@@ -25,6 +26,7 @@ $(".contextMenu").bind("contextmenu", function(event){
 	}
 	else{
 		$(this).find('a').each(function(){
+			showFile($(this).attr('path'), $(this).attr('file'))
 			//var func = $(this).attr("onclick");
 			//eval(func);
 		})
