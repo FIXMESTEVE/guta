@@ -22,7 +22,7 @@ class Elements extends Component
     }
 
     private function addNotification($id){
-        $phql = "SELECT Notification.* FROM Notification INNER JOIN Sharedfile ON Sharedfile.idShared_File = Notification.id_SharedFile WHERE Sharedfile.id_user = " . $id . " OR Sharedfile.id_owner = " . $id;
+        $phql = "SELECT Notification.* FROM Notification INNER JOIN Sharedfile ON Sharedfile.idShared_File = Notification.id_SharedFile WHERE Sharedfile.id_user = " . $id;
         $notifs = $this->modelsManager->executeQuery($phql);
     
         $badge = 0;
@@ -31,12 +31,17 @@ class Elements extends Component
         foreach ($notifs as $notif) {
             if($notif->unread){
                 $badge ++;
-                $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item active'));
-              
-            }else
-             $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item'));
+                $content .='<div class="list-group-item active">';
+                $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item active', 'style' => 'padding: 0; border: 0px; margin: 0, 5px, 5px, 5px;'));
+            }else {
+                $content .='<div class="list-group-item">';
+                $content .= $this->tag->linkTo(array('notification/delete/' . $notif->idNotification, "<button type='button' class='close' aria-label='Close'><span aria-hidden='true'>&times;</span></button>", 'style' => 'border: 0px;'));
+                $content .= '</br>';
+                $content .= $this->tag->linkTo(array('notification/read/' . $notif->idNotification, '<b>' . $notif->date . '</b> : ' . $notif->message, 'class' => 'list-group-item',  'style' => 'padding: 0; border: 0px; margin: 0, 5px, 5px, 5px;'));
+            }
+            $content .='</div>';
         }
-        $content.="</div></div>";
+        $content.= "</div></div>";
 
         echo $content;
         echo '<li data-container="body" data-toggle="popover" data-placement="bottom"><a style="cursor:pointer;">

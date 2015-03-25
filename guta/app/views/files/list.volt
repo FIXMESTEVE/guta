@@ -123,12 +123,12 @@
                             <th>Date et heure</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody><!--
                         {% for ver in output %}
                             <tr>
                                 <td>{{ ver }}</td>
                             </tr>
-                        {% endfor %}
+                        {% endfor %}-->
                     </tbody>
                 </div>
             </div>
