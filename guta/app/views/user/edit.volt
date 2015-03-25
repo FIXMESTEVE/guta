@@ -29,7 +29,7 @@
                     {{ text_field('email', 'class': "form-control input-lg") }}
                 </div>
                 <div class="form-group input-group">
-                    <span class="input-group-addon" for="password"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></span>
+                    <span class="input-group-addon" for="password"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>
                     {{ password_field('password', 'class': "form-control input-lg") }}
                 </div>
                 <div class="form-group">

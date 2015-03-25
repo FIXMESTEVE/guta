@@ -79,7 +79,7 @@ class Elements extends Component
             echo '<div class="btn-group" role="group" aria-label="...">'.
                 '<button href="#shareModal" title="Partager" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-share" style="color:#375a7f;" aria-hidden="true"></span></button>';
             if(substr($_SERVER['REQUEST_URI'], strlen($this->url->getBaseUri() . "files/")) != "search")
-                echo '<button href="#uploadModal" title="Transférer" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-cloud-upload" style="color:#375a7f;" aria-hidden="true"></span></button>'.
+                echo '<button href="#uploadModal" title="Transférer" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-open" style="color:#375a7f;" aria-hidden="true"></span></button>'.
                     '<button href="#newFolderModal" title="Nouveau dossier" role="button" class="btn btn-default" data-toggle="modal"><span class="glyphicon glyphicon-folder-open" style="color:#375a7f;" aria-hidden="true"></span></button>'.
                     '</div>';
             echo '</div>';
