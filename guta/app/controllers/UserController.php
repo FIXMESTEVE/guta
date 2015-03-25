@@ -25,8 +25,8 @@ class UserController extends ControllerBase
      */
     public function editAction()
     {
-        $idUser = $this->session->get('auth');
-        $User = User::findFirstByidUser($idUser);
+        $user = $this->session->get('auth');
+        $User = User::findFirstByidUser($user['idUser']);
         if (!$User) {
             $this->flash->error("User was not found");
             return $this->dispatcher->forward(array(

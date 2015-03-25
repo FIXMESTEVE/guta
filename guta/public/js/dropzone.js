@@ -27,7 +27,7 @@
 
 //a simple modification to force reload in our software
 //not included in the original Dropzone.js script
-$('#myUploadModal').on('hidden.bs.modal', function () {
+$('#uploadModal').on('hidden.bs.modal', function () {
   location.reload();
 });
 

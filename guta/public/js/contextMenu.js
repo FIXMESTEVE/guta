@@ -36,7 +36,7 @@ menu = function(){
 	string = "<ul class='dropdown-menu'>";
 	//contextual menu here
 	string += "<li class='download'><a id='download' class='menulink' href=''>Télécharger</a></li>"
-	string += "<li class='share'><a id='share' class='menulink' href='#myShareModal' data-toggle='modal'>Partager</a></li>"
+	string += "<li class='share'><a id='share' class='menulink' href='#shareModal' data-toggle='modal'>Partager</a></li>"
 	string += "<li class='divider'></li>";
 	string += "<li class='delete'><a id='delete' class='menulink' href=''>Supprimer</a></li>"
 	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
