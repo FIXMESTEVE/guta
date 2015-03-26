@@ -4,7 +4,7 @@ $(document).on("ready", function(){
 })
 $(document).on('click', 'a.menulink', function(event){
 	event.preventDefault();
-	menu_click($(this));
+	menu_click($(this).attr('id'));
 });
 
 var clicked;
@@ -17,6 +17,10 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("li.delete").css({display: "block"});
 	$("li.copy").css({display: "block"});
 	$("li.download").hide();
+});
+$('.btn-operation').bind('click', function(event){
+	clicked = $(this).parent().parent().parent();
+	menu_click($(this).attr('id'));
 });
 $('.navigate').bind("click", function(event){
 	event.preventDefault();
@@ -74,9 +78,8 @@ function httpGet(theUrl)
     return xmlHttp.responseText;
 }
 
-
 //Associate the actions of the contextual menu here
-menu_click = function(object){
+menu_click = function(attr){
 	var pos;
 	var target;
 	var folderPath;
@@ -86,7 +89,7 @@ menu_click = function(object){
 		target = $(this).attr('id').substring(pos + str.length).replace(/\//g, '¤');
 		folderPath = $(this).attr('id').substring(0, pos) + "files/";
 	});
-	switch(object.attr('id')){
+	switch(attr){
 	case 'download':
 		$(location).attr('href', folderPath + "download/" + target);
 		break;
@@ -97,7 +100,7 @@ menu_click = function(object){
 		httpGet(folderPath + "copy/" + target);
 
 		// taken from StackOverflow, by Anu - SO
-		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="dismiss this notification">X</a></span>');
+		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="Dismiss this notification">X</a></span>');
 		$(".dismiss").click(function(){
 		       $("#copyNotification").fadeOut("slow");
 		});

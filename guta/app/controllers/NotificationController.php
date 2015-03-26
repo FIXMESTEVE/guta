@@ -18,11 +18,13 @@ class NotificationController extends ControllerBase
 
         //Passe a read cette notif dans la base de données
         $notif = Notification::findFirstByIdNotification($id);
-        $notif->unread = 0;
+        if($notif){
+            $notif->unread = 0;
 
-        if (!$notif->save()) {
-            foreach ($User->getMessages() as $message) {
-                $this->flash->error($message);
+            if (!$notif->save()) {
+                foreach ($User->getMessages() as $message) {
+                    $this->flash->error($message);
+                }
             }
         }
 

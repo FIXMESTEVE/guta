@@ -157,9 +157,9 @@
 					<td></td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
 				</tr>
@@ -172,9 +172,9 @@
                     <td></td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -187,9 +187,9 @@
 					<td>{{ file['modifyDate'] }}</td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
 				</tr>
@@ -202,9 +202,9 @@
                     <td>{{ file['modifyDate'] }}</td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -228,9 +228,9 @@
 	      		   </div>
                 </div>
                 <div class="btn-group " role="group">
-                    <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                    <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                    <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
 	    	</div>
 	  	</div>
@@ -248,9 +248,9 @@
                     </div>
                 </div>
                 <div class="btn-group " role="group">
-                    <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                    <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                    <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
             </div>
         </div>
@@ -268,9 +268,9 @@
     			    </div>
     		    </div>
                 <div class="btn-group " role="group">
-                    <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                    <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                    <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
             </div>
     	</div>
@@ -288,9 +288,9 @@
                     </div>
                 </div>
                 <div class="btn-group " role="group">
-                    <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                    <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                    <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
             </div>
         </div>
