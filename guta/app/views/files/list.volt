@@ -117,20 +117,8 @@
             </div>
         
             <div class='modal-body'>
-                <div class='table-responsive' id='versionsTable' style='display:inline;'>
-                    <thead>
-                        <tr>
-                            <th>Date et heure</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ver in output %}
-                            <tr>
-                                <td>{{ ver }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </div>
+                <label>Date et heure</label>
+                <div id="versionsRows"></div>
             </div>
         </div>
     </div>
@@ -187,6 +175,9 @@
 					<td>{{ file['modifyDate'] }}</td>
                     <td>
                         <div class="btn-group pull-right" role="group">
+                            <!--not working, but keeping it for future improvements
+                            <button href="#myVersionsModal" onclick="versionsRequest('getVersions{{currentDir ~ '/' ~ file['name']}}')" data-toggle="modal" title="Versions précédentes" role="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+                            -->
                             <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                             <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
                             <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>

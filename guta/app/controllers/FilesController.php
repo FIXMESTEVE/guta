@@ -316,17 +316,65 @@ class FilesController extends Controller
     }
 
     public function getVersionsAction($fileName = null){
+
+        $this->view->disable();
+
+
+        $fileName = urldecode(str_replace('¤', '\\', $fileName));
+        $ds = DIRECTORY_SEPARATOR;
+        $storeFolder = "uploadedFiles"; //same as upload
+        $user = $this->session->get('auth')['idUser'];
+        
+        $file = ".." . $ds . ".." . $ds . $storeFolder . $ds;
+        // Check if we are in a another directory and changes the path accordingly
+        if(is_numeric(current(explode('\\', $fileName))))
+            $file .= $fileName;
+        else
+            $file .= $user . $ds . $fileName;
+        
+        exec("svn log -q \"".$file."\" | grep '^r' | cut -f1,5,6 -d' '", $output, $returnvalue);
+        //Create a response instance
+        $response = new \Phalcon\Http\Response();
+
+        //Set the content of the response
+        $response->setContent(json_encode($output));
+
+        //Return the response
+        return $response;
+
+    }
+
+    public function downloadVersionAction($fileName, $version){
         $fileName = str_replace('¤', '\\', $fileName);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
-        $user = $this->session->get('auth')['idUser'];; 
+        $user = $this->session->get('auth')['idUser'];
         //Force the download of a file
-        $file=".." . $ds . ".." . $ds . $storeFolder . $ds . $user . $ds . $fileName;
-
-        exec("svn log -q ".$file." | grep '^r' | cut -f5,6 -d' '", $output, $returnvalue);
-        
-        $this->view->output = $output;
-        var_dump($output);
+        $file = ".." . $ds . ".." . $ds . $storeFolder . $ds;
+        // Check if we are in a another directory and changes the path accordingly
+        if(is_numeric(current(explode('\\', $fileName))))
+            $file .= $fileName;
+        else
+            $file .= $user . $ds . $fileName;
+        if(file_exists(realpath($file)))
+        {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            passthru("svn cat -".$version." \"".$file."\"");
+            exit;
+        }
+        else
+        {
+            $names = explode('\\', $fileName);
+            array_pop($names);
+            $folderView = implode('\\', $names);
+            $this->response->redirect("files/list/".$folderView);
+            return;
+        }
     }
 
     public function getFileAction($path){

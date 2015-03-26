@@ -35,7 +35,7 @@ class Security extends Plugin
 		}
 		//Accessible en user
 		$privateResources = array(
-			'files' => array('upload', 'delete', 'download', 'list', 'copy', 'paste', 'getVersion', 'getFile', 'viewPDF', 'readFile', 'createFolder', 'search', 'share'),
+			'files' => array('upload', 'delete', 'download', 'list', 'copy', 'paste', 'getVersions', 'downloadVersion', 'getFile', 'viewPDF', 'readFile', 'createFolder', 'search', 'share'),
 			'notification' => array('read'),
 			'user' => array('edit', 'delete', 'save'),
 			'session' => array('end')
