@@ -532,39 +532,31 @@ class FilesController extends Controller
             $sharedPaths = $this->request->getPost("paths");
             if($sharedPaths) {  
                 foreach ($sharedPaths as $path) {
-                    if($sharedFile = Sharedfile::findFirstBypath($path)) {
-                        if($sharedFile->id_user == $userShare->idUser) {
-                            $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cet utilisateur'));
-                        } else {
-                            $sharedFile = new Sharedfile();
-                            $sharedFile->id_user = $userShare->idUser;
-                            $sharedFile->path = $path;
-                            $sharedFile->id_owner = $userId;
-                            $this->response->setJsonContent(array('message' => 'Partage réussi !'));
-
-                        }
+                    if($sharedFile = Sharedfile::findFirst(array("path = ?0 and id_user = ?1", "bind" => array($path, $userShare->idUser)))) {
+                        $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cet utilisateur'));
                     } else {
                         $sharedFile = new Sharedfile();
                         $sharedFile->id_user = $userShare->idUser;
                         $sharedFile->path = $path;
                         $sharedFile->id_owner = $userId;
                         $this->response->setJsonContent(array('message' => 'Partage réussi !'));
-                    }
-                    if(!$sharedFile->save()) {
-                        $this->response->setJsonContent(array('message' => 'Erreur lors du partage'));
-                        return $this->response;
-                    } else {
-                        $notif = new Notification();
-                        $path = rtrim(ltrim($sharedFile->path, '/'), '/');
-                        $pathArray = explode('/', $path);
-                        $elemShared = array_pop($pathArray);
-                        $notif->message = $this->session->get('auth')['login'] . " a partage " . $elemShared . " avec vous.";
-                        $notif->unread = true;
-                        $notif->id_SharedFile = $sharedFile->idShared_File;
-                        if(!$notif->save()) {
-                            $this->response->setJsonContent(array('message' => "TEST"));
-                            foreach ($notif->getMessages() as $message) { 
-                                $this->flash->error($message);
+                        
+                        if(!$sharedFile->save()) {
+                            $this->response->setJsonContent(array('message' => 'Erreur lors du partage'));
+                            return $this->response;
+                        } else {
+                            $notif = new Notification();
+                            $path = rtrim(ltrim($sharedFile->path, '/'), '/');
+                            $pathArray = explode('/', $path);
+                            $elemShared = array_pop($pathArray);
+                            $notif->message = $this->session->get('auth')['login'] . " a partage " . $elemShared . " avec vous.";
+                            $notif->unread = true;
+                            $notif->id_SharedFile = $sharedFile->idShared_File;
+                            if(!$notif->save()) {
+                                $this->response->setJsonContent(array('message' => "TEST"));
+                                foreach ($notif->getMessages() as $message) { 
+                                    $this->flash->error($message);
+                                }
                             }
                         }
                     }
