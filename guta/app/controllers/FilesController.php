@@ -67,9 +67,19 @@ class FilesController extends Controller
         $storeFolder = "uploadedFiles"; //same as upload
         $user = $this->session->get('auth')['idUser'];
         $folder=".." . $ds . ".." . $ds . $storeFolder . $ds . $user;
-        error_log(getcwd());
         if(file_exists(realpath($folder.$ds.$fileName)))
-        {   
+        {
+            //First, we check if it's a shared file/dir and delete all notifications about it
+            $query = Sharedfile::findByPath(str_replace('\\', '/', $fileName));
+            foreach ($query as $sharedPath) {
+                $queryNotif = Notification::findById_SharedFile($sharedPath->idShared_File);
+                foreach ($queryNotif as $notification) {
+                    $notification->delete();
+                }
+                $sharedPath->delete();
+            }
+
+            
             chdir($folder);
             if(is_dir($fileName)){
                 exec("svn up");
@@ -245,12 +255,12 @@ class FilesController extends Controller
             $query = Sharedfile::findByIdUser($userId);
             foreach ($query as $sharedpath) {
                 $physicalPath = $this->persistent->userPath . "../" .  $sharedpath->id_owner . '/' . $sharedpath->path;
-                // In case owner deletes the shared file, we update the database
+                /*// In case owner deletes the shared file, we update the database
                 if(!file_exists($physicalPath)){
                     //Delete database entry, maybe a notification could be good
                     $sharedpath->delete();
                 }
-                else{
+                else{*/
                     $pathArray = explode('/', $sharedpath->path);
                     if(is_dir($physicalPath)){
                         end($pathArray);
@@ -269,7 +279,7 @@ class FilesController extends Controller
                             'modifyDate' => $modifyDate
                         ));
                     }
-                }
+                //}
             }
         }
         sort($dirArray);
