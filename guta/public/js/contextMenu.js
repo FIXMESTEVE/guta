@@ -57,6 +57,13 @@ $(".downloadable").bind("contextmenu", function(event){
 	$("li.copy").css({display: "block"});
 	$("li.download").css({display: "block"});
 });
+$(".noversions").bind("contextmenu", function(event){
+	$("li.copy").css({display: "block"});
+	$("li.download").css({display: "block"});
+});
+$(".sharednoversions").bind("contextmenu", function(event){
+	$("li.download").css({display: "block"});
+});
 $(document).bind("click", function(event){
 	$("ul.dropdown-menu").hide();
 	$("li.download").hide();

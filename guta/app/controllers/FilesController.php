@@ -111,6 +111,8 @@ class FilesController extends Controller
 
     public function downloadAction($fileName)
     {
+        $this->view->disable();
+
         $fileName = str_replace('¤', '\\', $fileName);
         $ds = DIRECTORY_SEPARATOR;
         $storeFolder = "uploadedFiles"; //same as upload
@@ -126,16 +128,46 @@ class FilesController extends Controller
         $length   = sprintf("%u", filesize($file));
 
         if(file_exists(realpath($file)))
-        {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($file));
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . $length);
-            readfile($file);
-            exit;
+        {   
+            if(is_dir(realpath($file))){
+                // filename for the browser to save the zip file
+                header("Content-Type: application/x-tar");
+                header("Content-Disposition: attachment; filename='".basename($file).".zip'");
+                header("Content-Transfer-Encoding: binary");
+
+                // get a tmp name for the .zip
+                $tmp_zip = tempnam ("tmp", "tempname") . ".zip";
+
+                //change directory so the zip file doesnt have a tree structure in it.
+                chdir($file);
+               
+                // zip the stuff (dir and all in there) into the tmp_zip file
+                exec('zip -R '.$tmp_zip.' *');
+               
+                // calc the length of the zip. it is needed for the progress bar of the browser
+                $filesize = filesize($tmp_zip);
+                header("Content-Length: $filesize");
+
+                // deliver the zip file
+                $fp = fopen("$tmp_zip","r");
+                echo fpassthru($fp);
+
+                // clean up the tmp zip file
+                unlink($tmp_zip);
+                exit;
+            }
+            else{
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename='.basename($file));
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . $length);
+                readfile($file);
+                error_log($file);
+                exit;
+            }
         }
         else
         {
@@ -356,7 +388,8 @@ class FilesController extends Controller
         else
             $file .= $user . $ds . $fileName;
         
-        exec("svn log -q \"".$file."\" | grep '^r' | cut -f1,5,6 -d' '", $output, $returnvalue);
+        exec("svn log -q \"".addslashes($file)."\" | grep '^r' | cut -f1,5,6 -d' '", $output, $returnvalue);
+        error_log($file);
         //Create a response instance
         $response = new \Phalcon\Http\Response();
 
@@ -382,14 +415,23 @@ class FilesController extends Controller
             $file .= $user . $ds . $fileName;
         if(file_exists(realpath($file)))
         {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($file));
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            passthru("svn cat -".$version." \"".$file."\"");
-            exit;
+            if(is_dir(realpath($file))){
+                //TODO
+                //There doesn't seem to be a simple way to checkout a folder to stdout in svn
+                //This could be worked out in the future
+                $this->flash->error("You can't download previous versions of a folder at the moment");
+                exit;
+            }
+            else{
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename='.basename($file));
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                passthru("svn cat -".$version." \"".$file."\"");
+                exit;
+            }
         }
         else
         {
