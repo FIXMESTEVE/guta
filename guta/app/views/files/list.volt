@@ -166,7 +166,11 @@
 				</tr>
 			{% endfor %}
             {% for dir in sharedDirectories %}
+                {% if dir['name'] == '..' %}
+                <tr class="contextMenu doublepoint">
+                {% else %}
                 <tr class="sharednoversions shared contextMenu">
+                {% endif %}
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
                     <td class="navigate"><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"></span></span>&nbsp;&nbsp;{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
