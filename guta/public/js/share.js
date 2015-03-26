@@ -28,7 +28,7 @@ share = function(){
 
 	//On envoie en POST à file/share/
 	app = app.substr(0, index)
-	alert(app);
+	
 	app += 'share'
 	$.post(app, { paths: files, userMail: email }, 
 		function(data) {

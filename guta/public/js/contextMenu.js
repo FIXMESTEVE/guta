@@ -42,6 +42,11 @@ $(".shared").bind("contextmenu", function(event){
 	$("li.delete").hide();
 	$("li.copy").hide();
 });
+$(".doublepoint").bind("contextmenu",function(event){
+	$("li.share").hide();
+	$("li.delete").hide();
+	$("li.copy").hide();
+});
 $(".downloadable").bind("contextmenu", function(event){
 	$("li.download").css({display: "block"});
 });
@@ -96,6 +101,7 @@ menu_click = function(object){
 	case 'copy':
 		httpGet(folderPath + "copy/" + target);
 
+		$("#pastButton").removeAttr("disabled");
 		// taken from StackOverflow, by Anu - SO
 		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="dismiss this notification">X</a></span>');
 		$(".dismiss").click(function(){

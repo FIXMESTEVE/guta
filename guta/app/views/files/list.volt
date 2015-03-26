@@ -13,9 +13,10 @@
 
 {% if !inSharedDirectory %}
 {{ form('files/paste' ~ currentDir, 'method': 'post') }}
-    <button type="submit" class="btn btn-default pull-right" style="margin-right:10%">
+    <button id="pastButton" type="submit" class="btn btn-default pull-right" style="margin-right:10%">
       <span class="glyphicon glyphicon-paste" aria-hidden="false"></span> Coller
     </button>
+    {{ currentDir }}
 {{ end_form() }}
 {% endif %}
 
@@ -150,8 +151,16 @@
 		</thead>
 		<tbody>
 			{% for dir in directories %}
+				{% if dir['name'] == '..' %}
+				<tr class="contextMenu doublepoint">
+				{% else %}
 				<tr class="contextMenu">
-					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" /></td>
+				{% endif %}
+					<td>
+						{% if dir['name'] != '..' %}
+							<input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" />
+						{% endif %}
+					</td>
 					<td class="navigate"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
