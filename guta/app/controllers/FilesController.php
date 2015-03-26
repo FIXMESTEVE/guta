@@ -7,13 +7,15 @@ class FilesController extends Controller
     public function initialize()
     {
         $this->assets
-            ->addCss("css/bootstrap.min.css")
+            ->addCss("//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
+            //->addCss("css/bootstrap.min.css")
             ->addCss("css/design.css")
             ->addCss("css/dropzone.css");
 
         $this->assets
             ->addJs("js/jquery-1.11.2.min.js")
-            ->addJS("js/bootstrap.min.js")
+            ->addJs("//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js")
+            //->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
             ->addJs("js/showFile.js")
             ->addJs("js/contextMenu.js")
@@ -418,7 +420,10 @@ class FilesController extends Controller
 
         if ($this->request->isPost()) {
             // Get the name of the new folder.
+
             $foldername = urldecode($this->request->getPost("foldername"));
+            $foldername = strtr($foldername, array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)));
+            $foldername = trim($foldername, chr(0xC2).chr(0xA0));
             if ($foldername == null) {
                 $this->flash->error("Le nom d'un dossier ne peut être vide.");
                 return $this->dispatcher->forward(array(
