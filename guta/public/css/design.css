@@ -1,3 +1,6 @@
+@import url('http://getbootstrap.com/dist/css/bootstrap.css');
+ @import url('http://fonts.googleapis.com/css?family=Happy+Monkey');
+
 html,body {
   height:100%;
 }
@@ -24,11 +27,6 @@ h4{
   background-color:#ffffff;
   color:#eee;
   overflow:hidden;
-}
-
-.container-full a {
-  color:#efefef;
-  text-decoration:none;
 }
 
 .container-full table, .container-full table a, .container-full p {
