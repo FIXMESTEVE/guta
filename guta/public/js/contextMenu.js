@@ -4,7 +4,7 @@ $(document).on("ready", function(){
 })
 $(document).on('click', 'a.menulink', function(event){
 	event.preventDefault();
-	menu_click($(this));
+	menu_click($(this).attr('id'));
 });
 
 var clicked;
@@ -18,18 +18,26 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("li.copy").css({display: "block"});
 	$("li.download").hide();
 });
+$('.btn-operation').bind('click', function(event){
+	clicked = $(this).parent().parent().parent();
+	menu_click($(this).attr('id'));
+});
 $('.navigate').bind("click", function(event){
-	//event.preventDefault();
-	if($(this).attr('class').search('downloadable') == -1){
+	event.preventDefault();
+	var file = false;
+	$(this).find('span').each(function(){
+		if($(this).attr('class').search('glyphicon-file') != -1){
+			file = true;
+		}
+	})
+	if(!file){
 		$(this).find('a').each(function(){
 			$(location).attr('href', $(this).attr('href'));
 		})
 	}
 	else{
 		$(this).find('a').each(function(){
-			showFile($(this).attr('path'), $(this).attr('file'))
-			//var func = $(this).attr("onclick");
-			//eval(func);
+			showFile($(this).attr('path'), $(this).attr('file'));
 		})
 	}
 });
@@ -49,11 +57,11 @@ $(document).bind("click", function(event){
 //HTML of the contextual menu
 menu = function(){
 	string = "<ul class='dropdown-menu'>";
-	//contextual menu here
-	string += "<li class='download'><a id='download' class='menulink' href=''>Télécharger</a></li>"
-	string += "<li class='share'><a id='share' class='menulink' href='#shareModal' data-toggle='modal'>Partager</a></li>"
+	//contextual menu here 
+	string += "<li class='download'><a id='download' class='menulink' href=''><span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span> Télécharger</a></li>"
+	string += "<li class='share'><a id='share' class='menulink' href='#shareModal' data-toggle='modal'><span class='glyphicon glyphicon-share' aria-hidden='true'></span> Partager</a></li>"
 	string += "<li class='divider'></li>";
-	string += "<li class='delete'><a id='delete' class='menulink' href=''>Supprimer</a></li>"
+	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
 	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
 	string += "<li class='version'><a id='version' class='menulink' href='#myVersionsModal' data-toggle='modal'> <span class='glyphicon glyphicon-fast-backward' aria-hidden='true'></span> Versions</a></li>"
 	// menu's end
@@ -83,9 +91,8 @@ function versionsRequest(theUrl, folderPath, target){
 	   console.error(e);
 	});
 }
-
 //Associate the actions of the contextual menu here
-menu_click = function(object){
+menu_click = function(attr){
 	var pos;
 	var target;
 	var folderPath;
@@ -95,7 +102,7 @@ menu_click = function(object){
 		target = $(this).attr('id').substring(pos + str.length).replace(/\//g, '¤');
 		folderPath = $(this).attr('id').substring(0, pos) + "files/";
 	});
-	switch(object.attr('id')){
+	switch(attr){
 	case 'download':
 		$(location).attr('href', folderPath + "download/" + target);
 		break;
@@ -106,7 +113,7 @@ menu_click = function(object){
 		httpGet(folderPath + "copy/" + target);
 
 		// taken from StackOverflow, by Anu - SO
-		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="dismiss this notification">X</a></span>');
+		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="Dismiss this notification">X</a></span>');
 		$(".dismiss").click(function(){
 		       $("#copyNotification").fadeOut("slow");
 		});

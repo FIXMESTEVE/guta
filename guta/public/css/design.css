@@ -1,3 +1,6 @@
+@import url('http://getbootstrap.com/dist/css/bootstrap.css');
+ @import url('http://fonts.googleapis.com/css?family=Happy+Monkey');
+
 html,body {
   height:100%;
 }
@@ -24,11 +27,6 @@ h4{
   background-color:#ffffff;
   color:#eee;
   overflow:hidden;
-}
-
-.container-full a {
-  color:#efefef;
-  text-decoration:none;
 }
 
 .container-full table, .container-full table a, .container-full p {
@@ -201,7 +199,7 @@ h4{
   color: #000000;
 }
 
-.row .bloc .caption .btn-group .glyphicon{
+.row .bloc .thumbnail .btn-group .glyphicon{
   font-size: 12px;
   color: #FFFFFF;
 }
@@ -209,7 +207,7 @@ h4{
 
 .row .thumbnail .caption a{  
   display:inline-block;
-  white-space: nowrap; 
+  white-space: nowrap;
   size: 14px;
   width: 155px;
   overflow: hidden;

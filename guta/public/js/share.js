@@ -5,6 +5,12 @@ $("#inputEmail").keydown(function(e){
 		share();
 });
 
+$('#shareModal').on('hidden.bs.modal', function () {
+  $(document).find('input').each(function(){
+  	$(this).prop('checked', false);
+  })
+});
+
 share = function(){
 	var files = [];
 	//On  récupère les checkbox
@@ -22,7 +28,6 @@ share = function(){
 
 	//On envoie en POST à file/share/
 	app = app.substr(0, index)
-	alert(app);
 	app += 'share'
 	$.post(app, { paths: files, userMail: email }, 
 		function(data) {
