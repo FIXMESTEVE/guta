@@ -16,9 +16,7 @@
     <input type="textbox" name="currentDir" value="{{ currentDir }}" hidden></input>
     <button type="submit" id="pasteButton" class="btn btn-default pull-right" style="margin-right:10%">
       <span class="glyphicon glyphicon-paste"></span> Coller
-
     </button>
-    {{ currentDir }}
 {{ end_form() }}
 {% endif %}
 
