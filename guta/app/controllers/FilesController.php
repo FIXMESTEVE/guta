@@ -7,15 +7,13 @@ class FilesController extends Controller
     public function initialize()
     {
         $this->assets
-            ->addCss("//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
-            //->addCss("css/bootstrap.min.css")
+            ->addCss("css/bootstrap.min.css")
             ->addCss("css/design.css")
             ->addCss("css/dropzone.css");
 
         $this->assets
             ->addJs("js/jquery-1.11.2.min.js")
-            ->addJs("//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js")
-            //->addJS("js/bootstrap.min.js")
+            ->addJS("js/bootstrap.min.js")
             ->addJs("js/dropzone.js")
             ->addJs("js/showFile.js")
             ->addJs("js/contextMenu.js")
