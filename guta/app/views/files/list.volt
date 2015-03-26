@@ -18,7 +18,6 @@
       <span class="glyphicon glyphicon-paste"></span> Coller
 
     </button>
-    {{ currentDir }}
 {{ end_form() }}
 {% endif %}
 
