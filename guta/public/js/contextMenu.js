@@ -15,7 +15,8 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
 	$("li.share").css({display: "block"});
 	$("li.delete").css({display: "block"});
-	$("li.copy").css({display: "block"});
+	$("li.copy").hide();
+	$("li.version").hide();
 	$("li.download").hide();
 });
 $('.btn-operation').bind('click', function(event){
@@ -46,12 +47,25 @@ $(".shared").bind("contextmenu", function(event){
 	$("li.delete").hide();
 	$("li.copy").hide();
 });
+$(".doublepoint").bind("contextmenu",function(event){
+	$("li.share").hide();
+	$("li.delete").hide();
+	$("li.copy").hide();
+	$("li.version").hide();
+});
 $(".downloadable").bind("contextmenu", function(event){
+	$("li.version").css({display: "block"});
+	$("li.copy").css({display: "block"});
 	$("li.download").css({display: "block"});
 });
 $(document).bind("click", function(event){
 	$("ul.dropdown-menu").hide();
 	$("li.download").hide();
+});
+
+//empty the versions modal when not in use (prevents incorrect data displays during loadings)
+$('#myVersionsModal').on('hidden.bs.modal', function () {
+  $("#versionsRows").html("<button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh spinning'></span> Chargement...</button>");
 });
 
 //HTML of the contextual menu
@@ -60,9 +74,10 @@ menu = function(){
 	//contextual menu here 
 	string += "<li class='download'><a id='download' class='menulink' href=''><span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span> Télécharger</a></li>"
 	string += "<li class='share'><a id='share' class='menulink' href='#shareModal' data-toggle='modal'><span class='glyphicon glyphicon-share' aria-hidden='true'></span> Partager</a></li>"
+	string += "<li class='version'><a id='version' class='menulink' href='#myVersionsModal' data-toggle='modal'> <span class='glyphicon glyphicon-fast-backward' aria-hidden='true'></span> Versions</a></li>"
 	string += "<li class='divider'></li>";
-	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
 	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
+	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
@@ -75,9 +90,21 @@ function httpGet(theUrl)
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, false );
     xmlHttp.send( null );
+    console.dir(xmlHttp.responseText);
     return xmlHttp.responseText;
 }
 
+function versionsRequest(theUrl, folderPath, target){
+	$.getJSON(theUrl, {}, function(ver){
+		$("#versionsRows").empty();
+		$.each(ver, function(key, value){
+			var splittedValues = value.split(" ");
+		    $("#versionsRows").append("<a class='btn btn-primary' href='"+ folderPath + "downloadVersion/" + target  +"/"+splittedValues[0]+"' key="+ key +" ver="+ splittedValues[0] +">"+splittedValues[1]+" "+ splittedValues[2] + "</a></p>");
+		});
+	}).fail(function (j, t, e) {
+	   console.error(e);
+	});
+}
 //Associate the actions of the contextual menu here
 menu_click = function(attr){
 	var pos;
@@ -97,8 +124,10 @@ menu_click = function(attr){
 		$(location).attr('href', folderPath + "delete/" + target);
 		break;
 	case 'copy':
+		$('#pasteButton').fadeIn("fast");
 		httpGet(folderPath + "copy/" + target);
 
+		$("#pastButton").removeAttr("disabled");
 		// taken from StackOverflow, by Anu - SO
 		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="Dismiss this notification">X</a></span>');
 		$(".dismiss").click(function(){
@@ -112,6 +141,9 @@ menu_click = function(attr){
 			checkbox = $(this);
 		});
 		checkbox.prop('checked', true);
+		break;
+	case 'version':
+		versionsRequest(folderPath + "getVersions/" + target, folderPath, target);
 		break;
 	default:
 		break;
