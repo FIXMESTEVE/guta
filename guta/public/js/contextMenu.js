@@ -54,6 +54,11 @@ $(document).bind("click", function(event){
 	$("li.download").hide();
 });
 
+//empty the versions modal when not in use (prevents incorrect data displays during loadings)
+$('#myVersionsModal').on('hidden.bs.modal', function () {
+  $("#versionsRows").html("<button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh spinning'></span> Chargement...</button>");
+});
+
 //HTML of the contextual menu
 menu = function(){
 	string = "<ul class='dropdown-menu'>";

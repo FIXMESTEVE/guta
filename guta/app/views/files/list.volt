@@ -118,7 +118,7 @@
         
             <div class='modal-body'>
                 <label>Date et heure</label>
-                <div id="versionsRows"></div>
+                <div id="versionsRows"><button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh spinning'></span> Chargement...</button></div>
             </div>
         </div>
     </div>
