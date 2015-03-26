@@ -521,7 +521,10 @@ class FilesController extends Controller
 
         if ($this->request->isPost()) {
             // Get the name of the new folder.
+
             $foldername = urldecode($this->request->getPost("foldername"));
+            $foldername = strtr($foldername, array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)));
+            $foldername = trim($foldername, chr(0xC2).chr(0xA0));
             if ($foldername == null) {
                 $this->flash->error("Le nom d'un dossier ne peut être vide.");
                 return $this->dispatcher->forward(array(
@@ -639,8 +642,9 @@ class FilesController extends Controller
                     if($sharedFile = Sharedfile::findFirst(array("path = ?0 and id_user = ?1", "bind" => array($path, $userShare->idUser)))) {
                         $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cet utilisateur'));
                     } else {
-                        $pathTrim = rtrim(ltrim($sharedFile->path, '/'), '/');
-                        $pathArray = explode('/', $path);
+                        $pathTmp = $path;
+                        $pathTrim = rtrim(ltrim($pathTmp, '/'), '/');
+                        $pathArray = explode('/', $pathTrim);
                         $elemShared = array_pop($pathArray);
                         if($elemShared != "..") {
                             $sharedFile = new Sharedfile();
@@ -664,6 +668,8 @@ class FilesController extends Controller
                                     }
                                 }
                             }
+                        } else {
+                            $this->response->setJsonContent(array('message' => 'Fichier ou dossier invalide.'));
                         }
                     }
                 }

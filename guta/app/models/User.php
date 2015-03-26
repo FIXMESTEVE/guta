@@ -90,11 +90,11 @@ class User extends \Phalcon\Mvc\Model
           'message' => 'Un mot de passe est nécessaire.'
         ]));
 
-        $this->validate(new RegexValidator([
+/*        $this->validate(new RegexValidator([
             'field' => 'password',
             'pattern' => '/^[a-zA-Z0-9?@\.;:!_-]{8,12}$/',
             'message' => "Le mot de passe doit comporter 8 à 12 caractères alpha-numériques (? @ . ; : ! _ et - sont autorisés)."
-        ]));
+        ]));*/
 
         
 

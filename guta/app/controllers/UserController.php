@@ -58,8 +58,14 @@ class UserController extends ControllerBase
         $user->email = $this->request->getPost("email", "email");;
         $user->login = $this->request->getPost("login");
         $password = $this->request->getPost("password");
+        if(!preg_match("/^[a-zA-Z0-9?@\.;:!_-]{8,12}$/", $password)) {
+            $this->flash->error("Le mot de passe doit comporter 8 à 12 caractères alpha-numériques (? @ . ; : ! _ et - sont autorisés).");
+            return $this->dispatcher->forward(array(
+                "controller" => "index",
+                "action" => "signup"
+            ));
+        }
         $user->password = $this->security->hash($password);
-
 
         if (!$user->save()) {
             $this->flash->error($user->getMessages()[0]);
