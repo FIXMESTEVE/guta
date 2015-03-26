@@ -118,20 +118,8 @@
             </div>
         
             <div class='modal-body'>
-                <div class='table-responsive' id='versionsTable' style='display:inline;'>
-                    <thead>
-                        <tr>
-                            <th>Date et heure</th>
-                        </tr>
-                    </thead>
-                    <tbody><!--
-                        {% for ver in output %}
-                            <tr>
-                                <td>{{ ver }}</td>
-                            </tr>
-                        {% endfor %}-->
-                    </tbody>
-                </div>
+                <label>Date et heure</label>
+                <div id="versionsRows"><button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh spinning'></span> Chargement...</button></div>
             </div>
         </div>
     </div>
@@ -153,7 +141,7 @@
 			{% for dir in directories %}
 				<tr class="contextMenu">
 					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" /></td>
-					<td class="navigate"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
+					<td class="navigate"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
                     <td>
@@ -169,7 +157,7 @@
             {% for dir in sharedDirectories %}
                 <tr class="shared contextMenu">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['realPath'])}}" disabled="true"/></td>
-                    <td class="navigate"><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</span></span></td>
+                    <td class="navigate"><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-folder-open"></span></span>&nbsp;&nbsp;{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['realPath'], dir['name']) }}</td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
                     <td></td>
                     <td>
@@ -185,7 +173,7 @@
 			{% for file in files %}
 				<tr class="downloadable contextMenu">
 					<td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['name']) }}" /></td>
-					<td class="navigate" href="#myFileModal" data-toggle="modal"><span class="glyphicon glyphicon-file"><a href="" path="{{ currentDir }}" file="{{ file['name'] }}">{{ file['name'] }}</a></span></td>
+					<td class="navigate" href="#myFileModal" data-toggle="modal"><span class="glyphicon glyphicon-file"></span><a href="" path="{{ currentDir }}" file="{{ file['name'] }}">&nbsp;&nbsp;{{ file['name'] }}</a></td>
 					<td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
 					<td>{{ file['modifyDate'] }}</td>
                     <td>
@@ -194,6 +182,9 @@
                             <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
                             <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
                             <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <!--not working, but keeping it for future improvements
+                            <button href="#myVersionsModal" onclick="versionsRequest('getVersions{{currentDir ~ '/' ~ file['name']}}')" data-toggle="modal" title="Versions précédentes" role="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+                            -->
                         </div>
                     </td>
 				</tr>
@@ -201,7 +192,7 @@
             {% for file in sharedFiles %}
                 <tr class="downloadable shared contextMenu">
                     <td><input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ file['realPath']) }}" disabled="true"/></td>
-                    <td class="navigate" href="#myFileModal" data-toggle="modal"><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"><a href="" path="{{ currentDir }}" file="{{ file['realPath'] }}">{{ file['name'] }}</a></span></span></td>
+                    <td class="navigate" href="#myFileModal" data-toggle="modal"><span class="glyphicon glyphicon-share-alt"><span class="glyphicon glyphicon-file"></span></span>&nbsp;&nbsp;<a href="" path="{{ currentDir }}" file="{{ file['realPath'] }}">{{ file['name'] }}</a></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
                     <td>{{ file['modifyDate'] }}</td>
                     <td>

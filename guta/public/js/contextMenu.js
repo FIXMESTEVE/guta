@@ -55,6 +55,11 @@ $(document).bind("click", function(event){
 	$("li.download").hide();
 });
 
+//empty the versions modal when not in use (prevents incorrect data displays during loadings)
+$('#myVersionsModal').on('hidden.bs.modal', function () {
+  $("#versionsRows").html("<button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh spinning'></span> Chargement...</button>");
+});
+
 //HTML of the contextual menu
 menu = function(){
 	string = "<ul class='dropdown-menu'>";
@@ -64,6 +69,7 @@ menu = function(){
 	string += "<li class='divider'></li>";
 	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
 	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
+	string += "<li class='version'><a id='version' class='menulink' href='#myVersionsModal' data-toggle='modal'> <span class='glyphicon glyphicon-fast-backward' aria-hidden='true'></span> Versions</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
@@ -76,9 +82,21 @@ function httpGet(theUrl)
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, false );
     xmlHttp.send( null );
+    console.dir(xmlHttp.responseText);
     return xmlHttp.responseText;
 }
 
+function versionsRequest(theUrl, folderPath, target){
+	$.getJSON(theUrl, {}, function(ver){
+		$("#versionsRows").empty();
+		$.each(ver, function(key, value){
+			var splittedValues = value.split(" ");
+		    $("#versionsRows").append("<a class='btn btn-primary' href='"+ folderPath + "downloadVersion/" + target  +"/"+splittedValues[0]+"' key="+ key +" ver="+ splittedValues[0] +">"+splittedValues[1]+" "+ splittedValues[2] + "</a></p>");
+		});
+	}).fail(function (j, t, e) {
+	   console.error(e);
+	});
+}
 //Associate the actions of the contextual menu here
 menu_click = function(attr){
 	var pos;
@@ -113,6 +131,9 @@ menu_click = function(attr){
 			checkbox = $(this);
 		});
 		checkbox.prop('checked', true);
+		break;
+	case 'version':
+		versionsRequest(folderPath + "getVersions/" + target, folderPath, target);
 		break;
 	default:
 		break;

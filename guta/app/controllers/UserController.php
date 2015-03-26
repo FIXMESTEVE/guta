@@ -54,21 +54,20 @@ class UserController extends ControllerBase
             return;
         }
 
-        $User = new User();
-
-        $User->login = $this->request->getPost("login");
-        $User->email = $this->request->getPost("email", "email");
+        $user = new User();
+        $user->email = $this->request->getPost("email", "email");;
+        $user->login = $this->request->getPost("login");
         $password = $this->request->getPost("password");
-        $User->password = $this->security->hash($password);
+        $user->password = $this->security->hash($password);
 
-        if (!$User->save()) {
-            foreach ($User->getMessages() as $message) { 
-                $this->flash->error($message);  
-            }
+
+        if (!$user->save()) {
+            $this->flash->error($user->getMessages()[0]);
             return $this->dispatcher->forward(array(
                 "controller" => "index",
                 "action" => "signup"
             ));
+
         } else {
             $ds          = DIRECTORY_SEPARATOR;  // '/'
             $storeFolder = 'uploadedFiles';   // the folder where we store all the files
@@ -91,6 +90,7 @@ class UserController extends ControllerBase
 
             $this->response->redirect("");
             return;
+
             /*$this->flash->success("L'inscription s'est déroulée correctement.");
             return $this->dispatcher->forward(array(
                 "controller" => "index",
@@ -112,25 +112,23 @@ class UserController extends ControllerBase
 
         $idUser = $this->request->getPost("idUser");
 
-        $User = User::findFirstByidUser($idUser);
-        if (!$User) {
+        $user = User::findFirstByidUser($idUser);
+        if (!$user) {
             $this->flash->error("User does not exist " . $idUser);
             return $this->dispatcher->forward(array(
-                "controller" => "index",
-                "action" => "index"
+                "controller" => "user",
+                "action" => "edit"
             ));
         }
 
-        $User->login = $this->request->getPost("login");
-        $User->email = $this->request->getPost("email", "email");
+        $user->login = $this->request->getPost("login");;
+        $user->email =$this->request->getPost("email", "email");
         $password = $this->request->getPost("password");
-        $User->password = $this->security->hash($password);
-        $User->avatar = $this->request->getPost("avatar");
+        $user->password = $this->security->hash($password);
+        $user->avatar = $this->request->getPost("avatar");
         
-        if (!$User->save()) {
-            foreach ($User->getMessages() as $message) {
-                $this->flash->error($message);
-            }
+        if (!$user->save()) {
+            $this->flash->error($user->getMessages()[0]);
             return $this->dispatcher->forward(array(
                 "controller" => "user",
                 "action" => "edit"
@@ -149,7 +147,7 @@ class UserController extends ControllerBase
      *
      * @param string $idUser
      */
-    public function deleteAction($idUser)
+/*    public function deleteAction($idUser)
     {
         $User = User::findFirstByidUser($idUser);
         if (!$User) {
@@ -174,5 +172,5 @@ class UserController extends ControllerBase
             "controller" => "index",
             "action" => "index"
         ));
-    }
+    }*/
 }
