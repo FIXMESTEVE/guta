@@ -82,8 +82,8 @@ class FilesController extends Controller
             
             chdir($folder);
             if(is_dir($fileName)){
-                exec("svn up");
                 exec("svn rm \"".addslashes($fileName)."\"");
+                exec("svn commit -m \"removed directory\"");
                 exec("svn up --accept mine-full");
 
                 //Redirection to stay in folder view
@@ -510,6 +510,7 @@ class FilesController extends Controller
             }
 
             exec("svn add \"".$this->persistent->userPath . "/" . $folderpath . "/" . $foldername."\"");
+            exec("svn commit -m \"created folder\"");
             exec("svn up --accept mine-full");
             return $this->dispatcher->forward(array(
                 'controller' => 'files',
