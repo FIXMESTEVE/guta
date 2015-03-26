@@ -4,7 +4,7 @@ $(document).on("ready", function(){
 })
 $(document).on('click', 'a.menulink', function(event){
 	event.preventDefault();
-	menu_click($(this));
+	menu_click($(this).attr('id'));
 });
 
 var clicked;
@@ -15,8 +15,12 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
 	$("li.share").css({display: "block"});
 	$("li.delete").css({display: "block"});
-	$("li.copy").css({display: "block"});
+	$("li.copy").hide();
 	$("li.download").hide();
+});
+$('.btn-operation').bind('click', function(event){
+	clicked = $(this).parent().parent().parent();
+	menu_click($(this).attr('id'));
 });
 $('.navigate').bind("click", function(event){
 	event.preventDefault();
@@ -48,11 +52,17 @@ $(".doublepoint").bind("contextmenu",function(event){
 	$("li.copy").hide();
 });
 $(".downloadable").bind("contextmenu", function(event){
+	$("li.copy").css({display: "block"});
 	$("li.download").css({display: "block"});
 });
 $(document).bind("click", function(event){
 	$("ul.dropdown-menu").hide();
 	$("li.download").hide();
+});
+
+//empty the versions modal when not in use (prevents incorrect data displays during loadings)
+$('#myVersionsModal').on('hidden.bs.modal', function () {
+  $("#versionsRows").html("<button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh spinning'></span> Chargement...</button>");
 });
 
 //HTML of the contextual menu
@@ -64,6 +74,7 @@ menu = function(){
 	string += "<li class='divider'></li>";
 	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
 	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
+	string += "<li class='version'><a id='version' class='menulink' href='#myVersionsModal' data-toggle='modal'> <span class='glyphicon glyphicon-fast-backward' aria-hidden='true'></span> Versions</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
@@ -76,12 +87,23 @@ function httpGet(theUrl)
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, false );
     xmlHttp.send( null );
+    console.dir(xmlHttp.responseText);
     return xmlHttp.responseText;
 }
 
-
+function versionsRequest(theUrl, folderPath, target){
+	$.getJSON(theUrl, {}, function(ver){
+		$("#versionsRows").empty();
+		$.each(ver, function(key, value){
+			var splittedValues = value.split(" ");
+		    $("#versionsRows").append("<a class='btn btn-primary' href='"+ folderPath + "downloadVersion/" + target  +"/"+splittedValues[0]+"' key="+ key +" ver="+ splittedValues[0] +">"+splittedValues[1]+" "+ splittedValues[2] + "</a></p>");
+		});
+	}).fail(function (j, t, e) {
+	   console.error(e);
+	});
+}
 //Associate the actions of the contextual menu here
-menu_click = function(object){
+menu_click = function(attr){
 	var pos;
 	var target;
 	var folderPath;
@@ -91,7 +113,7 @@ menu_click = function(object){
 		target = $(this).attr('id').substring(pos + str.length).replace(/\//g, '¤');
 		folderPath = $(this).attr('id').substring(0, pos) + "files/";
 	});
-	switch(object.attr('id')){
+	switch(attr){
 	case 'download':
 		$(location).attr('href', folderPath + "download/" + target);
 		break;
@@ -103,7 +125,7 @@ menu_click = function(object){
 
 		$("#pastButton").removeAttr("disabled");
 		// taken from StackOverflow, by Anu - SO
-		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="dismiss this notification">X</a></span>');
+		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="Dismiss this notification">X</a></span>');
 		$(".dismiss").click(function(){
 		       $("#copyNotification").fadeOut("slow");
 		});
@@ -115,6 +137,9 @@ menu_click = function(object){
 			checkbox = $(this);
 		});
 		checkbox.prop('checked', true);
+		break;
+	case 'version':
+		versionsRequest(folderPath + "getVersions/" + target, folderPath, target);
 		break;
 	default:
 		break;
