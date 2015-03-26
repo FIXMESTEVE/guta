@@ -288,6 +288,11 @@ class FilesController extends Controller
         if($directory != null)
             $directory = "/" . $directory;
 
+        if($this->persistent->copiedPath == null)
+            $this->view->copied = false;
+        else
+            $this->view->copied = true;
+
         $this->view->currentDir = $directory;
         $this->view->directories = $dirArray;
         $this->view->files = $fileArray;

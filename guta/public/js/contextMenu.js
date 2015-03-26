@@ -16,6 +16,7 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("li.share").css({display: "block"});
 	$("li.delete").css({display: "block"});
 	$("li.copy").hide();
+	$("li.version").hide();
 	$("li.download").hide();
 });
 $('.btn-operation').bind('click', function(event){
@@ -52,6 +53,7 @@ $(".doublepoint").bind("contextmenu",function(event){
 	$("li.copy").hide();
 });
 $(".downloadable").bind("contextmenu", function(event){
+	$("li.version").css({display: "block"});
 	$("li.copy").css({display: "block"});
 	$("li.download").css({display: "block"});
 });
@@ -71,10 +73,10 @@ menu = function(){
 	//contextual menu here 
 	string += "<li class='download'><a id='download' class='menulink' href=''><span class='glyphicon glyphicon-download-alt' aria-hidden='true'></span> Télécharger</a></li>"
 	string += "<li class='share'><a id='share' class='menulink' href='#shareModal' data-toggle='modal'><span class='glyphicon glyphicon-share' aria-hidden='true'></span> Partager</a></li>"
-	string += "<li class='divider'></li>";
-	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
-	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
 	string += "<li class='version'><a id='version' class='menulink' href='#myVersionsModal' data-toggle='modal'> <span class='glyphicon glyphicon-fast-backward' aria-hidden='true'></span> Versions</a></li>"
+	string += "<li class='divider'></li>";
+	string += "<li class='copy'><a id='copy' class='menulink' href=''> <span class='glyphicon glyphicon-copy' aria-hidden='true'></span> Copier</a></li>"
+	string += "<li class='delete'><a id='delete' class='menulink' href=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Supprimer</a></li>"
 	// menu's end
 	string += "</ul>";
 	return string;
@@ -121,6 +123,7 @@ menu_click = function(attr){
 		$(location).attr('href', folderPath + "delete/" + target);
 		break;
 	case 'copy':
+		$('#pasteButton').fadeIn("fast");
 		httpGet(folderPath + "copy/" + target);
 
 		$("#pastButton").removeAttr("disabled");
