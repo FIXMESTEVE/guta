@@ -12,9 +12,10 @@
 </div>
 
 {% if !inSharedDirectory %}
-{{ form('files/paste' ~ currentDir, 'method': 'post') }}
-    <button type="submit" class="btn btn-default pull-right" style="margin-right:10%">
-      <span class="glyphicon glyphicon-paste" aria-hidden="false"></span> Coller
+{{ form('files/paste', 'method': 'post') }}
+    <input type="textbox" name="currentDir" value="{{ currentDir }}" hidden></input>
+    <button type="submit" id="pasteButton" class="btn btn-default pull-right" style="margin-right:10%">
+      <span class="glyphicon glyphicon-paste"></span> Coller
     </button>
 {{ end_form() }}
 {% endif %}
@@ -159,7 +160,8 @@
                         <div class="btn-group pull-right" role="group">
                             <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                             <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
 				</tr>
@@ -174,7 +176,8 @@
                         <div class="btn-group pull-right" role="group">
                             <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                             <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -189,7 +192,8 @@
                         <div class="btn-group pull-right" role="group">
                             <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                             <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
 				</tr>
@@ -204,7 +208,8 @@
                         <div class="btn-group pull-right" role="group">
                             <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                             <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -230,7 +235,8 @@
                 <div class="btn-group " role="group">
                     <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                     <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
 	    	</div>
 	  	</div>
@@ -250,7 +256,8 @@
                 <div class="btn-group " role="group">
                     <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                     <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
             </div>
         </div>
@@ -270,7 +277,8 @@
                 <div class="btn-group " role="group">
                     <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                     <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
             </div>
     	</div>
@@ -290,7 +298,8 @@
                 <div class="btn-group " role="group">
                     <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation" disabled><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
                     <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" id="delete" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
             </div>
         </div>

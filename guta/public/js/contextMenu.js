@@ -15,7 +15,7 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("ul.dropdown-menu").css({display: "block", top: event.pageY + "px", left: event.pageX + "px"});
 	$("li.share").css({display: "block"});
 	$("li.delete").css({display: "block"});
-	$("li.copy").css({display: "block"});
+	$("li.copy").hide();
 	$("li.download").hide();
 });
 $('.btn-operation').bind('click', function(event){
@@ -47,6 +47,7 @@ $(".shared").bind("contextmenu", function(event){
 	$("li.copy").hide();
 });
 $(".downloadable").bind("contextmenu", function(event){
+	$("li.copy").css({display: "block"});
 	$("li.download").css({display: "block"});
 });
 $(document).bind("click", function(event){
