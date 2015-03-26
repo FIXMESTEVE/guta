@@ -51,6 +51,7 @@ $(".doublepoint").bind("contextmenu",function(event){
 	$("li.share").hide();
 	$("li.delete").hide();
 	$("li.copy").hide();
+	$("li.version").hide();
 });
 $(".downloadable").bind("contextmenu", function(event){
 	$("li.version").css({display: "block"});

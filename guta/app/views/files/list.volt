@@ -153,13 +153,15 @@
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
                     <td>
-                        <div class="btn-group pull-right" role="group">
-                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation" disabled><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
-                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-                        </div>
+                    	{% if dir['name'] != '..' %}
+	                        <div class="btn-group pull-right" role="group">
+	                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+	                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+	                            <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation" disabled><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+	                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+	                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+	                        </div>
+                        {% endif %}
                     </td>
 				</tr>
 			{% endfor %}
@@ -233,11 +235,13 @@
 	      		   </div>
                 </div>
                 <div class="btn-group " role="group">
-                    <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                    <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                    <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation" disabled><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
-                    <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
-                    <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                	{% if dir['name'] != '..' %}
+	                    <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+	                    <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+	                    <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation" disabled><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+	                    <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+	                    <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                	{% endif %}
                 </div>
 	    	</div>
 	  	</div>

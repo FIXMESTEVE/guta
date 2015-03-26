@@ -596,8 +596,9 @@ class FilesController extends Controller
                     if($sharedFile = Sharedfile::findFirst(array("path = ?0 and id_user = ?1", "bind" => array($path, $userShare->idUser)))) {
                         $this->response->setJsonContent(array('message' => 'Fichier(s)/Dossier(s) déjà partagé(s) avec cet utilisateur'));
                     } else {
-                        $pathTrim = rtrim(ltrim($sharedFile->path, '/'), '/');
-                        $pathArray = explode('/', $path);
+                        $pathTmp = $path;
+                        $pathTrim = rtrim(ltrim($pathTmp, '/'), '/');
+                        $pathArray = explode('/', $pathTrim);
                         $elemShared = array_pop($pathArray);
                         if($elemShared != "..") {
                             $sharedFile = new Sharedfile();
@@ -621,6 +622,8 @@ class FilesController extends Controller
                                     }
                                 }
                             }
+                        } else {
+                            $this->response->setJsonContent(array('message' => 'Fichier ou dossier invalide.'));
                         }
                     }
                 }
