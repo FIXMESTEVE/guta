@@ -137,7 +137,7 @@ menu_click = function(attr){
 
 		$("#pastButton").removeAttr("disabled");
 		// taken from StackOverflow, by Anu - SO
-		$("#copyNotification").fadeIn("slow").html('Fichier ' + target +' copié <span class="dismiss"><a title="Dismiss this notification">X</a></span>');
+		$("#copyNotification").fadeIn("slow").html('Fichier ' + target.replace(/¤/g, '/') +' copié <span class="dismiss"><a title="Dismiss this notification">X</a></span>');
 		$(".dismiss").click(function(){
 		       $("#copyNotification").fadeOut("slow");
 		});
