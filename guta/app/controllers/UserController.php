@@ -77,10 +77,10 @@ class UserController extends ControllerBase
             $storeFolder = 'uploadedFiles';   // the folder where we store all the files
             if(!file_exists(dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder))
                 mkdir(dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . $storeFolder);
-            $user = $User->idUser;
+            $user = $user->idUser;
             $svnrep = dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "svnrep";
-            if(!file_exists($svnrep))
-                mkdir($svnrep);
+            /*if(!file_exists($svnrep))
+                mkdir($svnrep);*/
             if(!file_exists(dirname( __FILE__ ) . $ds . '..' . $ds . '..' . $ds . '..' . $ds . "svnrep".$ds.$user)){
                 //create svn repo
                 chdir($svnrep);

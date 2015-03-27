@@ -387,9 +387,9 @@ class FilesController extends Controller
             $file .= $fileName;
         else
             $file .= $user . $ds . $fileName;
+        error_log("svn log -q \"".addslashes($file)."\" | grep '^r' | cut -f1,5,6 -d' '");
+        exec("svn log -q \"".addslashes($file)."\" | grep ^r | cut -f1,5,6 -d\" \"", $output, $returnvalue);
         
-        exec("svn log -q \"".addslashes($file)."\" | grep '^r' | cut -f1,5,6 -d' '", $output, $returnvalue);
-        error_log($file);
         //Create a response instance
         $response = new \Phalcon\Http\Response();
 
