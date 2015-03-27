@@ -17,7 +17,7 @@ $(".contextMenu").bind("contextmenu", function(event){
 	$("li.delete").css({display: "block"});
 	$("li.copy").hide();
 	$("li.version").hide();
-	$("li.download").hide();
+	$("li.download").css({display: "block"});
 });
 $('.btn-operation').bind('click', function(event){
 	clicked = $(this).parent().parent().parent();

@@ -1,5 +1,14 @@
 {{ content() }}
 
+<div class="btn-group pull-right" role="group" aria-label="..." style="margin-right:10%" data-toggle="buttons">
+    <label class="btn btn-default active" id="toggledButtonList" onclick="changeViewToList()">
+        <input type="radio" class="btn btn-default" name="options" autocomplete="off" checked /><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+    </label>
+    <label class="btn btn-default" id="toggledButtonIcone" onclick="changeViewToIcone()">
+        <input type="radio" class="btn btn-default" name="options" autocomplete="off" /><span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+    </label>
+</div>
+
 <!-- Modal affichage fichier -->
 <div class='modal fade' id='myFileModal' tabindex='-1' role='dialog' aria-labelledby='myFileModalLabel' aria-hidden='true'>
     <div class='modal-dialog'>
@@ -48,20 +57,8 @@
             </div>
         
             <div class='modal-body'>
-                <div class='table-responsive' id='versionsTable' style='display:inline;'>
-                    <thead>
-                        <tr>
-                            <th>Date et heure</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ver in output %}
-                            <tr>
-                                <td>{{ ver }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </div>
+                <label>Date et heure</label>
+                <div id="versionsRows"><button class='btn btn-lg btn-warning'><span class='glyphicon glyphicon-refresh spinning'></span> Chargement...</button></div>
             </div>
         </div>
     </div>
@@ -84,14 +81,16 @@
             {% for dir in directories %}
                 <tr class="contextMenu">
                     <td><input type="checkbox" id="{{ url( "files/" ~ dir['path']) ~ "/"}}" /></td>
-                    <td class="navigate"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list/" ~ dir['path'] ~ "/", dir['name']) }}</span></td>
+                    <td class="navigate"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;{{ link_to("files/list/" ~ dir['path'] ~ "/", dir['name']) }}</td>
                     <td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
                     <td></td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation" disabled><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
@@ -99,18 +98,74 @@
             {% for file in files %}
                 <tr class="downloadable contextMenu">
                     <td><input type="checkbox" id="{{ url( "files" ~ file['path'] ~ "/" ~ file['name']) }}" /></td>
-                    <td class="navigate" href="#myFileModal" data-toggle="modal"><span class="glyphicon glyphicon-file"><a href="" path="{{ file['path'] }}" file="{{ file['name'] }}">{{ file['name'] }}</a></span></td>
+                    <td class="navigate" href="#myFileModal" data-toggle="modal"><span class="glyphicon glyphicon-file"></span><a href="" path="{{ file['path'] }}" file="{{ file['name'] }}">&nbsp;&nbsp;{{ file['name'] }}</a></td>
                     <td>{% if file['size'] != null %} {{ file['size'] }} {% endif %}</td>
                     <td>{{ file['modifyDate'] }}</td>
                     <td>
                         <div class="btn-group pull-right" role="group">
-                            <button type="button" title="Partager" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
-                            <button type="button" title="Télécharger" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
-                            <button type="button" title="Supprimer" class="btn btn-warning btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                            <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                            <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+                            <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                            <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                         </div>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<div class="row" id="iconeViewTable" style="display:none;">
+    {% for dir in directories %}
+        <div class="bloc col-sm-6 col-md-8 contextMenu">
+            <div class="thumbnail">
+                <div class="navigate">
+                    <input type="checkbox" id="{{ url( "files/" ~ dir['path']) ~ "/"}}" hidden='true'/>
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                    <div class="caption">
+                        <h3>{{ link_to("files/list/" ~ dir['path'] ~ "/", dir['name']) }}</h3>
+                        <p>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</p>
+                        <p><br></br></p> 
+                   </div>
+                </div>
+                <div class="btn-group " role="group">
+                    {% if dir['name'] != '..' %}
+                        <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation" disabled><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                        <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                        <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation" disabled><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+                        <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation" disabled><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                        <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    {% for file in files %}
+        <div class="bloc col-sm-6 col-md-8 downloadable contextMenu">
+            <div class="thumbnail">
+                <div class="navigate" href="#myFileModal" data-toggle="modal">
+                    <input type="checkbox" id="{{ url( "files" ~ file['path'] ~ "/" ~ file['name']) }}" hidden='true'/>
+                    <span class="glyphicon glyphicon-file"></span>
+                    <div class="caption">
+                        <h3 class="downloadable"><a title="{{ file['name'] }}" href="" path="{{ file['path'] }}" file="{{ file['name'] }}">{{ file['name'] }}</a></h3>
+                        <p>Taille : {% if file['size'] != null %} {{ file['size'] }} {% endif %}</p>
+                        <p>Dernière modification le {{ file['modifyDate'] }}</p>
+                    </div>
+                </div>
+                <div class="btn-group " role="group">
+                    <button type="button" title="Télécharger" id="download" class="btn btn-success btn-xs btn-operation"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></button>
+                    <button type="button" title="Partager" id="share" href='#shareModal' data-toggle='modal' class="btn btn-info btn-xs btn-operation"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button>
+                    <button type="button" title="Versions précédentes" id='version' href="#myVersionsModal" data-toggle='modal' class="btn btn-primary btn-xs btn-operation"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+                    <button type="button" title="Copier" id="copy" class="btn btn-warning btn-xs btn-operation"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+                    <button type="button" title="Supprimer" id="delete" class="btn btn-danger btn-xs btn-operation"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!--notification popup for copied files -->
+<div id="copyNotification" style="display: none;">
+  <span class="dismiss"><a title="dismiss this notification">X</a></span>
 </div>

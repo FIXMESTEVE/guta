@@ -149,7 +149,7 @@
 							<input type="checkbox" id="{{ url( "files" ~ currentDir ~ "/" ~ dir['name']) ~ "/"}}" />
 						{% endif %}
 					</td>
-					<td class="navigate"><span class="glyphicon glyphicon-folder-open"> {{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
+					<td class="navigate"><span class="glyphicon glyphicon-folder-open">&nbsp;&nbsp;{{ link_to("files/list" ~ currentDir ~ "/" ~ dir['name'], dir['name']) }}</span></td>
 					<td>{% if dir['size'] != null %} {{ dir['size'] }} ko {% endif %}</td>
 					<td></td>
                     <td>
