@@ -128,7 +128,18 @@ class UserController extends ControllerBase
         $user->login = $this->request->getPost("login");;
         $user->email =$this->request->getPost("email", "email");
         $password = $this->request->getPost("password");
-        $user->password = $this->security->hash($password);
+        $oldPass = $this->request->getPost("oldPassword");
+        if($this->request->getPost("password") != ''){
+            if($this->security->checkHash($oldPass, $user->password))
+                $user->password = $this->security->hash($password);
+            else{
+                $this->flash->error("L'ancien mot de passe est faux");
+                return $this->dispatcher->forward(array(
+                    "controller" => "user",
+                    "action" => "edit"
+                ));
+            }
+        }
         
         if (!$user->save()) {
             $this->flash->error($user->getMessages()[0]);

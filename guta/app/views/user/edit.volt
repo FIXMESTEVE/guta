@@ -18,13 +18,16 @@
                     {{ text_field('email', 'class': "form-control input-lg") }}
                 </div>
                 <div class="form-group input-group">
-                    <span class="input-group-addon" for="password"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>
+                    <span class="input-group-addon" for="oldPassword">Old <span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>
+                    {{ password_field('oldPassword', 'class': "form-control input-lg") }}
+                </div>
+                <div class="form-group input-group">
+                    <span class="input-group-addon" for="password">New <span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>
                     {{ password_field('password', 'class': "form-control input-lg") }}
                 </div>
                 <div class="form-group">
                     <?php echo $this->tag->hiddenField("idUser") ?>
                     <div class="col-sm-offset-2 col-sm-10">
-                        <?php //echo $this->tag->submitButton("Save") ?>
                         {{ submit_button('Enregistrer', "class":"btn btn-primary btn-lg") }}
                     </div>
                 </div>

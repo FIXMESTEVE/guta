@@ -92,7 +92,7 @@ class Elements extends Component
 
         // User
         $this->manageActiveLI('user', 'edit', $controllerName, $actionName);
-        echo $this->tag->linkTo('user' . '/' . 'edit'. '/' . $auth['idUser'], $auth['login']);
+        echo $this->tag->linkTo('user' . '/' . 'edit', $auth['login']);
         echo '</li>';
 
         // Déconnection
