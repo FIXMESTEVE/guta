@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `guta`.`User` (
   `login` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
   `password` CHAR(60) NULL,
-  `avatar` VARCHAR(45) NULL,
   PRIMARY KEY (`idUser`))
 ENGINE = InnoDB;
 
@@ -48,23 +47,6 @@ CREATE TABLE IF NOT EXISTS `guta`.`Sharedfile` (
     ON UPDATE NO ACTION,
   CONSTRAINT `Owner`
     FOREIGN KEY (`id_owner`)
-    REFERENCES `guta`.`User` (`idUser`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `guta`.`Folder`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `guta`.`Folder` (
-  `idFolder` INT NOT NULL AUTO_INCREMENT,
-  `path` VARCHAR(45) NULL,
-  `id_user` INT NULL,
-  PRIMARY KEY (`idFolder`),
-  INDEX `User_idx` (`id_user` ASC),
-  CONSTRAINT `User_Folder`
-    FOREIGN KEY (`id_user`)
     REFERENCES `guta`.`User` (`idUser`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)

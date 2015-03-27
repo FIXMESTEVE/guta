@@ -33,12 +33,6 @@ class User extends \Phalcon\Mvc\Model
     public $password;
 
     /**
-     *
-     * @var string
-     */
-    public $avatar;
-
-    /**
      * Validations and business logic
      */
     public function validation()

@@ -5,21 +5,10 @@
 </div>
 
 <!-- Login Form -->
+<br/><br/>
 <div class="row"> 
         <div class="v-center">
             {{ form('user/save','role': 'form', 'class': "form-horizontal", 'style': "width:20%;margin:0 auto;") }}
-                <div class="form-group ">
-                    <label for="avatar" class="control-label">Avatar</label>
-                    <div id="avatar">
-                        <?php
-                        echo Phalcon\Tag::image(array("avatars/".$idUser.".gif", "id" => "avatarPicture", "style" => "width: 84px;"));
-                        ?>
-                        
-                        <div id="avatarOverlay">
-                            <div id="overlayButton"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><input type="file" id="upload" /></div>
-                        </div>
-                    </div>
-                </div>
                 <div class="form-group input-group">
                     <span class="input-group-addon" for="login"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
                     {{ text_field('login', 'class': "form-control input-lg") }}

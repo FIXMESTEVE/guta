@@ -40,8 +40,6 @@ class UserController extends ControllerBase
         $this->tag->setDefault("idUser", $User->idUser);
         $this->tag->setDefault("login", $User->login);
         $this->tag->setDefault("email", $User->email);
-        //$this->tag->setDefault("password", $User->password);
-        $this->tag->setDefault("avatar", "avatars/default.gif");
     }
 
     /**
@@ -131,7 +129,6 @@ class UserController extends ControllerBase
         $user->email =$this->request->getPost("email", "email");
         $password = $this->request->getPost("password");
         $user->password = $this->security->hash($password);
-        $user->avatar = $this->request->getPost("avatar");
         
         if (!$user->save()) {
             $this->flash->error($user->getMessages()[0]);
