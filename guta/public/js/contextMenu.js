@@ -23,6 +23,7 @@ $('.btn-operation').bind('click', function(event){
 	clicked = $(this).parent().parent().parent();
 	menu_click($(this).attr('id'));
 });
+$('.navigate').css({"cursor":"pointer"});
 $('.navigate').bind("click", function(event){
 	event.preventDefault();
 	var file = false;
